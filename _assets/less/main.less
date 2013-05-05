@@ -1,7 +1,7 @@
 @import "_normalize";
 @import "_common";
 
-@import url(http://fonts.googleapis.com/css?family=Racing+Sans+One|Istok+Web|Lobster);
+@import url(http://fonts.googleapis.com/css?family=Racing+Sans+One|Istok+Web);
 
 * {
   box-sizing: border-box;
@@ -14,6 +14,33 @@
 html, body, .content {
   height: 100%;
   width: 100%;
+}
+
+
+#kulors {
+  display: block;
+  height: 500px;
+  width: 100px;
+
+  position: fixed;
+  top: 0;
+  right: 0;
+
+  overflow: auto;
+
+  padding: 0;
+
+  > * {
+    display: block;
+    height: 100px;
+    width: 100px;
+  }
+
+  .brown { background: @brown; }
+  .green { background: @green; }
+  .yellow { background: @yellow; }
+  .red { background: @red; }
+  .grey { background: @grey; }
 }
 
 h1, h2, h3 {
@@ -79,31 +106,80 @@ section {
 
   &.webapps {
     background:  @red;
-    padding: 40px;
+    padding: 10%;
+    font-family: 'Istok Web';
 
     h2 {
-      color: @yellow;
-      font-family: 'Lobster';
+      color: @green;
     }
 
     ul {
-      margin: 10% auto;
+      margin: 0 auto;
       list-style: none;
       padding: 0;
-      width: 250px;
-      position: relative;
+      position: absolute;
+      top: 65px;
+      height: 115px;
+      width: 100%;
+      overflow: hidden;
 
       li {
-        font-family: 'Istok Web';
-        background: @green;
-        padding: 10px;
-        color: @grey;
-        font-size: 30px;
+        color: @red;
+        font-weight: bold;
+        font-size: 50px;
         display: block;
-        margin: 5px 0;
-        border-radius: 2px;
+        height: inherit;
+        line-height: 115px;
+        margin: 0;
         text-transform: capitalize;
+      }
+    }
 
+    .cloud {
+      position: relative;
+      width: 280px;
+      height: 180px;
+      margin: 10% auto;
+
+      > span {
+        display: block;
+        height: 115px;
+        width:  115px;
+        border-radius: 60px;
+        background: @yellow;
+        position: absolute;
+      }
+
+      :nth-child(1) {
+        bottom: 0;
+        left: 0;
+      }
+
+      :nth-child(2) {
+        bottom: 80px;
+        left: 50px;
+        height: 80px;
+        width:  80px;
+      }
+
+      :nth-child(3) {
+        bottom: 38px;
+        left: 110px;
+        border-radius: 70px;
+        height: 140px;
+        width:  140px;
+      }
+
+      :nth-child(4) {
+        bottom: 0;
+        right: 0;
+      }
+
+      :nth-child(5) {
+        bottom: 0;
+        left: 60px;
+        border-radius: 0;
+        width: 160px;
       }
     }
 
