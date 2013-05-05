@@ -1,11 +1,40 @@
----
-layout: base
-name: home
----
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="/assets/css/main.css" type="text/css" media="screen" title="no title" charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    <div class="content">
 
-<ul>
-    {% for post in site.posts %}
-        <li><a href="{{ post.url }}">{{ post.title }}</a></li>
-    {% endfor %}
-</ul>
+      <section class="hi">
+        <h1><em>Hi!</em> I'm Julien</h1>
+        <h2>Full Stack Architect</h2>
+      </section>
+      <section>
+        <h2>I build web applications...</h2>
+        <ul>
+          <li>distributed</li>
+          <li>scalable</li>
+          <li>useable</li>
+        </ul>
+      </section>
+      <section>
+        <h2>Using...</h3>
+      </section>
+      <section>
+        Contact me :)
+        (twitter, linkedin)
+      </section>
 
+
+      <!--
+      <ul>
+          {% for post in site.posts %}
+              <li><a href="{{ post.url }}">{{ post.title }}</a></li>
+          {% endfor %}
+      </ul>
+      -->
+    </div>
+  </body>
+</html>

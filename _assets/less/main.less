@@ -1,3 +1,73 @@
-*{
-  color: blue;
+@import "_normalize";
+@import "_common";
+
+@import url(http://fonts.googleapis.com/css?family=Racing+Sans+One);
+
+* {
+  box-sizing: border-box;
+  font-size: 14px;
+  font-family: "Helvetica Neue", Times;
+  -webkit-font-smoothing: antialiased;
+}
+
+html, body, .content {
+  height: 100%;
+  width: 100%;
+}
+
+h1, h2, h3 {
+  margin: 0;
+  padding: 0;
+}
+
+h1 { font-size: 70px; }
+h2 { font-size: 60px; }
+
+section {
+  display: block;
+  height: 100%;
+  width: 100%;
+
+  text-align: center;
+  padding: 24% 0;
+
+  &.hi {
+
+    background: @color-dark;
+
+    > * {
+      width: 550px;
+      margin: auto;
+    }
+
+    em {
+      font-style: italic;
+      font-size: 80px;
+      height: inherit;
+      line-height: inherit;
+      width: 150px;
+      border-radius: 100px 100px 0 100px;
+
+      color: @color-dark;
+      background: @color-lightest;
+      float: left;
+      text-shadow: none;
+
+      -webkit-transform: scale(1);
+    }
+
+    h1 {
+      height: 150px;
+      line-height: 150px;
+      color: @color-lightest;
+    }
+
+    h2 {
+      font-size: 30px;
+      width: 520px;
+      margin-top: -40px;
+      color: #AFDFD7;
+      font-family: 'Racing Sans One';
+    }
+  }
 }
