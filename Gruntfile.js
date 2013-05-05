@@ -8,29 +8,31 @@ module.exports = function(grunt) {
 
     watch: {
       less: {
-        // Using less to render styles.
-        // Watch for the *.less file sonly
         files: ['_assets/less/*.less'],
         tasks: 'less-build'
+      },
+      js: {
+        files: ['_assets/js/*.js'],
+        tasks: 'js-copy'
       },
       jekyllSources: {
         files: [
           // capture all except css - add your own
           '*.html',
           '*.yml',
-          'assets/js/**.js',
-          'assets/less/**.less',
+          //'_assets/js/**.js',
+          //'_assets/less/**.less',
           '_posts/**',
           '_includes/**'
         ],
-        tasks: 'shell:jekyll',
+        tasks: 'jekyll-build',
       }
     },
 
     // Generate _site using jekyll
     shell: {
       jekyll: {
-        command: 'rm -rf _site/*; jekyll',
+        command: 'rm -rf _site/*; jekyll --no-auto',
         stdout: true
       }
     },
@@ -45,13 +47,21 @@ module.exports = function(grunt) {
           "_site/assets/css/main.css": "_assets/less/main.less"
         }
       }
+    },
+
+    copy: {
+      development: {
+        files: [
+          { expand: true, cwd: '_assets', src: ['js/*'], dest: '_site/assets/' },
+        ]
+      }
     }
 
   });
 
-  // less watch
   grunt.registerTask('less-build', ['less:development']);
-  // Default task.
+  grunt.registerTask('js-copy', ['copy:development']);
+  grunt.registerTask('jekyll-build', ['shell:jekyll','less-build', 'js-copy']);
   grunt.registerTask('default', 'watch');
 
 };
