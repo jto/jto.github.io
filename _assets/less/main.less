@@ -8,6 +8,7 @@
   font-size: 14px;
   font-family: "Helvetica Neue", Times;
   -webkit-font-smoothing: antialiased;
+  color: @color-lightest;
 }
 
 html, body, .content {
@@ -32,12 +33,13 @@ section {
   padding: 24% 0;
 
   &.hi {
-
+    position: relative;
     background: @color-dark;
 
     > * {
       width: 550px;
       margin: auto;
+      position: relative;
     }
 
     em {
@@ -52,6 +54,8 @@ section {
       background: @color-lightest;
       float: left;
       text-shadow: none;
+
+      position: relative;
     }
 
     h1 {
@@ -70,6 +74,12 @@ section {
   }
 
   &.webapps {
+    background: @color-mid;
+
+    h2 {
+      color: @color-darkest;
+    }
+
     ul {
       list-style: none;
     }
@@ -77,7 +87,6 @@ section {
 }
 
 // Startup Animations
-
 body {
   section.hi h1 em {
     -webkit-transition-property: opacity, -webkit-transform;
