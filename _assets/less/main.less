@@ -52,8 +52,6 @@ section {
       background: @color-lightest;
       float: left;
       text-shadow: none;
-
-      -webkit-transform: scale(1);
     }
 
     h1 {
@@ -75,5 +73,25 @@ section {
     ul {
       list-style: none;
     }
+  }
+}
+
+// Startup Animations
+
+body {
+  section.hi h1 em {
+    -webkit-transition-property: opacity, -webkit-transform;
+    -webkit-transition-duration: .5s;
+    -webkit-transition-timing-function: ease-in-out;
+    -webkit-transform: scale(.1);
+    opacity: 0;
+  }
+}
+
+
+body.ready {
+  section.hi h1 em {
+    -webkit-transform: scale(1);
+    opacity: 1;
   }
 }
