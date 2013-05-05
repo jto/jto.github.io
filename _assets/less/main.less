@@ -36,8 +36,6 @@ section {
   text-align: center;
   padding: 25% 0;
 
-  border-bottom: solid 3px @color-darkest;
-
   &.hi {
     position: relative;
     background: @color-dark;
@@ -74,31 +72,30 @@ section {
       font-size: 30px;
       width: 520px;
       margin-top: -40px;
-      color: #AFDFD7;
+      color: @color-bright;
       font-family: 'Racing Sans One';
     }
   }
 
   &.webapps {
-    background: @color-lightest;
+    background:  @color-bright;
     padding: 40px;
 
     h2 {
-      color: @color-dark;
-      text-align: left;
+      color: @color-darkest;
     }
 
     ul {
+      margin: 10% auto;
       list-style: none;
       padding: 0;
       width: 250px;
       position: relative;
-      float: right;
 
       li {
-        background: @color-dark;
+        background: @color-lightest;
         padding: 10px;
-        color: @color-lightest;
+        color: @color-bright;
         font-size: 30px;
         display: block;
         margin: 5px 0;
@@ -108,51 +105,11 @@ section {
       }
     }
 
-    .network {
-      border: solid 1px red;
-      height: 450px;
-      width: 500px;
-      position: relative;
+  }
 
-      .node {
-        display: block;
-        height: 40px;
-        width: 40px;
-        border-radius: 20px;
-        background: @color-dark;
-        position: absolute;
-
-        &:nth-child(1) { top: 150px; left: 230px; }
-        &:nth-child(2) { top: 230px; left: 170px; }
-        &:nth-child(3) { top: 230px; left: 290px; }
-      }
-
-      .branch {
-        display: block;
-        height: 10px;
-        width: 90px;
-        background: @color-dark;
-        position: absolute;
-
-        &:nth-child(4) {
-          top: 197px;
-          left:  232px;
-          -webkit-transform: rotate(55deg);
-        }
-
-        &:nth-child(5) {
-          top: 197px;
-          left:  178px;
-          -webkit-transform: rotate(-55deg);
-        }
-
-        &:nth-child(6) {
-          top: 244px;
-          left:  205px;
-        }
-      }
-
-    }
+  &.skills {
+    background:  @color-mid;
+    h2 { color: @color-lightest; }
   }
 }
 
