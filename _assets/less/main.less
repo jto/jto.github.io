@@ -1,14 +1,14 @@
 @import "_normalize";
 @import "_common";
 
-@import url(http://fonts.googleapis.com/css?family=Racing+Sans+One);
+@import url(http://fonts.googleapis.com/css?family=Racing+Sans+One|Istok+Web|Lobster);
 
 * {
   box-sizing: border-box;
   font-size: 14px;
   font-family: "Helvetica Neue", Times;
   -webkit-font-smoothing: antialiased;
-  color: @color-lightest;
+  color: @red;
 }
 
 html, body, .content {
@@ -38,7 +38,7 @@ section {
 
   &.hi {
     position: relative;
-    background: @color-dark;
+    background: @green;
 
     > * {
       width: 550px;
@@ -54,8 +54,8 @@ section {
       width: 150px;
       border-radius: 100px 100px 0 100px;
 
-      color: @color-dark;
-      background: @color-lightest;
+      color: @yellow;
+      background: @red;
       float: left;
       text-shadow: none;
 
@@ -65,24 +65,25 @@ section {
     h1 {
       height: 150px;
       line-height: 150px;
-      color: @color-lightest;
+      color: @red;
     }
 
     h2 {
       font-size: 30px;
       width: 520px;
       margin-top: -40px;
-      color: @color-bright;
+      color: @grey;
       font-family: 'Racing Sans One';
     }
   }
 
   &.webapps {
-    background:  @color-bright;
+    background:  @red;
     padding: 40px;
 
     h2 {
-      color: @color-darkest;
+      color: @yellow;
+      font-family: 'Lobster';
     }
 
     ul {
@@ -93,9 +94,10 @@ section {
       position: relative;
 
       li {
-        background: @color-lightest;
+        font-family: 'Istok Web';
+        background: @green;
         padding: 10px;
-        color: @color-bright;
+        color: @grey;
         font-size: 30px;
         display: block;
         margin: 5px 0;
@@ -108,8 +110,17 @@ section {
   }
 
   &.skills {
-    background:  @color-mid;
-    h2 { color: @color-lightest; }
+    background:  @grey;
+    h2 { color: @red; }
+  }
+
+  &.contact {
+    background: @yellow;
+
+    img {
+      display: inline-block;
+      height: 150px;
+    }
   }
 }
 
