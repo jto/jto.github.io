@@ -37,7 +37,7 @@ $(function(){
         props: {
           'left': [-40, 37, '%']
         },
-        bounds: [.3, .4]
+        bounds: [.4, .5]
       },
       {
         el: $('.webapps .cloud.scalable'),
@@ -58,51 +58,37 @@ $(function(){
         props: {
           'left': [37, 110, '%']
         },
-        bounds: [1, 1.1]
+        bounds: [.9, 1]
       },
       {
         el: $('.webapps .cloud.web'),
         props: {
           'left': [-40, 37, '%']
         },
-        bounds: [1.1, 1.2]
-      }
-      ,
-      {
-        el: $('.webapps .cloud.web'),
-        props: {
-          'left': [37, 110, '%']
-        },
-        bounds: [1.3, 1.5]
+        bounds: [.95, 1]
       }
     ]
 
-  $(window).scroll(_.debounce(function(evt){
+  $(window).scroll(function(evt){
     var height = $(window).height(),
         scroll = $(window).scrollTop(),
         progress = (scroll / height) // % of screen scrolled
 
-    $(anims)
-      .filter(function(i, a){
-        var bs = a.bounds || [0, Number.MAX_VALUE]
-        return (bs[0] < progress) && (bs[1] >= progress)
-      })
-      .each(function(i, a){
-        var bs = a.bounds || [0, Number.MAX_VALUE]
-        var styles =
-          _.reduce(_.pairs(a.props), function(ps, p){
-            var name = p[0],
-                vs = p[1],
-                delta = bs[1] - bs[0]
-                coef =  (progress - bs[0]) / delta
-                current = (vs[1] - vs[0]) * coef + vs[0] + (vs[2] || '');
+    for(i in anims) {
+      var a = anims[i],
+          bs = a.bounds || [0, Number.MAX_VALUE]
+      if((bs[0] < progress) && (bs[1] >= progress)){
 
-            var x = {}
-            x[name] = current
-            return _.extend({}, ps, x)
-          }, {})
-        a.el.css(styles)
-      })
+        for(name in a.props) {
+          var vs = a.props[name],
+              delta = bs[1] - bs[0]
+              coef =  (progress - bs[0]) / delta
+              current = (vs[1] - vs[0]) * coef + vs[0] + (vs[2] || '');
 
-  }, 15))
+          a.el.css(name, current)
+        }
+      }
+    }
+
+  })
 })
