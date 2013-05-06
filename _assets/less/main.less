@@ -106,87 +106,174 @@ section {
 
   &.webapps {
     background:  @red;
-    padding: 10%;
+    padding: 5% 0;
     font-family: 'Istok Web';
 
     h2 {
-      color: @green;
+      color: @yellow;
     }
 
-    ul {
+    h3 {
       margin: 0 auto;
-      list-style: none;
       padding: 0;
       position: absolute;
       top: 65px;
       height: 115px;
       width: 100%;
-      overflow: hidden;
 
-      li {
-        color: @red;
-        font-weight: bold;
-        font-size: 50px;
-        display: block;
-        height: inherit;
-        line-height: 115px;
-        margin: 0;
-        text-transform: capitalize;
-      }
+      color: @red;
+      font-weight: bold;
+      font-size: 40px;
+      display: block;
+      height: inherit;
+      line-height: 115px;
+      text-transform: capitalize;
+    }
+
+    .sky {
+      height: 75%;
+      position: relative;
+      overflow: hidden;
     }
 
     .cloud {
-      position: relative;
+      position: absolute;
       width: 280px;
       height: 180px;
       margin: 10% auto;
+      overflow: hidden;
+      opacity: .9;
+
+      top: 0%;
+      left: -40px;
+
+      &:nth-of-type(1) {
+        left: -100px
+      }
 
       > span {
         display: block;
         height: 115px;
         width:  115px;
         border-radius: 60px;
-        background: @yellow;
+        background: @grey;
         position: absolute;
+
+        &:nth-of-type(1) {
+          bottom: 0;
+          left: 0;
+        }
+
+        &:nth-of-type(2) {
+          bottom: 80px;
+          left: 50px;
+          height: 80px;
+          width:  80px;
+        }
+
+        &:nth-of-type(3) {
+          bottom: 38px;
+          left: 110px;
+          border-radius: 70px;
+          height: 140px;
+          width:  140px;
+        }
+
+        &:nth-of-type(4) {
+          bottom: 0;
+          right: 0;
+          height: 115px;
+          width:  115px;
+        }
+
+        &:nth-of-type(5) {
+          bottom: 0;
+          left: 60px;
+          border-radius: 0;
+          width: 160px;
+        }
       }
 
-      :nth-child(1) {
-        bottom: 0;
-        left: 0;
+      &.small {
+        position: absolute;
+        margin: 0;
+        width: 187px;
+        height: 120px;
+        opacity: .5;
+        z-index: 5;
+
+        &:nth-of-type(1) {
+          top: 72%;
+          left: 65%;
+        }
+
+        &:nth-of-type(2) {
+          top: 4%;
+          left: 35%;
+        }
+
+        &:nth-of-type(3) {
+          top: 45%;
+          left: 25%;
+        }
+
+
+        > span {
+          background: @grey;
+          height: 77px;
+          width:  77px;
+
+          &:nth-of-type(1) {
+            bottom: 0;
+            left: 0;
+          }
+
+          &:nth-of-type(2) {
+            bottom: 54px;
+            left: 34px;
+            height: 54px;
+            width:  54px;
+          }
+
+          &:nth-of-type(3) {
+            bottom: 26px;
+            left: 74px;
+            border-radius: 70px;
+            height: 94px;
+            width:  94px;
+          }
+
+          &:nth-of-type(4) {
+            bottom: 0;
+            right: 0;
+          }
+
+          &:nth-of-type(5) {
+            bottom: 0;
+            left: 40px;
+            border-radius: 0;
+            width: 107px;
+          }
+        }
       }
 
-      :nth-child(2) {
-        bottom: 80px;
-        left: 50px;
-        height: 80px;
-        width:  80px;
-      }
-
-      :nth-child(3) {
-        bottom: 38px;
-        left: 110px;
-        border-radius: 70px;
-        height: 140px;
-        width:  140px;
-      }
-
-      :nth-child(4) {
-        bottom: 0;
-        right: 0;
-      }
-
-      :nth-child(5) {
-        bottom: 0;
-        left: 60px;
-        border-radius: 0;
-        width: 160px;
-      }
+       &:not(.small)::after {
+          content: 'case class Rule[I, O](p: Path[I], m: Path[I] =&gt; Mapping[(Path[I], Seq[String]), I, O], v: Constraint[O] = Constraints.noConstraint[O]) { def validate(data: I): VA[I, O] = m(p)(data).flatMap(v(_).fail.map{ errs =&gt; Seq(p -&gt; errs) }) }';
+          position: absolute;
+          top: 0;
+          left: 0;
+          display: block;
+          color: @red;
+          font-family: 'Monaco';
+          font-weight: bold;
+          opacity: .3;
+        }
     }
 
   }
 
   &.skills {
-    background:  @grey;
+    background:  @brown;
     h2 { color: @red; }
   }
 

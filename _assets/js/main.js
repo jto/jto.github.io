@@ -28,6 +28,24 @@ $(function(){
         props: {
           'top': [0, -300, 'px']
         }
+      },
+      {
+        el: $('.webapps .cloud.scalable'),
+        props: {
+          'left': [-100, 800, '%']
+        }
+      },
+      {
+        el: $('.webapps .cloud.distributed'),
+        props: {
+          'left': [-500, 450, '%']
+        }
+      },
+      {
+        el: $('.webapps .cloud.web'),
+        props: {
+          'left': [-800, 50, '%']
+        }
       }
     ]
 
