@@ -16,58 +16,77 @@ $(function(){
           'opacity': [1, 0],
           'top': [0, -50, '%']
         },
-        bounds: [0, .5]
+        bounds: [0, .5],
+        start: true,
+        end: true
       },
       {
         el: $('.hi > h1 em'),
         props: {
           'top': [0, -450, 'px']
         },
-        bounds: [0, 1]
+        bounds: [0, 1],
+        start: true,
+        end: true
       },
       {
         el: $('.hi > h2'),
         props: {
           'top': [0, -300, 'px']
         },
-        bounds: [0, 1]
+        bounds: [0, 1],
+        start: true,
+        end: true
       },
       {
         el: $('.webapps .cloud.scalable'),
         props: {
           'left': [-40, 37, '%']
         },
-        bounds: [.4, .5]
+        bounds: [.4, .6],
+        start: true
       },
       {
         el: $('.webapps .cloud.scalable'),
         props: {
           'left': [37, 110, '%']
         },
-        bounds: [.6, .7]
+        bounds: [.6, .7],
+        end: true
       },
       {
         el: $('.webapps .cloud.distributed'),
         props: {
           'left': [-40, 37, '%']
         },
-        bounds: [.7, .8]
+        bounds: [.6, .7],
+        start: true
       },
       {
         el: $('.webapps .cloud.distributed'),
         props: {
           'left': [37, 110, '%']
         },
-        bounds: [.9, 1]
+        bounds: [.7, .8],
+        end: true
       },
       {
         el: $('.webapps .cloud.web'),
         props: {
           'left': [-40, 37, '%']
         },
-        bounds: [.95, 1]
+        bounds: [.7, .9],
+        start: true
       }
     ]
+
+  // t: current time
+  // b: start value
+  // c: change in value
+  // d: duration
+  var easeInOutSin = function (t, b, c, d) {
+    return -c / 2 * (Math.cos(Math.PI * t / d) - 1) + b;
+  }
 
   $(window).scroll(function(evt){
     var height = $(window).height(),
@@ -83,9 +102,22 @@ $(function(){
           var vs = a.props[name],
               delta = bs[1] - bs[0]
               coef =  (progress - bs[0]) / delta
-              current = (vs[1] - vs[0]) * coef + vs[0] + (vs[2] || '');
+              current = (vs[1] - vs[0]) * coef + vs[0] + (vs[2] || ''),
+              eased = easeInOutSin(progress, vs[0], current, delta)
 
           a.el.css(name, current)
+        }
+      }
+      // force extreme cases just in case
+      else if(bs[0] > progress && a.start){
+        for(name in a.props) {
+          var vs = a.props[name]
+          a.el.css(name, vs[0] + (vs[2] || ''))
+        }
+      } else if(bs[1] < progress && a.end) {
+        for(name in a.props) {
+          var vs = a.props[name]
+          a.el.css(name, vs[1] + (vs[2] || ''))
         }
       }
     }
