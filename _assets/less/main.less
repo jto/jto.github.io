@@ -19,8 +19,8 @@ html, body, .content {
 
 #kulors {
   display: block;
-  height: 500px;
-  width: 100px;
+  height: 250px;
+  width: 50px;
 
   position: fixed;
   top: 0;
@@ -32,8 +32,8 @@ html, body, .content {
 
   > * {
     display: block;
-    height: 100px;
-    width: 100px;
+    height: 50px;
+    width: 50px;
   }
 
   .brown { background: @brown; }
@@ -65,7 +65,7 @@ section {
 
   &.hi {
     position: relative;
-    background: @green;
+    background: @brown;
 
     > * {
       width: 550px;
@@ -105,7 +105,7 @@ section {
   }
 
   &.webapps {
-    background:  @red;
+    background:  @green;
     padding: 5% 0;
     font-family: 'Istok Web';
 
@@ -140,12 +140,11 @@ section {
       position: absolute;
       width: 280px;
       height: 180px;
-      margin: 10% auto;
       overflow: hidden;
       opacity: .9;
 
-      top: 0%;
-      left: -40px;
+      top: 20%;
+      left: -40%;
 
       &:nth-of-type(1) {
         left: -100px
@@ -263,7 +262,7 @@ section {
           top: 0;
           left: 0;
           display: block;
-          color: @red;
+          color: @green;
           font-family: 'Monaco';
           font-weight: bold;
           opacity: .3;
@@ -273,8 +272,8 @@ section {
   }
 
   &.skills {
-    background:  @brown;
-    h2 { color: @red; }
+    background:  @red;
+    h2 { color: @yellow; }
   }
 
   &.contact {
