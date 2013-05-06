@@ -39,6 +39,15 @@ $(function(){
         end: true
       },
       {
+        el: $('.webapps h2'),
+        props: {
+          'opacity': [.4, 1]
+        },
+        bounds: [.3, .6],
+        start: true,
+        end: true
+      },
+      {
         el: $('.webapps .cloud.scalable'),
         props: {
           'left': [-40, 37, '%']
