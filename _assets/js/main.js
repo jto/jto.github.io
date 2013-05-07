@@ -93,8 +93,20 @@ $(function(){
   // b: start value
   // c: change in value
   // d: duration
-  var easeInOutSin = function (t, b, c, d) {
-    return -c / 2 * (Math.cos(Math.PI * t / d) - 1) + b;
+  var E = {
+    linearTween: function (t, b, c, d) {
+      return c * t / d + b;
+    },
+    easeInOutQuart: function (t, b, c, d) {
+      t /= d/2;
+      if (t < 1) return c / 2 * t * t * t * t + b;
+      t -= 2;
+      return -c / 2 * (t * t * t * t - 2) + b;
+    },
+    easeInOutSin: function (t, b, c, d) {
+      console.log("%o => %o", c, c)
+      return -c / 2 * (Math.cos(Math.PI * t / d) - 1) + b;
+    }
   }
 
   $(window).scroll(function(evt){
@@ -109,12 +121,13 @@ $(function(){
 
         for(name in a.props) {
           var vs = a.props[name],
-              delta = bs[1] - bs[0]
-              coef =  (progress - bs[0]) / delta
-              current = (vs[1] - vs[0]) * coef + vs[0] + (vs[2] || ''),
-              eased = easeInOutSin(progress, vs[0], current, delta)
+              currentTime = progress - bs[0],
+              startValue = vs[0]
+              duration = bs[1] - bs[0],
+              perFrame = (vs[1] - vs[0]) / duration,
+              eased = E.linearTween(currentTime, startValue, perFrame, duration)
 
-          a.el.css(name, current)
+          a.el.css(name, eased + (vs[2] || ''))
         }
       }
       // force extreme cases just in case
