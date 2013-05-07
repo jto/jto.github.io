@@ -13,6 +13,7 @@ $(function(){
   // b: start value
   // c: change in value
   // d: duration
+  // http://www.gizma.com/easing/
   var E = {
     linearTween: function (t, b, c, d) {
       return c * t / d + b;
@@ -23,9 +24,9 @@ $(function(){
       t -= 2;
       return -c / 2 * (t * t * t * t - 2) + b;
     },
-    easeInOutSin: function (t, b, c, d) {
-      console.log("%o => %o", c, c)
-      return -c / 2 * (Math.cos(Math.PI * t / d) - 1) + b;
+    easeOutQuad: function (t, b, c, d) {
+    	t /= d;
+    	return -c * t*(t-2) + b;
     }
   }
 
@@ -37,7 +38,7 @@ $(function(){
           'opacity': { values: [1, 0] },
           'top': { values: [0, -50], unit: '%' }
         },
-        bounds: [0, .5],
+        bounds: [0, .7],
         start: true,
         end: true
       },
@@ -46,7 +47,7 @@ $(function(){
         props: {
           'top': { values: [0, -450], unit: 'px' }
         },
-        bounds: [0, 1],
+        bounds: [0, 1.2],
         start: true,
         end: true
       },
@@ -55,16 +56,18 @@ $(function(){
         props: {
           'top': { values: [0, -300], unit: 'px' }
         },
-        bounds: [0, 1],
+        bounds: [0, 1.2],
         start: true,
         end: true
       },
+
+      // page 2
       {
         el: $('.webapps h2'),
         props: {
-          'opacity': { values: [.4, 1] }
+          'opacity': { values: [.2, 1], ƒ: E.easeOutQuad }
         },
-        bounds: [.3, .6],
+        bounds: [.3, .9],
         start: true,
         end: true
       },

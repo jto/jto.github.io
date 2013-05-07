@@ -16,6 +16,7 @@ html, body, .content {
   width: 100%;
 }
 
+a { text-decoration: none }
 
 #kulors {
   display: block;
@@ -109,6 +110,7 @@ section {
     padding: 5% 0;
 
     h2 {
+      opacity: .2;
       color: @yellow;
       font-family: 'Croissant One';
     }
@@ -274,17 +276,59 @@ section {
   }
 
   &.skills {
-    background:  @red;
-    h2 { color: @yellow; }
+    padding: 10% 0;
+    background:  @yellow;
+    h2 {
+      color: @red;
+      margin-bottom: 10%;
+    }
   }
 
-  &.contact {
-    background: @yellow;
-
-    img {
+  &.network {
+    background: @grey;
+    padding: 10% 0;
+    > a {
       display: inline-block;
       height: 150px;
+      width: 150px;
+      margin: 30px;
+
+      &.twitter { background: url(/assets/images/twitter.png) no-repeat 50% 50%; }
+      &.in { background: url(/assets/images/in.png) no-repeat 50% 50%; }
+      &.github { background: url(/assets/images/github.png) no-repeat 50% 50%; }
     }
+
+    ul.articles {
+      background: @red;
+      padding: 10px;
+      height: 254px;
+      overflow: auto;
+
+      li {
+        list-style: none;
+        text-align: left;
+        width: 540px;
+        margin: 0 auto;
+
+        a {
+          -webkit-transition: background ease-out .2s;
+          font-family: 'Monaco';
+          padding: 10px;
+          color: @grey;
+          display: block;
+
+          &:hover {
+            background: rgba(0,0,0, .2);
+            &::after {
+              font-weight: bold;
+              content: '>';
+              float: right;
+            }
+          }
+        }
+      }
+    }
+
   }
 }
 
