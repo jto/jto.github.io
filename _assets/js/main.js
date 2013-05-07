@@ -5,89 +5,9 @@
  * Copyright (c) jto ()
  * Licensed under MIT license.
  */
+ "use strict"
 $(function(){
   $(document.body).addClass('ready');
-
-  var anims =
-    [
-      {
-        el: $('.hi > *'),
-        props: {
-          'opacity': [1, 0],
-          'top': [0, -50, '%']
-        },
-        bounds: [0, .5],
-        start: true,
-        end: true
-      },
-      {
-        el: $('.hi > h1 em'),
-        props: {
-          'top': [0, -450, 'px']
-        },
-        bounds: [0, 1],
-        start: true,
-        end: true
-      },
-      {
-        el: $('.hi > h2'),
-        props: {
-          'top': [0, -300, 'px']
-        },
-        bounds: [0, 1],
-        start: true,
-        end: true
-      },
-      {
-        el: $('.webapps h2'),
-        props: {
-          'opacity': [.4, 1]
-        },
-        bounds: [.3, .6],
-        start: true,
-        end: true
-      },
-      {
-        el: $('.webapps .cloud.scalable'),
-        props: {
-          'left': [-40, 37, '%']
-        },
-        bounds: [.4, .6],
-        start: true
-      },
-      {
-        el: $('.webapps .cloud.scalable'),
-        props: {
-          'left': [37, 110, '%']
-        },
-        bounds: [.6, .7],
-        end: true
-      },
-      {
-        el: $('.webapps .cloud.distributed'),
-        props: {
-          'left': [-40, 37, '%']
-        },
-        bounds: [.6, .7],
-        start: true
-      },
-      {
-        el: $('.webapps .cloud.distributed'),
-        props: {
-          'left': [37, 110, '%']
-        },
-        bounds: [.7, .8],
-        end: true
-      },
-      {
-        el: $('.webapps .cloud.web'),
-        props: {
-          'left': [-40, 37, '%']
-        },
-        bounds: [.7, .9],
-        start: true
-      }
-    ]
 
   // t: current time
   // b: start value
@@ -109,25 +29,139 @@ $(function(){
     }
   }
 
+  var anims =
+    [
+      {
+        el: $('.hi > *'),
+        props: {
+          'opacity': { values: [1, 0] },
+          'top': { values: [0, -50], unit: '%' }
+        },
+        bounds: [0, .5],
+        start: true,
+        end: true
+      },
+      {
+        el: $('.hi > h1 em'),
+        props: {
+          'top': { values: [0, -450], unit: 'px' }
+        },
+        bounds: [0, 1],
+        start: true,
+        end: true
+      },
+      {
+        el: $('.hi > h2'),
+        props: {
+          'top': { values: [0, -300], unit: 'px' }
+        },
+        bounds: [0, 1],
+        start: true,
+        end: true
+      },
+      {
+        el: $('.webapps h2'),
+        props: {
+          'opacity': { values: [.4, 1] }
+        },
+        bounds: [.3, .6],
+        start: true,
+        end: true
+      },
+
+      //page 2 - Big clouds
+      {
+        el: $('.webapps .cloud.scalable'),
+        props: {
+          'left': { values: [-40, 37], unit: '%', ƒ: E.easeInOutQuart },
+          'opacity': { values: [.3, 1], ƒ: E.easeInOutQuart }
+        },
+        bounds: [.4, .6],
+        start: true
+      },
+      {
+        el: $('.webapps .cloud.scalable'),
+        props: {
+          'left': { values: [37, 110], unit: '%', ƒ: E.easeInOutQuart },
+          'opacity': { values: [1, .3], ƒ: E.easeInOutQuart }
+        },
+        bounds: [.6, .8],
+        end: true
+      },
+      {
+        el: $('.webapps .cloud.distributed'),
+        props: {
+          'left': { values: [-40, 37], unit: '%', ƒ: E.easeInOutQuart },
+          'opacity': { values: [.3, 1], ƒ: E.easeInOutQuart }
+        },
+        bounds: [.6, .8],
+        start: true
+      },
+      {
+        el: $('.webapps .cloud.distributed'),
+        props: {
+          'left': { values: [37, 110], unit: '%', ƒ: E.easeInOutQuart },
+          'opacity': { values: [1, .3], ƒ: E.easeInOutQuart }
+        },
+        bounds: [.8, 1.1],
+        end: true
+      },
+      {
+        el: $('.webapps .cloud.web'),
+        props: {
+          'left': { values: [-40, 37], unit: '%', ƒ: E.easeInOutQuart },
+          'opacity': { values: [.3, 1], ƒ: E.easeInOutQuart }
+        },
+        bounds: [.8, 1.1],
+        start: true
+      },
+      // page 2 - paralax
+      {
+        el: $('.webapps .cloud.small:nth-of-type(1)'),
+        props: {
+          'left': { values: [45, 65], unit: '%' },
+        },
+        bounds: [.2, 1.3],
+        start: true
+      },
+      {
+        el: $('.webapps .cloud.small:nth-of-type(2)'),
+        props: {
+          'left': { values: [30, 40], unit: '%'},
+        },
+        bounds: [.2, 1.3],
+        start: true
+      },
+      {
+        el: $('.webapps .cloud.small:nth-of-type(3)'),
+        props: {
+          'left': { values: [10, 15], unit: '%' },
+        },
+        bounds: [.2, 1.3],
+        start: true
+      }
+    ]
+
+
   $(window).scroll(function(evt){
     var height = $(window).height(),
         scroll = $(window).scrollTop(),
         progress = (scroll / height) // % of screen scrolled
 
-    for(i in anims) {
+    for(var i in anims) {
       var a = anims[i],
           bs = a.bounds || [0, Number.MAX_VALUE]
+
       if((bs[0] < progress) && (bs[1] >= progress)){
-
         for(name in a.props) {
-          var vs = a.props[name],
-              currentTime = progress - bs[0],
-              startValue = vs[0]
-              duration = bs[1] - bs[0],
-              perFrame = (vs[1] - vs[0]) / duration,
-              eased = E.linearTween(currentTime, startValue, perFrame, duration)
+          var vs = a.props[name].values,
+              duration = (bs[1] - bs[0]) * 100,
+              currentTime = (progress - bs[0]) * 100,
+              startValue = vs[0],
+              eƒ = a.props[name].ƒ || E.linearTween,
+              eased = eƒ(currentTime, startValue, vs[1] - vs[0], duration)
 
-          a.el.css(name, eased + (vs[2] || ''))
+          a.el.css(name, eased + (a.props[name].unit || ''))
         }
       }
       // force extreme cases just in case
