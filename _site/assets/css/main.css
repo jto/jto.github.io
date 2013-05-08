@@ -538,8 +538,7 @@ section.webapps .cloud {
   height: 180px;
   overflow: hidden;
   opacity: .9;
-  top: 20%;
-  left: -40%;
+  z-index: 5;
 }
 section.webapps .cloud:nth-of-type(1) {
   left: -100px;
@@ -581,13 +580,42 @@ section.webapps .cloud > span:nth-of-type(5) {
   border-radius: 0;
   width: 160px;
 }
+section.webapps .cloud.web {
+  top: 45%;
+}
+section.webapps .cloud.web span {
+  background: #fffde3;
+}
+section.webapps .cloud.web h3 {
+  color: #e6753d;
+}
+section.webapps .cloud.distributed {
+  top: 5%;
+  -webkit-transform: scale(0.7);
+}
+section.webapps .cloud.distributed span {
+  background: #e6753d;
+}
+section.webapps .cloud.distributed h3 {
+  color: #fffde3;
+}
+section.webapps .cloud.scalable {
+  top: 55%;
+  -webkit-transform: scale(0.85);
+}
+section.webapps .cloud.scalable span {
+  background: #8cd7d1;
+}
+section.webapps .cloud.scalable h3 {
+  color: #1bbbc9;
+}
 section.webapps .cloud.small {
   position: absolute;
   margin: 0;
   width: 187px;
   height: 120px;
   opacity: .5;
-  z-index: 5;
+  z-index: 2;
 }
 section.webapps .cloud.small:nth-of-type(1) {
   top: 65%;
@@ -632,17 +660,6 @@ section.webapps .cloud.small > span:nth-of-type(5) {
   left: 40px;
   border-radius: 0;
   width: 107px;
-}
-section.webapps .cloud:not(.small)::after {
-  content: 'case class Rule[I, O](p: Path[I], m: Path[I] => Mapping[(Path[I], Seq[String]), I, O], v: Constraint[O] = Constraints.noConstraint[O]) { def validate(data: I): VA[I, O] = m(p)(data).flatMap(v(_).fail.map{ errs => Seq(p -> errs) }) }';
-  position: absolute;
-  top: 0;
-  left: 0;
-  display: block;
-  color: #1bbbc9;
-  font-family: 'Monaco';
-  font-weight: bold;
-  opacity: .3;
 }
 section.skills {
   padding: 10% 0;

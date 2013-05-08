@@ -76,46 +76,25 @@ $(function(){
       {
         el: $('.webapps .cloud.scalable'),
         props: {
-          'left': { values: [-40, 37], unit: '%', ƒ: E.easeInOutQuart },
-          'opacity': { values: [.3, 1], ƒ: E.easeInOutQuart }
+          'left': { values: [5, 10], unit: '%', ƒ: E.easeOutQuad }
         },
-        bounds: [.3, .5],
-        start: true
-      },
-      {
-        el: $('.webapps .cloud.scalable'),
-        props: {
-          'left': { values: [37, 110], unit: '%', ƒ: E.easeInOutQuart },
-          'opacity': { values: [1, .3], ƒ: E.easeInOutQuart }
-        },
-        bounds: [.5, .8],
-        end: true
-      },
-      {
-        el: $('.webapps .cloud.distributed'),
-        props: {
-          'left': { values: [-40, 37], unit: '%', ƒ: E.easeInOutQuart },
-          'opacity': { values: [.3, 1], ƒ: E.easeInOutQuart }
-        },
-        bounds: [.4, .8],
+        bounds: [.2, 1.7],
         start: true
       },
       {
         el: $('.webapps .cloud.distributed'),
         props: {
-          'left': { values: [37, 110], unit: '%', ƒ: E.easeInOutQuart },
-          'opacity': { values: [1, .3], ƒ: E.easeInOutQuart }
+          'left': { values: [20, 30], unit: '%', ƒ: E.easeOutQuad }
         },
-        bounds: [.8, 1.1],
-        end: true
+        bounds: [.2, 1.7],
+        start: true
       },
       {
         el: $('.webapps .cloud.web'),
         props: {
-          'left': { values: [-40, 37], unit: '%', ƒ: E.easeInOutQuart },
-          'opacity': { values: [.3, 1], ƒ: E.easeInOutQuart }
+          'left': { values: [40, 60], unit: '%', ƒ: E.easeOutQuad }
         },
-        bounds: [.7, 1.1],
+        bounds: [.2, 1.7],
         start: true
       },
       // page 2 - paralax
