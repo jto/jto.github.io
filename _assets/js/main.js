@@ -124,7 +124,7 @@ $(function(){
         props: {
           'left': { values: [45, 65], unit: '%' },
         },
-        bounds: [.2, 1.7],
+        bounds: [.2, 1.3],
         start: true
       },
       {
@@ -132,7 +132,7 @@ $(function(){
         props: {
           'left': { values: [30, 40], unit: '%'},
         },
-        bounds: [.2, 1.7],
+        bounds: [.2, 1.3],
         start: true
       },
       {
@@ -140,7 +140,7 @@ $(function(){
         props: {
           'left': { values: [10, 15], unit: '%' },
         },
-        bounds: [.2, 1.7],
+        bounds: [.2, 1.3],
         start: true
       }
     ]
