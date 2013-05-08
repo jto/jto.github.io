@@ -1,7 +1,7 @@
 @import "_normalize";
 @import "_common";
 
-@import url(http://fonts.googleapis.com/css?family=Racing+Sans+One|Oleo+Script+Swash+Caps|Croissant+One);
+@import url(http://fonts.googleapis.com/css?family=Open+Sans|Oleo+Script+Swash+Caps|Croissant+One);
 
 * {
   box-sizing: border-box;
@@ -49,8 +49,8 @@ h1, h2, h3 {
   padding: 0;
 }
 
-h1 { font-size: 70px; }
-h2 { font-size: 60px; }
+h1 { font-size: 60px; }
+h2 { font-size: 50px; }
 
 section {
   position: relative;
@@ -75,17 +75,20 @@ section {
     }
 
     em {
+      font-family: 'Open Sans';
+      text-align: center;
+      margin-right: 30px;
       font-style: italic;
-      font-size: 80px;
+      font-size: 60px;
       height: inherit;
       line-height: inherit;
       width: 150px;
       border-radius: 100px 100px 4px 100px;
 
-      color: @yellow;
+      color: @grey;
       background: @red;
       float: left;
-      text-shadow: none;
+      text-shadow: -1px 1px @red-shadow;
 
       position: relative;
     }
@@ -93,15 +96,20 @@ section {
     h1 {
       height: 150px;
       line-height: 150px;
-      color: @red;
+      color: @grey;
+      font-family: 'Open Sans';
+      font-style: italic;
+      text-align: left;
+      text-shadow: -1px 1px @green-shadow;
     }
 
     h2 {
-      font-size: 30px;
-      width: 520px;
+      font-size: 25px;
+      width: 360px;
       margin-top: -40px;
-      color: @grey;
-      font-family: 'Racing Sans One';
+      color: @yellow;
+      font-family: 'Open Sans';
+      text-shadow: -1px 1px @green-shadow;
     }
   }
 
@@ -261,7 +269,7 @@ section {
       }
 
        &:not(.small)::after {
-          content: 'case class Rule[I, O](p: Path[I], m: Path[I] =&gt; Mapping[(Path[I], Seq[String]), I, O], v: Constraint[O] = Constraints.noConstraint[O]) { def validate(data: I): VA[I, O] = m(p)(data).flatMap(v(_).fail.map{ errs =&gt; Seq(p -&gt; errs) }) }';
+          content: 'case class Rule[I, O](p: Path[I], m: Path[I] => Mapping[(Path[I], Seq[String]), I, O], v: Constraint[O] = Constraints.noConstraint[O]) { def validate(data: I): VA[I, O] = m(p)(data).flatMap(v(_).fail.map{ errs => Seq(p -> errs) }) }';
           position: absolute;
           top: 0;
           left: 0;
@@ -331,12 +339,14 @@ section {
     > a {
       -webkit-transition: -webkit-transform ease-in-out .15s;
       display: inline-block;
-      height: 150px;
-      width: 150px;
+      height: 120px;
+      width: 120px;
       margin: 30px;
+      border-radius: 4px;
+      padding: 0;
 
-      &.twitter { background: url(/assets/images/twitter.png) no-repeat 50% 50%; }
-      &.in { background: url(/assets/images/in.png) no-repeat 50% 50%; }
+      &.twitter { background: url(/assets/images/twitter-invert.png) no-repeat 50% 50%; }
+      &.in { background: #3D698D url(/assets/images/in.png) no-repeat 50% 50%; }
       &.github { background: url(/assets/images/github.png) no-repeat 50% 50%; }
 
       &:hover {

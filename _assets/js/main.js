@@ -79,7 +79,7 @@ $(function(){
           'left': { values: [-40, 37], unit: '%', ƒ: E.easeInOutQuart },
           'opacity': { values: [.3, 1], ƒ: E.easeInOutQuart }
         },
-        bounds: [.4, .6],
+        bounds: [.3, .5],
         start: true
       },
       {
@@ -88,7 +88,7 @@ $(function(){
           'left': { values: [37, 110], unit: '%', ƒ: E.easeInOutQuart },
           'opacity': { values: [1, .3], ƒ: E.easeInOutQuart }
         },
-        bounds: [.6, .8],
+        bounds: [.5, .8],
         end: true
       },
       {
@@ -97,7 +97,7 @@ $(function(){
           'left': { values: [-40, 37], unit: '%', ƒ: E.easeInOutQuart },
           'opacity': { values: [.3, 1], ƒ: E.easeInOutQuart }
         },
-        bounds: [.6, .8],
+        bounds: [.4, .8],
         start: true
       },
       {
@@ -115,7 +115,7 @@ $(function(){
           'left': { values: [-40, 37], unit: '%', ƒ: E.easeInOutQuart },
           'opacity': { values: [.3, 1], ƒ: E.easeInOutQuart }
         },
-        bounds: [.8, 1.1],
+        bounds: [.7, 1.1],
         start: true
       },
       // page 2 - paralax
