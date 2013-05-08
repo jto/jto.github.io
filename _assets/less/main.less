@@ -18,7 +18,7 @@
   font-size: 14px;
   font-family: "Helvetica Neue", Times;
   -webkit-font-smoothing: antialiased;
-  color: @red;
+  color: @orange;
 }
 
 html, body, .content {
@@ -47,10 +47,10 @@ a { text-decoration: none }
     width: 50px;
   }
 
-  .brown { background: @brown; }
-  .green { background: @green; }
+  .brown { background: @green; }
+  .green { background: @blue; }
   .yellow { background: @yellow; }
-  .red { background: @red; }
+  .red { background: @orange; }
   .grey { background: @grey; }
 }
 
@@ -76,7 +76,7 @@ section {
 
   &.hi {
     position: relative;
-    background: @brown;
+    background: @green;
 
     > * {
       width: 550px;
@@ -96,9 +96,9 @@ section {
       border-radius: 100px 100px 4px 100px;
 
       color: @grey;
-      background: @red;
+      background: @orange;
       float: left;
-      text-shadow: -1px 1px @red-shadow;
+      text-shadow: -1px 1px @orange-shadow;
 
       position: relative;
     }
@@ -110,7 +110,7 @@ section {
       font-family: 'Open Sans';
       font-style: italic;
       text-align: left;
-      text-shadow: -1px 1px @green-shadow;
+      text-shadow: -1px 1px @blue-shadow;
     }
 
     h2 {
@@ -119,7 +119,7 @@ section {
       margin-top: -40px;
       color: @yellow;
       font-family: 'Open Sans';
-      text-shadow: -1px 1px @green-shadow;
+      text-shadow: -1px 1px @blue-shadow;
     }
 
     ul.social {
@@ -139,7 +139,7 @@ section {
 
         a {
           font-family: 'socials';
-          color: @green;
+          color: @blue;
           display: block;
           text-align: center;
           line-height: 50px;
@@ -158,7 +158,7 @@ section {
   }
 
   &.webapps {
-    background:  @green;
+    background:  @blue;
     padding: 5% 0;
 
     h2 {
@@ -175,7 +175,7 @@ section {
       height: 115px;
       width: 100%;
 
-      color: @red;
+      color: @orange;
       font-weight: bold;
       font-size: 40px;
       display: block;
@@ -318,7 +318,7 @@ section {
           top: 0;
           left: 0;
           display: block;
-          color: @green;
+          color: @blue;
           font-family: 'Monaco';
           font-weight: bold;
           opacity: .3;
@@ -337,7 +337,7 @@ section {
     h2 {
       color: @grey;
       margin-bottom: 5%;
-      background: @red;
+      background: @orange;
     }
 
     ul.brick {
@@ -399,7 +399,7 @@ section {
     }
 
     ul.articles {
-      background: @red;
+      background: @orange;
       padding: 10px;
       height: 254px;
       overflow: auto;
