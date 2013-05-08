@@ -80,7 +80,7 @@ section {
       height: inherit;
       line-height: inherit;
       width: 150px;
-      border-radius: 100px 100px 0 100px;
+      border-radius: 100px 100px 4px 100px;
 
       color: @yellow;
       background: @red;
@@ -278,16 +278,58 @@ section {
   &.skills {
     padding: 10% 0;
     background:  @yellow;
+    position: relative;
+    -webkit-perspective: 1000px;
+    -webkit-perspective-origin: 50% 50%;
+
     h2 {
-      color: @red;
-      margin-bottom: 10%;
+      color: @grey;
+      margin-bottom: 5%;
+      background: @red;
+    }
+
+    ul.brick {
+      position: relative;
+
+      display: block;
+      height: 100px;
+      width: 200px;
+      padding: 0;
+      margin: 0 auto;
+      -webkit-transform-style: preserve-3d;
+      -webkit-transform: rotateX(-30deg) translateZ(-50px);
+
+      li {
+        background: @grey;
+
+        display: block;
+        height: 100px;
+        width: 200px;
+        border: solid 1px red;
+
+        position: absolute;
+
+        &.front  { -webkit-transform: rotateY(0deg)   translateZ(100px) }
+        &.back   { -webkit-transform: rotateX(-180deg) translateZ(100px) }
+        &.right  { -webkit-transform: rotateY(90deg)  translateZ(100px) }
+        &.left   { -webkit-transform: rotateY(-90deg) translateZ(100px) }
+        &.top    { -webkit-transform: rotateX(90deg)  translateZ(50px) }
+        &.bottom { -webkit-transform: rotateX(-90deg) translateZ(50px) }
+
+        img {
+          display: block;
+          width: 200px;
+        }
+      }
     }
   }
 
   &.network {
     background: @grey;
     padding: 10% 0;
+
     > a {
+      -webkit-transition: -webkit-transform ease-in-out .15s;
       display: inline-block;
       height: 150px;
       width: 150px;
@@ -296,6 +338,10 @@ section {
       &.twitter { background: url(/assets/images/twitter.png) no-repeat 50% 50%; }
       &.in { background: url(/assets/images/in.png) no-repeat 50% 50%; }
       &.github { background: url(/assets/images/github.png) no-repeat 50% 50%; }
+
+      &:hover {
+        -webkit-transform: scale(1.1);
+      }
     }
 
     ul.articles {
@@ -311,7 +357,8 @@ section {
         margin: 0 auto;
 
         a {
-          -webkit-transition: background ease-out .2s;
+          border-radius: 2px;
+          -webkit-transition: background .2s ease-out;
           font-family: 'Monaco';
           padding: 10px;
           color: @grey;
