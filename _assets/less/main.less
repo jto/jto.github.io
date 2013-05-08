@@ -2,6 +2,16 @@
 @import "_common";
 
 @import url(http://fonts.googleapis.com/css?family=Open+Sans|Oleo+Script+Swash+Caps|Croissant+One);
+@font-face {
+  font-family: 'socials';
+  src: url('../font/socials.eot?26770686');
+  src: url('../font/socials.eot?26770686#iefix') format('embedded-opentype'),
+       url('../font/socials.woff?26770686') format('woff'),
+       url('../font/socials.ttf?26770686') format('truetype'),
+       url('../font/socials.svg?26770686#socials') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
 
 * {
   box-sizing: border-box;
@@ -62,7 +72,7 @@ section {
   min-width: 800px;
 
   text-align: center;
-  padding: 25% 0;
+  padding: 20% 0;
 
   &.hi {
     position: relative;
@@ -110,6 +120,40 @@ section {
       color: @yellow;
       font-family: 'Open Sans';
       text-shadow: -1px 1px @green-shadow;
+    }
+
+    ul.social {
+      list-style: none;
+      display: block;
+      width: 100%;
+      height: 50px;
+      margin: 100px 0 0 0;
+      position: relative;
+      color: white;
+
+      li {
+        display: inline-block;
+        height: 100%;
+        width: 50px;
+        margin: 0;
+
+        a {
+          font-family: 'socials';
+          color: @green;
+          display: block;
+          text-align: center;
+          line-height: 50px;
+          height: inherit;
+          width: inherit;
+          font-size: 25px;
+          border-radius: 2px;
+          -webkit-transition: -webkit-transform ease-out .2s;
+
+          &:hover {
+            -webkit-transform: scale(1.1);
+          }
+        }
+      }
     }
   }
 
