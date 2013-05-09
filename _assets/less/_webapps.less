@@ -1,0 +1,178 @@
+section {
+  &.webapps {
+    background:  @blue;
+    padding: 5% 0;
+
+    h2 {
+      opacity: .2;
+      color: @yellow;
+      font-family: 'Croissant One';
+    }
+
+    h3 {
+      margin: 0 auto;
+      padding: 0;
+      position: absolute;
+      top: 65px;
+      height: 115px;
+      width: 100%;
+
+      color: @orange;
+      font-weight: bold;
+      font-size: 40px;
+      display: block;
+      height: inherit;
+      line-height: 115px;
+      text-transform: capitalize;
+
+      font-family: 'Oleo Script Swash Caps';
+    }
+
+    .sky {
+      height: 70%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cloud {
+
+      position: absolute;
+      width: 280px;
+      height: 180px;
+      overflow: hidden;
+      opacity: .9;
+      z-index: 5;
+
+      &:nth-of-type(1) {
+        left: -100px
+      }
+
+      > span {
+        display: block;
+        height: 115px;
+        width:  115px;
+        border-radius: 60px;
+        background: @grey;
+        position: absolute;
+
+        &:nth-of-type(1) {
+          bottom: 0;
+          left: 0;
+        }
+
+        &:nth-of-type(2) {
+          bottom: 80px;
+          left: 50px;
+          height: 80px;
+          width:  80px;
+        }
+
+        &:nth-of-type(3) {
+          bottom: 38px;
+          left: 110px;
+          border-radius: 70px;
+          height: 140px;
+          width:  140px;
+        }
+
+        &:nth-of-type(4) {
+          bottom: 0;
+          right: 0;
+          height: 115px;
+          width:  115px;
+        }
+
+        &:nth-of-type(5) {
+          bottom: 0;
+          left: 60px;
+          border-radius: 0;
+          width: 160px;
+        }
+      }
+
+      &.web {
+        top: 45%;
+        span{ background: @yellow; }
+        h3 { color: @orange; }
+      }
+
+      &.distributed {
+        top: 5%;
+        span{ background: @orange; };
+        h3 { color: @yellow; }
+        -webkit-transform: scale(.7)
+      }
+
+      &.scalable {
+        top: 55%;
+        span{ background: @green; };
+        h3 { color: @blue; }
+        -webkit-transform: scale(.85)
+      }
+
+      &.small {
+        position: absolute;
+        margin: 0;
+        width: 187px;
+        height: 120px;
+        opacity: .5;
+        z-index: 2;
+
+        &:nth-of-type(1) {
+          top: 65%;
+          left: 65%;
+        }
+
+        &:nth-of-type(2) {
+          top: 4%;
+          left: 30%;
+        }
+
+        &:nth-of-type(3) {
+          top: 45%;
+          left: 20%;
+        }
+
+
+        > span {
+          background: @grey;
+          height: 77px;
+          width:  77px;
+
+          &:nth-of-type(1) {
+            bottom: 0;
+            left: 0;
+          }
+
+          &:nth-of-type(2) {
+            bottom: 54px;
+            left: 34px;
+            height: 54px;
+            width:  54px;
+          }
+
+          &:nth-of-type(3) {
+            bottom: 26px;
+            left: 74px;
+            border-radius: 70px;
+            height: 94px;
+            width:  94px;
+          }
+
+          &:nth-of-type(4) {
+            bottom: 0;
+            right: 0;
+          }
+
+          &:nth-of-type(5) {
+            bottom: 0;
+            left: 40px;
+            border-radius: 0;
+            width: 107px;
+          }
+        }
+      }
+    }
+
+  }
+}

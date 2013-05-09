@@ -76,7 +76,7 @@ $(function(){
       {
         el: $('.webapps .cloud.scalable'),
         props: {
-          'left': { values: [5, 10], unit: '%', ƒ: E.easeOutQuad }
+          'left': { values: [5, 15], unit: '%', ƒ: E.easeOutQuad }
         },
         bounds: [.2, 1.7],
         start: true
@@ -84,7 +84,7 @@ $(function(){
       {
         el: $('.webapps .cloud.distributed'),
         props: {
-          'left': { values: [20, 30], unit: '%', ƒ: E.easeOutQuad }
+          'left': { values: [20, 35], unit: '%', ƒ: E.easeOutQuad }
         },
         bounds: [.2, 1.7],
         start: true
@@ -92,7 +92,7 @@ $(function(){
       {
         el: $('.webapps .cloud.web'),
         props: {
-          'left': { values: [40, 60], unit: '%', ƒ: E.easeOutQuad }
+          'left': { values: [40, 65], unit: '%', ƒ: E.easeOutQuad }
         },
         bounds: [.2, 1.7],
         start: true
