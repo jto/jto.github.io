@@ -79,7 +79,8 @@ $(function(){
           'left': { values: [5, 15], unit: '%', ƒ: E.easeOutQuad }
         },
         bounds: [.2, 1.7],
-        start: true
+        start: true,
+        end: true
       },
       {
         el: $('.webapps .cloud.distributed'),
@@ -87,7 +88,8 @@ $(function(){
           'left': { values: [20, 35], unit: '%', ƒ: E.easeOutQuad }
         },
         bounds: [.2, 1.7],
-        start: true
+        start: true,
+        end: true
       },
       {
         el: $('.webapps .cloud.web'),
@@ -95,7 +97,8 @@ $(function(){
           'left': { values: [40, 65], unit: '%', ƒ: E.easeOutQuad }
         },
         bounds: [.2, 1.7],
-        start: true
+        start: true,
+        end: true
       },
       // page 2 - paralax
       {
@@ -104,7 +107,8 @@ $(function(){
           'left': { values: [45, 65], unit: '%' },
         },
         bounds: [.2, 1.7],
-        start: true
+        start: true,
+        end: true
       },
       {
         el: $('.webapps .cloud.small:nth-of-type(2)'),
@@ -112,7 +116,8 @@ $(function(){
           'left': { values: [30, 40], unit: '%'},
         },
         bounds: [.2, 1.7],
-        start: true
+        start: true,
+        end: true
       },
       {
         el: $('.webapps .cloud.small:nth-of-type(3)'),
@@ -120,7 +125,81 @@ $(function(){
           'left': { values: [10, 15], unit: '%' },
         },
         bounds: [.2, 1.7],
-        start: true
+        start: true,
+        end: true
+      },
+      //skills
+      {
+        el: $('.skills #functionnal'),
+        props: {
+          'bottom': { values: [900, 240], unit: 'px' },
+          'opacity': { values: [.6, 1] }
+        },
+        bounds: [1.6, 1.8],
+        end: true
+      },
+      {
+        el: $('.skills #scala'),
+        props: {
+          'bottom': { values: [900, 10], unit: 'px' },
+          'opacity': { values: [.2, 1] }
+        },
+        bounds: [1.3, 1.8],
+        end: true
+      },
+      {
+        el: $('.skills #nix'),
+        props: {
+          'bottom': { values: [900, 10], unit: 'px' },
+          'opacity': { values: [.7, 1] }
+        },
+        bounds: [.9, 1.8],
+        end: true
+      },
+      {
+        el: $('.skills #git'),
+        props: {
+          'bottom': { values: [900, 125], unit: 'px' },
+          'opacity': { values: [.6, 1] }
+        },
+        bounds: [1, 1.9],
+        end: true
+      },
+      {
+        el: $('.skills #play'),
+        props: {
+          'bottom': { values: [900, 240], unit: 'px' },
+          'opacity': { values: [.4, 1] }
+        },
+        bounds: [1.3, 2],
+        end: true
+      },
+      {
+        el: $('.skills #akka'),
+        props: {
+          'bottom': { values: [900, 10], unit: 'px' },
+          'opacity': { values: [.8, 1] }
+        },
+        bounds: [.9, 1.7],
+        end: true
+      },
+      {
+        el: $('.skills #js'),
+        props: {
+          'bottom': { values: [900, 10], unit: 'px' },
+          'opacity': { values: [.3, 1] }
+        },
+        bounds: [1.5, 1.8],
+        end: true
+      },
+      {
+        el: $('.skills #haskell'),
+        props: {
+          'bottom': { values: [900, 125], unit: 'px' },
+          'opacity': { values: [.5, 1] }
+        },
+        bounds: [1.7, 2],
+        end: true
       }
     ]
 
@@ -153,6 +232,7 @@ $(function(){
           a.el.css(name, vs[0] + (vs[2] || ''))
         }
       } else if(bs[1] < progress && a.end) {
+        console.log("forcing extreme")
         for(name in a.props) {
           var vs = a.props[name]
           a.el.css(name, vs[1] + (vs[2] || ''))

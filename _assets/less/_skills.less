@@ -11,9 +11,20 @@ section {
       width: 200px;
       margin: 5%;
       text-align: left;
+      z-index: 10;
+      position: relative;
     }
 
-    > div {
+    .skills-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 1000px;
+      overflow: hidden;
+    }
+
+    .skill {
       border-radius: 2px;
       font-weight: bold;
       text-align: center;
@@ -28,15 +39,17 @@ section {
       height: 70px;
       line-height:70px;
       bottom: 240px;
+      left: 10px;
     }
 
     #scala {
-      font-size: 130px;
+      font-size: 100px;
       background: @yellow;
       width: 404px;
       height: 220px;
       line-height: 220px;
       bottom: 10px;
+      left: 10px;
     }
 
     #git {
@@ -70,7 +83,7 @@ section {
     }
 
     #play {
-      font-size: 130px;
+      font-size: 100px;
       background: @yellow;
       width: 374px;
       height: 220px;
