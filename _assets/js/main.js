@@ -205,6 +205,7 @@ $(function(){
 
 
   $(window).scroll(function(evt){
+
     var height = $(window).height(),
         scroll = $(window).scrollTop(),
         progress = (scroll / height) // % of screen scrolled
@@ -228,14 +229,15 @@ $(function(){
       // force extreme cases just in case
       else if(bs[0] > progress && a.start){
         for(name in a.props) {
-          var vs = a.props[name]
-          a.el.css(name, vs[0] + (vs[2] || ''))
+          var unit = a.props[name].unit || '',
+                vs = a.props[name].values
+          a.el.css(name, vs[0] + unit)
         }
       } else if(bs[1] < progress && a.end) {
-        console.log("forcing extreme")
         for(name in a.props) {
-          var vs = a.props[name]
-          a.el.css(name, vs[1] + (vs[2] || ''))
+          var unit = a.props[name].unit || '',
+                vs = a.props[name].values
+          a.el.css(name, vs[1] + unit)
         }
       }
     }
