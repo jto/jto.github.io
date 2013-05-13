@@ -1,6 +1,6 @@
 section{
   &.network {
-    background: @grey;
+    background: @yellow;
     padding: 10% 0;
 
     > a {
@@ -12,10 +12,6 @@ section{
       border-radius: 4px;
       padding: 0;
 
-      &.twitter { background: url(/assets/images/twitter-invert.png) no-repeat 50% 50%; }
-      &.in { background: #3D698D url(/assets/images/in.png) no-repeat 50% 50%; }
-      &.github { background: url(/assets/images/github.png) no-repeat 50% 50%; }
-
       &:hover {
         -webkit-transform: scale(1.1);
       }
@@ -26,11 +22,13 @@ section{
       padding: 10px;
       height: 254px;
       overflow: auto;
+      width: 600px;
+      margin: 100px auto 0 auto;
 
       li {
         list-style: none;
         text-align: left;
-        width: 540px;
+        width: 100%;
         margin: 0 auto;
 
         a {

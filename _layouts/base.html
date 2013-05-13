@@ -1,19 +1,33 @@
 <!doctype html>
 
 <html lang="en">
-
+  <head>
     <meta charset="utf-8">
-    <meta name="author" content="jtournay">
+    <meta name="author" content="Julien Tournay">
+    <meta name="keywords" content="{{page.tags}}">
 
     <link rel="shortcut icon" href="/media/images/favicon.ico">
-    <link rel="stylesheet" href="/media/css/main.css">
+    <link rel="stylesheet" href="/assets/css/blog.css" type="text/css" media="screen" title="no title" charset="utf-8">
 
-    <title>Jto &bull; jtournay</title>
+    <title>Julien Tournay</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="nav">
+        <div class="cloud">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+        <span class="me">Julien Tournay</span>
 
-    <body>
-        <h1>Jto</h1>
-        <p>Another epic jekyll site.</p>
+        <ul class="social">
+          <li><a href="https://twitter.com/skaalf"><span>&#xf099;</span>@skaalf</a></li>
+          <li><a href="https://github.com/jto"><span>&#xf09b;</span>/jto</a></li>
+          <li><a href="http://www.linkedin.com/in/julientournay"><span>&#xf0e1;</span>/in/julientournay</a></li>
+        </ul>
+      </div>
+      <div class="content">
         {{ content }}
-    </body>
-
+      </div>
+    </div>
+  </body>
 </html>

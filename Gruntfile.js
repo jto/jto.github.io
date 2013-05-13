@@ -17,12 +17,12 @@ module.exports = function(grunt) {
       },
       jekyllSources: {
         files: [
-          // capture all except css - add your own
           '*.html',
           '*.yml',
           //'_assets/js/**.js',
           //'_assets/less/**.less',
           '_posts/**',
+          '_layouts/**',
           '_includes/**'
         ],
         tasks: 'jekyll-build',
@@ -44,7 +44,8 @@ module.exports = function(grunt) {
           strictImports: true
         },
         files: {
-          "_site/assets/css/main.css": "_assets/less/main.less"
+          "_site/assets/css/main.css": "_assets/less/main.less",
+          "_site/assets/css/blog.css": "_assets/less/blog.less"
         }
       }
     },
