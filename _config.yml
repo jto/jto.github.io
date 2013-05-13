@@ -1,5 +1,0 @@
-
-auto: true
-exclude: [ 'README.md', 'CONTRIBUTING.md', 'node_modules', 'package.json', 'Gruntfile.js' ]
-markdown: rdiscount
-permalink: /articles/:year/:month/:day/:title
