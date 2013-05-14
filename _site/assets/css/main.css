@@ -398,10 +398,11 @@ section.hi h1 {
 }
 section.hi h2 {
   font-size: 25px;
-  width: 240px;
+  width: 290px;
   margin-top: -40px;
   color: #fffde3;
   font-family: 'Open Sans';
+  text-align: left;
   text-shadow: -1px 1px #69c4bd;
 }
 section.hi ul.social {

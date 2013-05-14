@@ -488,6 +488,7 @@ body {
 .content time {
   display: block;
   font-style: italic;
+  font-size: 12px;
   border-bottom: solid 1px #8cd7d1;
   padding: 0 0 10px 0;
 }
@@ -518,6 +519,13 @@ body {
 }
 .content h4 {
   font-size: 20px;
+}
+.content blockquote {
+  border-left: solid 5px #8cd7d1;
+  padding: 0 15px;
+}
+.content blockquote p {
+  font-size: 14px;
 }
 .content p {
   margin: 10px 0;
