@@ -367,7 +367,7 @@ table {
   padding: 0;
   margin: 0;
   color: #555;
-  font-size: 16px;
+  font-size: 14px;
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
 }
@@ -380,49 +380,35 @@ body {
   height: 100%;
   overflow: auto;
 }
-.container > * {
-  min-width: 600px;
-}
 .nav {
-  height: 40px;
-  width: 100%;
+  height: 100%;
+  width: 90px;
   position: fixed;
-  background: #8cd7d1;
-  box-shadow: 0px 1px 2px #69c4bd;
-  overflow: show;
-  padding: 0 20px;
+  background: #4a4a4a;
+  overflow: hidden;
+  padding: 20px 0;
+  box-shadow: inset -1px 0px 2px rgba(0, 0, 0, 0.8);
 }
 .nav > * {
   line-height: 40px;
-  margin-right: 20px;
-  float: left;
-}
-.nav .me {
-  color: #ffffff;
-  text-shadow: 1px 0px 2px #69c4bd;
+  margin: 20px 0;
   text-align: center;
-  display: block;
-  font-size: 16px;
-  font-weight: bold;
-  font-style: italic;
 }
 .nav ul.social {
   list-style: none;
   display: block;
-  width: 200px;
   position: relative;
   padding: 0;
+  margin-top: 40px;
 }
 .nav ul.social li {
-  width: 40px;
-  float: left;
+  display: block;
 }
 .nav ul.social li a {
   font-family: 'socials';
   color: #1bbbc9;
   font-size: 16px;
   text-align: center;
-  text-shadow: 1px 0px 2px #69c4bd;
   display: block;
   font-size: 20px;
   color: #ffffff;
@@ -433,12 +419,13 @@ body {
   position: relative;
   width: 56px;
   height: 36px;
-  margin-top: 2px;
+  margin: 0 auto;
   z-index: 2;
+  display: block;
   -webkit-transform: scale(0.8);
 }
 .nav .cloud > span {
-  background: #fffde3;
+  background: #ffffff;
   height: 23px;
   width: 23px;
   display: block;
@@ -475,12 +462,23 @@ body {
   width: 32px;
 }
 .content {
-  margin-top: 40px;
+  margin-left: 90px;
   background: #ffffff;
   padding: 10px 20px;
   min-width: 500px;
   height: 100%;
   overflow: auto;
+}
+.content a {
+  font-weight: bold;
+  text-decoration: none;
+  color: #1bbbc9;
+}
+.content header {
+  padding: 10px;
+  border-radius: 2px;
+  font-style: italic;
+  font-size: 14px;
 }
 .content .gist * {
   font-size: 14px;
@@ -489,7 +487,7 @@ body {
   display: block;
   font-style: italic;
   font-size: 12px;
-  border-bottom: solid 1px #8cd7d1;
+  border-bottom: solid 1px #4a4a4a;
   padding: 0 0 10px 0;
 }
 .content h1,
@@ -498,7 +496,8 @@ body {
 .content h4,
 .content h5 {
   font-weight: bold;
-  margin: 10px 0;
+  margin: 20px 0 15px 0;
+  position: relative;
 }
 .content h1:first-child,
 .content h2:first-child,
@@ -507,25 +506,34 @@ body {
 .content h5:first-child {
   margin-top: 0;
 }
+.content .twitter-share-button {
+  position: absolute;
+  top: 10px;
+  right: 0;
+}
 .content h1 {
-  font-size: 35px;
+  font-size: 25px;
   color: #e6753d;
 }
 .content h2 {
-  font-size: 30px;
-}
-.content h3 {
-  font-size: 25px;
-}
-.content h4 {
   font-size: 20px;
 }
-.content blockquote {
-  border-left: solid 5px #8cd7d1;
-  padding: 0 15px;
+.content h3 {
+  font-size: 17px;
 }
-.content blockquote p {
+.content h4 {
+  font-size: 15px;
+}
+.content blockquote,
+.content .note {
+  display: block;
+  border-left: solid 4px #8cd7d1;
+  padding: 0 15px;
+  margin: 15px 0;
   font-size: 14px;
+}
+.content .note {
+  border-color: #e6753d;
 }
 .content p {
   margin: 10px 0;
@@ -535,4 +543,17 @@ body {
   max-width: 500px;
   max-height: 500px;
   margin: 30px auto;
+}
+.content ul,
+.content ol {
+  margin: 15px;
+  padding: 0 0 0 15px;
+}
+.content ul {
+  list-style: circle;
+}
+#disqus_thread {
+  margin-top: 20px;
+  padding: 20px;
+  border-top: solid 1px #8cd7d1;
 }

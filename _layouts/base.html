@@ -1,6 +1,6 @@
 <!doctype html>
 
-<html lang="en">
+<html lang="en" prefix="og: http://ogp.me/ns#">
   <head>
     <meta charset="utf-8">
     <meta name="author" content="Julien Tournay">
@@ -8,6 +8,12 @@
 
     <link rel="shortcut icon" href="/media/images/favicon.ico">
     <link rel="stylesheet" href="/assets/css/blog.css" type="text/css" media="screen" title="no title" charset="utf-8">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:creator" content="@skaalf">
+    <meta property="og:title" content="{{page.title | escape}}">
+    <meta property="og:description" content="{{page.summary | escape}}">
+    <meta property="og:image" content="{{page.image}}">
 
     <title>Julien Tournay</title>
   </head>
@@ -17,8 +23,6 @@
         <a class="cloud" href="/">
           <span></span><span></span><span></span><span></span><span></span>
         </a>
-        <span class="me">Julien Tournay</span>
-
         <ul class="social">
           <li><a href="https://twitter.com/skaalf">&#xf099;</a></li>
           <li><a href="https://github.com/jto">&#xf09b;</a></li>

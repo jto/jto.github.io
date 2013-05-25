@@ -1,12 +1,14 @@
 @import "_normalize";
 @import "_common";
 
+@black: #4a4a4a;
+
 * {
   font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
   padding: 0;
   margin: 0;
   color: #555;
-  font-size: 16px;
+  font-size: 14px;
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
 }
@@ -19,56 +21,38 @@ html, body {
 .container {
   height: 100%;
   overflow: auto;
-
-  > * {
-    min-width: 600px;
-  }
 }
 
 .nav {
-  height: 40px;
-  width: 100%;
+  height: 100%;
+  width: 90px;
   position: fixed;
-  background: @green;
-  box-shadow: 0px 1px 2px @blue-shadow;
-  overflow: show;
-  padding: 0 20px;
+  background: @black;
+  overflow: hidden;
+  padding: 20px 0;
+  box-shadow: inset -1px 0px 2px rgba(0,0,0,.8);
 
   > * {
     line-height: 40px;
-    margin-right: 20px;
-    float: left;
-  }
-
-  .me {
-    color: @grey;
-    text-shadow: 1px 0px 2px @blue-shadow;
+    margin: 20px 0;
     text-align: center;
-    display: block;
-    font-size: 16px;
-    font-weight: bold;
-    font-style: italic;
-
   }
 
   ul.social {
     list-style: none;
     display: block;
-    width: 200px;
     position: relative;
     padding: 0;
+    margin-top: 40px;
 
     li {
-      width: 40px;
-      float: left;
-
+      display: block;
       a {
         font-family: 'socials';
         color: @blue;
         font-size: 16px;
         display: block;
         text-align: center;
-        text-shadow: 1px 0px 2px @blue-shadow;
 
         display: block;
         font-size: 20px;
@@ -84,12 +68,13 @@ html, body {
     position: relative;
     width: 56px;
     height: 36px;
-    margin-top: 2px;
+    margin: 0 auto;
     z-index: 2;
+    display: block;
     -webkit-transform: scale(.8);
 
     > span {
-      background: @yellow;
+      background: @grey;
       height: 23px;
       width:  23px;
       display: block;
@@ -134,12 +119,25 @@ html, body {
 }
 
 .content {
-  margin-top: 40px;
+  margin-left: 90px;
   background: @grey;
   padding: 10px 20px;
   min-width: 500px;
   height: 100%;
   overflow: auto;
+
+  a {
+    font-weight: bold;
+    text-decoration: none;
+    color: @blue;
+  }
+
+  header {
+    padding: 10px;
+    border-radius: 2px;
+    font-style: italic;
+    font-size: 14px;
+  }
 
   .gist *{
     font-size: 14px;
@@ -149,30 +147,41 @@ html, body {
     display: block;
     font-style: italic;
     font-size: 12px;
-    border-bottom: solid 1px @green;
+    border-bottom: solid 1px @black;
     padding: 0 0 10px 0;
   }
 
   h1, h2, h3, h4, h5 {
     font-weight: bold;
-    margin: 10px 0;
+    margin: 20px 0 15px 0;
+    position: relative;
 
     &:first-child {
       margin-top: 0;
     }
   }
 
-  h1 { font-size: 35px; color: @orange;}
-  h2 { font-size: 30px; }
-  h3 { font-size: 25px; }
-  h4 { font-size: 20px; }
+  .twitter-share-button {
+    position: absolute;
+    top: 10px;
+    right: 0;
+  }
 
-  blockquote {
-    border-left: solid 5px @green;
+  h1 { font-size: 25px; color: @orange;}
+  h2 { font-size: 20px; }
+  h3 { font-size: 17px; }
+  h4 { font-size: 15px; }
+
+  blockquote, .note {
+    display: block;
+    border-left: solid 4px @green;
     padding: 0 15px;
-    p {
-      font-size: 14px;
-    }
+    margin: 15px 0;
+    font-size: 14px;
+  }
+
+  .note {
+    border-color: @orange;
   }
 
   p {
@@ -186,4 +195,19 @@ html, body {
     max-height: 500px;
     margin: 30px auto;
   }
+
+  ul, ol {
+    margin: 15px;
+    padding: 0 0 0 15px;
+  }
+
+  ul {
+    list-style: circle;
+  }
+}
+
+#disqus_thread {
+  margin-top: 20px;
+  padding: 20px;
+  border-top: solid 1px @green;
 }

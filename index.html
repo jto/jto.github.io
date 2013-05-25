@@ -1,6 +1,12 @@
+---
+title: Julien Tournay
+tags: Julien Tournay
+---
 <!DOCTYPE html>
 <html>
   <head>
+    <meta name="author" content="Julien Tournay">
+    <meta name="keywords" content="{{page.tags}}">
     <link rel="stylesheet" href="/assets/css/main.css" type="text/css" media="screen" title="no title" charset="utf-8">
     <title>Julien Tournay</title>
   </head>
@@ -73,12 +79,17 @@
         <h2>and I write about it</h3>
 
         <ul class="articles">
+          {% for post in site.posts %}
+            <li><a href="{{ post.url }}">{{ post.title }}</a></li>
+          {% endfor %}
+          <!--
           <li><a href="#">Play: Anatomy of a web framework - Part 1</a></li>
           <li><a href="#">Play: Anatomy of a web framework - Part 2</a></li>
           <li><a href="#">Play: Anatomy of a web framework - Part 3</a></li>
           <li><a href="#">Iteratee for the masses</a></li>
           <li><a href="#">Redesigning Playframework validation API</a></li>
           <li><a href="#">Scala, Playframework, Performances</a></li>
+          -->
         </ul>
       </section>
 

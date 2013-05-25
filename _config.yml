@@ -1,4 +1,4 @@
-
+url: http://jto.github.io
 auto: true
 exclude: [ 'README.md', 'CONTRIBUTING.md', 'node_modules', 'package.json', 'Gruntfile.js' ]
 markdown: rdiscount
