@@ -3,6 +3,7 @@ layout: post
 title: 'Play, Anatomy of a web framework: The Web Server.'
 tags: playframework, scala
 summary: In this series of article, I'll explain the internals of playframework. I'll try to show how play works, from starting an application to rendering the HTTP response. Today, I will cover the startup of a play application in "prod" mode. We'll also see how play listens to HTTP requests, parse them and call your application code.
+image: http://www.playframework.com/assets/images/logos/normal.png
 ---
 
 <header>
