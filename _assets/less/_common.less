@@ -18,3 +18,61 @@
 
 @blue-shadow: #69c4bd;
 @orange-shadow: #ca5d28;
+
+.box-shadow(@style) {
+  -webkit-box-shadow: @style;
+  -moz-box-shadow:    @style;
+  box-shadow:         @style;
+}
+
+.box-sizing (@type: border-box) {
+  -webkit-box-sizing: @type;
+  -moz-box-sizing:    @type;
+  box-sizing:         @type;
+}
+
+.transform(@string){
+  -webkit-transform: @string;
+  -moz-transform: @string;
+  transform: @string;
+}
+
+.transition(@string) {
+  -webkit-transition: @string;
+  -moz-transition: @string;
+  -ms-transition: @string;
+  transition: @string;
+}
+
+.transition-property(@string) {
+  -webkit-transition-property: @string;
+  -moz-transition-property: @string;
+  -ms-transition-property: @string;
+  transition-property: @string;
+}
+.transition-duration(@string) {
+  -webkit-transition-duration: @string;
+  -moz-transition-duration: @string;
+  -ms-transition-duration: @string;
+  transition-duration: @string;
+}
+.transition-timing-function(@string) {
+  -webkit-transition-timing-function: @string;
+  -moz-transition-timing-function: @string;
+  -ms-transition-timing-function: @string;
+  transition-timing-function: @string;
+}
+
+.perspective(@string){
+  -webkit-perspective: @string;
+  -moz-perspective: @string;
+  -ms-perspective: @string;
+  perspective: @string;
+}
+
+.perspective-origin(@string){
+  -webkit-perspective-origin: @string;
+  -moz-perspective-origin: @string;
+  -ms-perspective-origin: @string;
+  perspective-origin: @string;
+}

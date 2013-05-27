@@ -74,9 +74,12 @@ section {
           font-size: 25px;
           border-radius: 2px;
           -webkit-transition: -webkit-transform ease-out .2s;
+          -moz-transition: -moz-transform ease-out .2s;
+          -ms-transition: -ms-transform ease-out .2s;
+          transition: transform ease-out .2s;
 
           &:hover {
-            -webkit-transform: scale(1.1);
+            .transform(scale(1.1));
           }
         }
       }

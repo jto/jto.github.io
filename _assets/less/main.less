@@ -7,7 +7,7 @@
 @import "_network";
 
 * {
-  box-sizing: border-box;
+  .box-sizing(border-box);
   font-size: 14px;
   font-family: 'Open Sans', 'Helvetica Neue', Times;
   -webkit-font-smoothing: antialiased;
@@ -23,6 +23,7 @@ a { text-decoration: none }
 
 #kulors {
   display: block;
+  display: none;
   height: 250px;
   width: 50px;
 
@@ -72,9 +73,11 @@ section {
 body {
   section.hi h1 em {
     -webkit-transition-property: opacity, -webkit-transform;
-    -webkit-transition-duration: .5s;
-    -webkit-transition-timing-function: ease-in-out;
-    -webkit-transform: scale(.1);
+    -moz-transition-property: opacity, -webkit-transform;
+    transition-property: opacity, -webkit-transform;
+    .transition-duration(.5s);
+    .transition-timing-function(ease-in-out);
+    .transform(scale(.1));
     opacity: 0;
   }
 }
@@ -82,7 +85,7 @@ body {
 
 body.ready {
   section.hi h1 em {
-    -webkit-transform: scale(1);
+    .transform(scale(1));
     opacity: 1;
   }
 }

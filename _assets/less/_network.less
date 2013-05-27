@@ -5,6 +5,9 @@ section{
 
     > a {
       -webkit-transition: -webkit-transform ease-in-out .15s;
+      -moz-transition: -moz-transform ease-in-out .15s;
+      -ms-transition: -ms-transform ease-in-out .15s;
+      transition: transform ease-in-out .15s;
       display: inline-block;
       height: 120px;
       width: 120px;
@@ -13,7 +16,7 @@ section{
       padding: 0;
 
       &:hover {
-        -webkit-transform: scale(1.1);
+        .transform(scale(1.1));
       }
     }
 
@@ -33,7 +36,7 @@ section{
 
         a {
           border-radius: 2px;
-          -webkit-transition: background .2s ease-out;
+          .transition(background .2s ease-out);
           font-family: 'Monaco';
           padding: 10px;
           color: @grey;
