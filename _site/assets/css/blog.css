@@ -546,8 +546,20 @@ body {
   margin: 15px 0;
   font-size: 14px;
 }
+.content blockquote .from,
+.content .note .from {
+  display: block;
+  text-align: right;
+  margin: 20px 0;
+  font-style: italic;
+  font-weight: bold;
+  color: #BABABA;
+}
 .content .note {
   border-color: #e6753d;
+}
+.content pre {
+  margin: 10px;
 }
 .content p {
   margin: 10px 0;
