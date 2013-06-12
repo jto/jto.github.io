@@ -477,6 +477,7 @@ body {
   width: 32px;
 }
 .content {
+  -webkit-overflow-scrolling: touch;
   margin-left: 90px;
   background: #ffffff;
   padding: 10px 20px;
