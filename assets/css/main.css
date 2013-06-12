@@ -431,9 +431,14 @@ section.hi ul.social li a {
   font-size: 25px;
   border-radius: 2px;
   -webkit-transition: -webkit-transform ease-out 0.2s;
+  -moz-transition: -moz-transform ease-out 0.2s;
+  -ms-transition: -ms-transform ease-out 0.2s;
+  transition: transform ease-out 0.2s;
 }
 section.hi ul.social li a:hover {
   -webkit-transform: scale(1.1);
+  -moz-transform: scale(1.1);
+  transform: scale(1.1);
 }
 section.webapps {
   background: #1bbbc9;
@@ -525,6 +530,8 @@ section.webapps .cloud.web h3 {
 section.webapps .cloud.distributed {
   top: 5%;
   -webkit-transform: scale(0.7);
+  -moz-transform: scale(0.7);
+  transform: scale(0.7);
 }
 section.webapps .cloud.distributed span {
   background: #e6753d;
@@ -535,6 +542,8 @@ section.webapps .cloud.distributed h3 {
 section.webapps .cloud.scalable {
   top: 55%;
   -webkit-transform: scale(0.85);
+  -moz-transform: scale(0.85);
+  transform: scale(0.85);
 }
 section.webapps .cloud.scalable span {
   background: #8cd7d1;
@@ -599,7 +608,13 @@ section.skills {
   background: #e6753d;
   position: relative;
   -webkit-perspective: 1000px;
+  -moz-perspective: 1000px;
+  -ms-perspective: 1000px;
+  perspective: 1000px;
   -webkit-perspective-origin: 50% 50%;
+  -moz-perspective-origin: 50% 50%;
+  -ms-perspective-origin: 50% 50%;
+  perspective-origin: 50% 50%;
 }
 section.skills h2 {
   color: #fffde3;
@@ -702,6 +717,9 @@ section.network {
 }
 section.network > a {
   -webkit-transition: -webkit-transform ease-in-out 0.15s;
+  -moz-transition: -moz-transform ease-in-out 0.15s;
+  -ms-transition: -ms-transform ease-in-out 0.15s;
+  transition: transform ease-in-out 0.15s;
   display: inline-block;
   height: 120px;
   width: 120px;
@@ -711,6 +729,8 @@ section.network > a {
 }
 section.network > a:hover {
   -webkit-transform: scale(1.1);
+  -moz-transform: scale(1.1);
+  transform: scale(1.1);
 }
 section.network ul.articles {
   background: #e6753d;
@@ -729,6 +749,9 @@ section.network ul.articles li {
 section.network ul.articles li a {
   border-radius: 2px;
   -webkit-transition: background 0.2s ease-out;
+  -moz-transition: background 0.2s ease-out;
+  -ms-transition: background 0.2s ease-out;
+  transition: background 0.2s ease-out;
   font-family: 'Monaco';
   padding: 10px;
   color: #ffffff;
@@ -743,6 +766,8 @@ section.network ul.articles li a:hover::after {
   float: right;
 }
 * {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
   font-size: 14px;
   font-family: 'Open Sans', 'Helvetica Neue', Times;
@@ -760,6 +785,7 @@ a {
 }
 #kulors {
   display: block;
+  display: none;
   height: 250px;
   width: 50px;
   position: fixed;
@@ -812,12 +838,24 @@ section {
 }
 body section.hi h1 em {
   -webkit-transition-property: opacity, -webkit-transform;
-  -webkit-transition-duration: .5s;
+  -moz-transition-property: opacity, -webkit-transform;
+  transition-property: opacity, -webkit-transform;
+  -webkit-transition-duration: 0.5s;
+  -moz-transition-duration: 0.5s;
+  -ms-transition-duration: 0.5s;
+  transition-duration: 0.5s;
   -webkit-transition-timing-function: ease-in-out;
+  -moz-transition-timing-function: ease-in-out;
+  -ms-transition-timing-function: ease-in-out;
+  transition-timing-function: ease-in-out;
   -webkit-transform: scale(0.1);
+  -moz-transform: scale(0.1);
+  transform: scale(0.1);
   opacity: 0;
 }
 body.ready section.hi h1 em {
   -webkit-transform: scale(1);
+  -moz-transform: scale(1);
+  transform: scale(1);
   opacity: 1;
 }

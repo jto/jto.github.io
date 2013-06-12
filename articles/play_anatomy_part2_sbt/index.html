@@ -1,0 +1,230 @@
+<!doctype html>
+
+<html lang="en" prefix="og: http://ogp.me/ns#">
+  <head>
+    <meta charset="utf-8">
+    <meta name="author" content="Julien Tournay">
+    <meta name="keywords" content="playframework,scala,hotreload,sbt">
+
+    <link rel="shortcut icon" href="/media/images/favicon.ico">
+    <link rel="stylesheet" href="/assets/css/blog.css" type="text/css" media="screen" title="no title" charset="utf-8">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:creator" content="@skaalf">
+    <meta property="og:title" content="Play, Anatomy of a web framework: Hot redeploy.">
+    <meta property="og:description" content="Today, I&#39;ll show how playframework hot reloads code, and explain the relationship between play and sbt.">
+    <meta property="og:image" content="http://www.playframework.com/assets/images/logos/normal.png">
+
+    <title>Julien Tournay</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="nav">
+        <span class="me">Julien Tournay</span>
+        <a class="cloud" href="/">
+          <span></span><span></span><span></span><span></span><span></span>
+        </a>
+        <ul class="social">
+          <li><a href="https://twitter.com/skaalf">&#xf099;</a></li>
+          <li><a href="https://github.com/jto">&#xf09b;</a></li>
+          <li><a href="http://www.linkedin.com/in/julientournay">&#xf0e1;</a></li>
+        </ul>
+      </div>
+      <div class="content">
+        <article>
+  <time>13 June 2013</time>
+  <h1>
+    <a href="https://twitter.com/share" data-text="Play, Anatomy of a web framework: Hot redeploy. http://jto.github.io/articles/play_anatomy_part2_sbt" data-hashtags="playframework,scala,hotreload,sbt" data-via="skaalf" class="twitter-share-button" data-lang="en">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    Play, Anatomy of a web framework: Hot redeploy.
+  </h1>
+  <p><header>
+In this series of article, I'll explain the internals of <a href="http://www.playframework.com/" title="play">playframework</a>. I'll try to show how play works, from starting an application to rendering the HTTP response. Today, I'll show how playframework compiles and hot reloads code, and explain the relationship between play and sbt.
+</header></p>
+
+<h2>Play and SBT</h2>
+
+<p>One of the key features in Play is its ability, unlike most JVM based framework, to hot reload all code modifications in DEV mode without relying on any external tool (You don't need JRebel). In order to understand how that works, we first need to see how Play uses SBT to compile classes, and how SBT is tightly integrated into Play.</p>
+
+<p>We've seen in the <a href="/articles/play_anatomy_part1_bootstrap/">previous article</a> that SBT in the entry point of any play application, and that the <code>play</code> command is essentially just an alias on <code>sbt</code>. The crucial part making a play application different from a typical scala application built with SBT is play's <a href="https://github.com/playframework/Play20/tree/master/framework/src/sbt-plugin/src/main">sbt plugin</a>.</p>
+
+<p>As you can see, this is a pretty big SBT plugin. There's a good reason for that: It does <strong>A LOT</strong>.</p>
+
+<p>First of all, play adds a bunch of settings:</p>
+
+<pre>
+play-assets-directories           play-build-require-assets        play-closure-compiler-options
+play-coffeescript-entry-points    play-coffeescript-options        play-common-classloader
+play-compile-everything           play-conf                        play-copy-assets
+play-default-port                 play-dev-settings                play-dist
+play-external-assets              play-javascript-entry-points     play-less-entry-points
+play-less-options                 play-monitored-files             play-onStarted
+play-onStopped                    play-package-everything          play-plugin
+play-reload                       play-require-js                  play-require-js-folder
+play-require-js-shim              play-require-native-path         play-routes-imports
+play-templates-formats            play-templates-imports           play-version
+</pre>
+
+
+<p>It also adds Tasks:</p>
+
+<pre>
+classpath                  Display the project classpath.
+clean                      Clean all generated files.
+compile                    Compile the current application.
+console                    Launch the interactive Scala console (use :quit to exit).
+dependencies               Display the dependencies summary.
+dist                       Construct standalone application package.
+exit                       Exit the console.
+h2-browser                 Launch the H2 Web browser.
+license                    Display licensing informations.
+package                    Package your application as a JAR.
+play-version               Display the Play version.
+publish                    Publish your application in a remote repository.
+publish-local              Publish your application in the local repository.
+reload                     Reload the current application build file.
+run &lt;port&gt;                 Run the current application in DEV mode.
+test                       Run Junit tests and/or Specs from the command line
+eclipse                    generate eclipse project file
+idea                       generate Intellij IDEA project file
+sh &lt;command to run&gt;        execute a shell command
+start &lt;port&gt;               Start the current application in another JVM in PROD mode.
+update                     Update application dependencies.
+</pre>
+
+
+<p>Now you want to have a look at <a href="https://github.com/playframework/Play20/blob/master/framework/src/sbt-plugin/src/main/scala/PlaySettings.scala"><code>PlaySettings.scala</code></a>. This is where all the default settings are defined. We're interested in <a href="https://github.com/playframework/Play20/blob/master/framework/src/sbt-plugin/src/main/scala/PlaySettings.scala#L114"><code>run</code></a>.</p>
+
+<p>Typing <code>play run</code> calls <code>playRunSetting</code>, which is defined in <a href="https://github.com/playframework/Play20/blob/master/framework/src/sbt-plugin/src/main/scala/PlayRun.scala#L57"><code>PlayRun.scala</code></a>.</p>
+
+<p>Let's have a look at what it does:</p>
+
+<ul>
+<li>it keeps the sbt classloader (<a href="https://github.com/playframework/Play20/blob/master/framework/src/sbt-plugin/src/main/scala/PlayRun.scala#L72">l72</a>).</li>
+<li>it creates a "common" classloader able to load "common" jars (<a href="https://github.com/playframework/Play20/blob/master/framework/src/sbt-plugin/src/main/scala/PlayRun.scala#L74-L77">l74</a>).
+Those jar are used both by your application and sbt. They won't be reloaded.</li>
+<li>it creates the application classloader, child of the common classloadder, which loads all the application dependencies (<a href="https://github.com/playframework/Play20/blob/master/framework/src/sbt-plugin/src/main/scala/PlayRun.scala#L90-L138">l90</a>).</li>
+</ul>
+
+
+<p>This particular classloader is especially interesting.
+First of all, it's the one "in charge" of class reloading.
+Although it's not a child of <code>sbtClassloader</code>, it will <a href="https://github.com/playframework/Play20/blob/master/framework/src/sbt-plugin/src/main/scala/PlayRun.scala#L104">delegate</a> the loading of shared classes to it.</p>
+
+<h3>Running a play application</h3>
+
+<p>So we've created a fancy classloader hierarchy. We're now ready to run the application. Obviously, like for <code>start</code>, it's just a matter of calling a <code>main</code> somewhere. We've seen in the previous article that main is in <code>play.core.server.NettyServer</code>.
+Interestingly, play is not using a SBT setting here, the class name is just <a href="https://github.com/playframework/Play20/blob/master/framework/src/sbt-plugin/src/main/scala/PlayRun.scala#L142">hardcoded</a>.</p>
+
+<p>So, all we have to do is to invoke <code>mainDevHttpMode</code>.</p>
+
+<p>We're almost there, but hey, we haven't talked about class reloading yet! The methods is given a <a href="https://github.com/playframework/Play20/blob/master/framework/src/sbt-plugin/src/main/scala/PlayReloader.scala"><code>reloader</code></a>.
+That reloader has type <code>SBTLink</code>.</p>
+
+<p>Each time a request hits the server, the application calls the reloader, asking to check if there's any code changes.
+The reloader will then delegate recompilation (or other necessary tasks, like copying static assets) to SBT.</p>
+
+<p>Ok that was fairly simple, but why should we bother creating an <code>SBTLink</code> when SBT is absolutely capable of watching files for modifications natively?</p>
+
+<p>Two reasons:</p>
+
+<ul>
+<li>First, Play needs to know when a compilation error happens, so that it can pop a nice error page in your browser.</li>
+<li>Then, Hot reload of course! It's nice to have code recompiled, but the application is still running on the old classes. There's more todo</li>
+</ul>
+
+
+<h3>Where the magic begins</h3>
+
+<p><a href="https://github.com/playframework/Play20/blob/master/framework/src/sbt-plugin/src/main/scala/PlayReloader.scala#L303-L342">Here</a>'s the real trick. Assuming the compilation succeeded, we need to update the loaded classes in the JVM.
+How do we do that? Simple. We just remove the old application classloader, and create a new one with the updated classes.</p>
+
+<p>Then, we simply <a href="https://github.com/playframework/Play20/blob/master/framework/src/play/src/main/scala/play/core/system/ApplicationProvider.scala#L125-L140">restart</a> the application, and only the application. No need to restart the JVM.</p>
+
+<p>And that's it! New code is executed. All happened in a few seconds (hopefully), developers are happy :)</p>
+
+<h3>It's a tradeoff</h3>
+
+<p>Replacing classloader to hot reload code is simple and works very well, but it comes at a price.</p>
+
+<p>First of all, it's only possible because Play is stateless, and is pretty lightweight (quick start).
+Then, it creates a tight dependency between the build system and the framework.</p>
+
+<p>Most Java or Scala framework can be used with any build system you like, in play, you're not getting rid of SBT anytime soon.</p>
+
+<p>Finally, it occasionally messes with with certain libraries that are not using the "correct" classloader.</p>
+
+<h2>Why it's not possible in JEE frameworks.</h2>
+
+<blockquote><p>Wait a minute!
+If it's <strong>THAT</strong> simple why is not everybody using that technique !!!??? I mean... I wait for my beloved "Java Enterprise Server<sup>&reg;</sup>" to restart for <strong>AGES</strong> every day! <small>Also, My <code>ruby on rails</code> coworkers are making fun of me</small>.</p>
+
+<p>Why are those people wasting my time, making me feel miserable !!!???
+<span class="from">Enterprise Java Architect, having an epiphany</span></p></blockquote>
+
+<p>The answer is pretty simple. Because your application is <em>stateful</em>!</p>
+
+<p>You're keeping object instances in memory between requests. Assuming the code changed, what do you do with those "old" object instances ? Their class definitions may have changed. If you discard the classloader, you're also discarding all the instances it has created. That would typically mean loosing all session data at each reload, which in a typical application, would be very annoying.</p>
+
+<p>In a JEE app, redeploying also means restarting a bunch of "services" provided by the application server (JNDI, Database connections pools, EBJ, JMX, CDI, etc.), which takes a long long time. Hot reload is not the only problem here.</p>
+
+<p>Since play is completely stateless and fairly lightweight, trashing everything is not a problem a all.</p>
+
+<p>The "all inclusive" philosophy of a enterprise application servers comes at a price, and let's face it, your not using 10% of the features anyway.</p>
+
+<h3>I don't care, I use JRebel!</h3>
+
+<p>Good for you!</p>
+
+<p>Since <a href="http://zeroturnaround.com/software/jrebel/">Jrebel</a> is not open source, it's pretty hard to know how exactly it is working. Their <a href="http://zeroturnaround.com/software/jrebel/resources/faq/">faq</a> does not say a lot, but they published a blog post a while ago explaining the basics:</p>
+
+<p>It adds a java agent that rewrite the bytecode loaded into the JVM which:</p>
+
+<ul>
+<li>adds a field to each class, holding references to fields added to the object</li>
+<li>adds a field to each class, holding references to anonymous classes with actual methods implementations</li>
+<li>modify the methods of the classes to mask the above changes.</li>
+</ul>
+
+
+<p>Of course when a class is modified you need to track the changes impact, and "reload" classes accordingly. That alone is pretty hard.</p>
+
+<h2>TD;DR</h2>
+
+<ul>
+<li>Play simply reloads code by trashing the application classloader and restarting everything, which comes at the price of SBT being deeply integrated into the framework.</li>
+<li>The JEE architecture is stateful, and too heavy anyway to allow that kind of feature.</li>
+<li>JRebel is rocket surgery (yes, surgery) compared to play.</li>
+</ul>
+
+
+<p>Next time we'll see how play routes request and invoke the application code. It should be the last article of the series.</p>
+
+</article>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'julien-tournay'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+      </div>
+    </div>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-41216875-1', 'jto.github.io');
+      ga('send', 'pageview');
+    </script>
+  </body>
+</html>
