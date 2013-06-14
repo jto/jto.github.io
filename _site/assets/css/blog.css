@@ -584,9 +584,10 @@ body {
   padding: 20px;
   border-top: solid 1px #8cd7d1;
 }
-a.next {
+a.next,
+a.before {
   width: 400px;
-  margin: 0 0 0 auto;
+  margin: 20px 0 0 0;
   background: #e6753d;
   font-size: 12px;
   border-radius: 2px;
@@ -600,12 +601,20 @@ a.next {
   display: block;
   font-weight: normal;
 }
+a.next:hover,
+a.before:hover {
+  background: #ca5d28;
+}
+a.before::before {
+  content: '<';
+  margin-right: 10px;
+}
+a.next {
+  margin: 20px 0 0 auto;
+}
 a.next::after {
   content: '>';
   float: right;
-}
-a.next:hover {
-  background: #ca5d28;
 }
 /*
 @media only screen

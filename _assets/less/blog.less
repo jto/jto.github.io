@@ -235,9 +235,9 @@ html, body {
   border-top: solid 1px @green;
 }
 
-a.next {
+a.next, a.before {
   width: 400px;
-  margin: 0 0 0 auto;
+  margin: 20px 0 0 0;
   background: @orange;
 
   font-size: 12px;
@@ -250,13 +250,24 @@ a.next {
   display: block;
   font-weight: normal;
 
-  &::after {
-    content: '>';
-    float: right;
-  }
+
 
   &:hover {
     background: @orange-shadow;
+  }
+}
+
+a.before::before {
+  content: '<';
+  margin-right: 10px;
+}
+
+a.next {
+  margin: 20px 0 0 auto;
+
+  &::after {
+    content: '>';
+    float: right;
   }
 }
 
