@@ -234,6 +234,32 @@ html, body {
   padding: 20px;
   border-top: solid 1px @green;
 }
+
+a.next {
+  width: 400px;
+  margin: 0 0 0 auto;
+  background: @orange;
+
+  font-size: 12px;
+  border-radius: 2px;
+
+  .transition(background .2s ease-out);
+  font-family: 'Monaco';
+  padding: 5px 10px;
+  color: @grey;
+  display: block;
+  font-weight: normal;
+
+  &::after {
+    content: '>';
+    float: right;
+  }
+
+  &:hover {
+    background: @orange-shadow;
+  }
+}
+
 /*
 @media only screen
 and (min-device-width : 320px)

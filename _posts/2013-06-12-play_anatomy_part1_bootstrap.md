@@ -148,3 +148,6 @@ Next time, I'll write about DEV mode, hot reloading, and the relationship betwee
 
 Stay tuned!
 
+<a class="next" href="/articles/play_anatomy_part2_sbt">Play, Anatomy of a web framework: Hot redeploy.</a>
+
+
