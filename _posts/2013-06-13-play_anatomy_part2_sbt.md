@@ -154,4 +154,9 @@ Of course when a class is modified you need to track the changes impact, and "re
 
 Next time we'll see how play routes request and invoke the application code. It should be the last article of the series.
 
-<a class="before" href="/articles/play_anatomy_part1_bootstrap/">Play, Anatomy of a web framework: The Web Server.</a>
+<a class="previous" href="/articles/play_anatomy_part1_bootstrap/">
+  <span>Play, Anatomy of a web framework: The Web Server.</span>
+</a>
+<a class="next" href="/articles/play_anatomy_part1_bootstrap/">
+  <span>Play, Anatomy of a web framework: The Web Server.</span>
+</a>

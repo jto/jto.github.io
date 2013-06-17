@@ -137,6 +137,10 @@ html, body {
   height: 100%;
   overflow: auto;
 
+  article {
+    overflow: auto;
+  }
+
   a {
     font-weight: bold;
     text-decoration: none;
@@ -235,9 +239,9 @@ html, body {
   border-top: solid 1px @green;
 }
 
-a.next, a.before {
-  width: 400px;
-  margin: 20px 0 0 0;
+a.next, a.previous {
+  display: inline-block;
+  height: 60px;
   background: @orange;
 
   font-size: 12px;
@@ -245,29 +249,51 @@ a.next, a.before {
 
   .transition(background .2s ease-out);
   font-family: 'Monaco';
-  padding: 5px 10px;
   color: @grey;
-  display: block;
   font-weight: normal;
 
+  &:hover { background: @orange-shadow; }
 
-
-  &:hover {
-    background: @orange-shadow;
+  span {
+    font-size: 12px;
+    display: block;
+    float: left;
+    color: @grey;
+    width: 160px;
+    height: 60px;
+    padding: 5px;
+    text-overflow: ellipsis;
   }
 }
 
-a.before::before {
+a.previous::before {
+  .box-sizing(border-box);
+  display: block;
   content: '<';
-  margin-right: 10px;
+  height: 60px;
+  line-height: 60px;
+  width: 25px;
+  float: left;
+  text-align: center;
 }
 
 a.next {
-  margin: 20px 0 0 auto;
+  margin-left: auto;
+  float: right;
+
+  span {
+    padding-left: 10px;
+  }
 
   &::after {
     content: '>';
-    float: right;
+    .box-sizing(border-box);
+    display: block;
+    height: 60px;
+    line-height: 60px;
+    width: 25px;
+    float: left;
+    text-align: center;
   }
 }
 
