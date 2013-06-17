@@ -89,7 +89,7 @@ This method does a few things:
 - It can "tag" the request, adding metadata in the request object about routing.
 - It uses the application [`Global`](http://www.playframework.com/documentation/2.1.1/ScalaGlobal) object to find out what to do with this request:
 <script src="https://gist.github.com/jto/5638714.js"></script>
-What it does here is handling exceptions un parameters parsing. If something fail,
+What it does here is handling exceptions and parameters parsing. If something fail,
 `onBadRequest(rh, e.getMessage)` is called on the application `Global` object (if no global is provided, it's using the default Global) which should render an Error page with status 500. Otherwise, it calls `server.getHandlerFor(rh)` which return `Either[Result, (Handler, Application)]`.
 
 `getHandlerFor` is there to resolve the [`Handler`](http://www.playframework.com/documentation/api/2.1.1/scala/index.html#play.api.mvc.Handler) to be called.
