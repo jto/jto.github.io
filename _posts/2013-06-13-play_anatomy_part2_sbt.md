@@ -157,6 +157,6 @@ Next time we'll see how play routes request and invoke the application code. It 
 <a class="previous" href="/articles/play_anatomy_part1_bootstrap/">
   <span>Play, Anatomy of a web framework: The Web Server.</span>
 </a>
-<a class="next" href="/articles/play_anatomy_part1_bootstrap/">
-  <span>Play, Anatomy of a web framework: The Web Server.</span>
+<a class="next" href="/articles/play_anatomy_part3_routing/">
+  <span>Play, Anatomy of a web framework: Routing.</span>
 </a>
