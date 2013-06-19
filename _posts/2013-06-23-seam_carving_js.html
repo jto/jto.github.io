@@ -57,17 +57,19 @@ image: /assets/articles/2013_06_23_seam_carving_js/HTML5.png
     position: absolute;
     top: 0;
     right: 0;
-    border-right: dashed 2px red;
     height: 100%;
-    width: 1px;
+    width: 4px;
+    background: rgba(0,0,0,.3);
     cursor: w-resize;
   }
 </style>
 
-<script src="/assets/articles/2013_06_23_seam_carving_js/seam.js" type="text/javascript" charset="utf-8"></script>
+<script src="//code.jquery.com/jquery-1.9.1.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/1.3.1/lodash.min.js" type="text/javascript" charset="utf-8"></script>
+<script src="/assets/articles/2013_06_23_seam_carving_js/seam.js" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript" charset="utf-8">
     "use strict"
+
     document.addEventListener('DOMContentLoaded', function(){
 
       var id = function(i) { return document.getElementById(i) };
@@ -82,18 +84,21 @@ image: /assets/articles/2013_06_23_seam_carving_js/HTML5.png
 
       originalImage.src = "/assets/articles/2013_06_23_seam_carving_js/dolphin.jpg";
 
+      // drag handle bar
+      var _left = $('#original-container').offset().left;
+      var drag = function(e){
+        var x = e.clientX - _left + document.body.scrollLeft;
+        id('handle').style.left = x + 'px';
+      }
+      $('#handle').on('mousedown', function(e){ $(document.body).on('mousemove', drag); });
+      $(document.body).on('mouseup', function(e){ $(document.body).unbind('mousemove', drag); });
+
       originalImage.addEventListener('load', function(){
 
         id('handle').style.left = originalImage.width + 'px';
 
-        _.each(document.querySelectorAll('.canvas-container'), function(c){
-          c.style.height = originalImage.height + "px";
-          c.style.width = originalImage.width + "px";
-        });
-
-        _.each(document.querySelectorAll('canvas'), function(c){
-          c.height = originalImage.height;
-          c.width = originalImage.width;
+        _.each($('.canvas-container'), function(c){
+          $(c).css({ height: originalImage.height + "px", width: originalImage.width + "px" })
         });
 
         orgCtx.drawImage(this, 0,0);
@@ -102,7 +107,7 @@ image: /assets/articles/2013_06_23_seam_carving_js/HTML5.png
         drawCtx.clearRect(0,0,this.width, this.height)
         drawCtx.setFillColor("#00FF00")
 
-        id('redMark').addEventListener('change', function(){
+        $('#redMark').on('change', function(){
           if(this.checked)
             drawCtx.setFillColor("#FF0000")
           else
