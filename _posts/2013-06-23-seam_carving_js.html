@@ -1,0 +1,178 @@
+---
+layout: post
+title: 'Seam carving in Javascript'
+tags: seam carving, js
+summary: Photoshop like Seam Carving implementation in JS
+image: /assets/articles/2013_06_23_seam_carving_js/HTML5.png
+---
+
+<input id="nbseams" type="range" min="-200" max="200" step="1" value="0" />
+<input type="button" name="delete" value="delete selected" id="deletebtn" />
+
+<label>Red: <input type="checkbox" name="red" value="" id="redMark"></label>
+
+<div class="all">
+  <div class="canvas-container" id="original-container">
+    <canvas id="orgCanvas" width="500" height="500"></canvas>
+    <canvas id="drawCanvas" width="500" height="500"></canvas>
+  </div>
+  <div class="canvas-container debug">
+    <canvas id="grayCanvas" width="500" height="500"></canvas>
+    <canvas id="sobelCanvas" width="500" height="500"></canvas>
+    <canvas id="energyCanvas" width="500" height="500"></canvas>
+  </div>
+  <div class="canvas-container">
+    <canvas id="seamCanvas" width="500" height="500"></canvas>
+  </div>
+  <div id="handle"></div>
+</div>
+
+<style type="text/css" media="screen">
+  .canvas-container {
+    position: relative;
+  }
+
+  .canvas-container:not(:first-child) {
+    margin-top: 20px
+  }
+
+  canvas {
+    display: block;
+  }
+
+  canvas#drawCanvas { opacity: .4 }
+
+  .canvas-container canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .debug { display: none }
+
+  .all {
+    position: relative;
+  }
+  #handle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-right: dashed 2px red;
+    height: 100%;
+    width: 1px;
+    cursor: w-resize;
+  }
+</style>
+
+<script src="/assets/articles/2013_06_23_seam_carving_js/seam.js" type="text/javascript" charset="utf-8"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/lodash.js/1.3.1/lodash.min.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript" charset="utf-8">
+    "use strict"
+    document.addEventListener('DOMContentLoaded', function(){
+
+      var id = function(i) { return document.getElementById(i) };
+
+      var orgCtx    = id('orgCanvas').getContext('2d'),
+          grayCtx   = id('grayCanvas').getContext('2d'),
+          sobelCtx  = id('sobelCanvas').getContext('2d'),
+          energyCtx = id('energyCanvas').getContext('2d'),
+          seamCtx   = id('seamCanvas').getContext('2d'),
+          drawCtx   = id('drawCanvas').getContext('2d'),
+          originalImage = new Image();
+
+      originalImage.src = "/assets/articles/2013_06_23_seam_carving_js/dolphin.jpg";
+
+      originalImage.addEventListener('load', function(){
+
+        id('handle').style.left = originalImage.width + 'px';
+
+        _.each(document.querySelectorAll('.canvas-container'), function(c){
+          c.style.height = originalImage.height + "px";
+          c.style.width = originalImage.width + "px";
+        });
+
+        _.each(document.querySelectorAll('canvas'), function(c){
+          c.height = originalImage.height;
+          c.width = originalImage.width;
+        });
+
+        orgCtx.drawImage(this, 0,0);
+        seamCtx.drawImage(this, 0,0);
+
+        drawCtx.clearRect(0,0,this.width, this.height)
+        drawCtx.setFillColor("#00FF00")
+
+        id('redMark').addEventListener('change', function(){
+          if(this.checked)
+            drawCtx.setFillColor("#FF0000")
+          else
+            drawCtx.setFillColor("#00FF00")
+        })
+
+        // Mask markers
+        var onmove = function(e){
+          var x = e.clientX - id('original-container').offsetLeft + document.body.scrollLeft,
+              y = e.clientY - id('original-container').offsetTop + document.body.scrollTop,
+              s = 15;
+
+          drawCtx.beginPath();
+          drawCtx.arc(x, y, s, 0, Math.PI * 2, true);
+          drawCtx.closePath();
+          drawCtx.fill();
+        }
+
+        drawCanvas.addEventListener('mousedown', function(e){ drawCanvas.addEventListener('mousemove', onmove); });
+        drawCanvas.addEventListener('mouseup', function(e){ drawCanvas.removeEventListener('mousemove', onmove); });
+
+        var img = this;
+
+        //resize
+        nbseams.addEventListener('change', function(){
+          var slices = this.value * 1; //workaround weird safari bug
+          seamCanvas.width = img.width + slices;
+
+          var imageData = orgCtx.getImageData(0,0, img.width, img.height), //considered DOM...
+              masks = drawCtx.getImageData(0,0, img.width, img.height),
+              out = seamCtx.createImageData(img.width + slices, img.height),
+              d = seamCtx.createImageData(img.width + (slices > 0 ? (0) : slices + 1), img.height),
+              start = new Date().getTime(),
+              s = new SeamCarving(imageData, masks, out);
+
+          s.resize();
+
+          grayCtx.putImageData(s.debug(d, 0), 0,0);
+          sobelCtx.putImageData(s.debug(d, 2), 0,0);
+          energyCtx.putImageData(s.debug(d, 1), 0,0);
+          seamCtx.putImageData(s.out, 0,0);
+
+          orgCanvas.style.width = img.width + slices + "px";
+          drawCanvas.style.width = img.width + slices + "px";
+
+          var end = new Date().getTime();
+          console.log("finished: %ss", (end - start) / 1000);
+        });
+
+        //delete selection
+        deletebtn.addEventListener('click', function(){
+          var out = seamCtx.createImageData(img.width, img.height);
+          var imageData = orgCtx.getImageData(0,0, img.width, img.height);
+          var masks = drawCtx.getImageData(0,0, img.width, img.height);
+
+
+            var start = new Date().getTime();
+            var s = new SeamCarving(imageData, masks, out);
+            s.erase();
+
+            var d = seamCtx.createImageData(img.width, img.height);
+            grayCtx.putImageData(s.debug(d, 0), 0,0);
+            sobelCtx.putImageData(s.debug(d, 2), 0,0);
+            energyCtx.putImageData(s.debug(d, 1), 0,0);
+
+            seamCtx.putImageData(s.out, 0,0);
+
+            var end = new Date().getTime();
+            console.log("finished: %ss", (end - start) / 1000);
+        });
+      });
+    });
+</script>
