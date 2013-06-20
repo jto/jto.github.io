@@ -48,7 +48,11 @@ image: /assets/articles/2013_06_23_seam_carving_js/HTML5.png
     left: 0;
   }
 
-  .debug { display: none }
+  /*.debug { display: none }*/
+  .debug canvas { display: none }
+  #grayCanvas { display: none }
+  #sobelCanvas { display: block }
+  #energyCanvas { display: none }
 
   .all {
     position: relative;
@@ -115,7 +119,7 @@ image: /assets/articles/2013_06_23_seam_carving_js/HTML5.png
               .css({ width: w + "px" });
           });
 
-          $('#seamCanvas').attr('width', w);
+          $('#seamCanvas, .debug canvas').attr('width', w);
 
           var imageData = orgCtx.getImageData(0,0, img.width, img.height), //considered DOM...
               masks     = drawCtx.getImageData(0,0, img.width, img.height),
@@ -147,13 +151,10 @@ image: /assets/articles/2013_06_23_seam_carving_js/HTML5.png
           id('handle').style.left = x + 'px';
         }
 
-        $h.on('mousedown', function(e){
-          $(document.body).on('mousemove', drag);
-        });
+        $h.on('mousedown', function(e){ $(document.body).on('mousemove', drag); });
 
         $(document.body).on('mouseup', function(e){
           $(document.body).unbind('mousemove', drag);
-          console.log($h.position().left - start);
           resize($h.position().left - start);
         });
 
@@ -186,7 +187,6 @@ image: /assets/articles/2013_06_23_seam_carving_js/HTML5.png
           var out = seamCtx.createImageData(img.width, img.height);
           var imageData = orgCtx.getImageData(0,0, img.width, img.height);
           var masks = drawCtx.getImageData(0,0, img.width, img.height);
-
 
             var start = new Date().getTime();
             var s = new SeamCarving(imageData, masks, out);
