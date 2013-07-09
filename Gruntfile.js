@@ -45,7 +45,8 @@ module.exports = function(grunt) {
         },
         files: {
           "_site/assets/css/main.css": "_assets/less/main.less",
-          "_site/assets/css/blog.css": "_assets/less/blog.less"
+          "_site/assets/css/blog.css": "_assets/less/blog.less",
+          "_site/assets/css/resume.css": "_assets/less/resume.less"
         }
       }
     },
