@@ -24,7 +24,7 @@ The API is an evolution of the JSON API created by [@mandubian](https://twitter.
 When you think about a web application, you're probably thinking of a bunch of web-pages, or single page app, or maybe even just a REST API serving json content. Truth is, a web application can be all of that, and even more, but from a more abstract point of view, the job of a webapp is really just to answer queries. Queries are formulated using HTTP requests, and answered using HTTP responses, and that's pretty much all there is to know. HTML, JSON, XML, or any other format are "representations" of the data. Your application may, and even probably *should*, support multiple representations, so the client can list the representation it supports, and the server can then decide which one is appropriate. That's content negotiation.
 
 The client can request different representations, but the client can also send data to your application, and again you need to support different representations.
-Maybe the user is submiting a form ? You're going to receive URLFormEncoded values. Maybe this form is a bit dynamic, and the values submitted by an AJAX request in JSON? You may also offer a restful XML api. Or maybe data are sent using a proprietary protocol.
+Maybe the user is submitting a form ? You're going to receive URLFormEncoded values. Maybe this form is a bit dynamic, and the values submitted by an AJAX request in JSON? You may also offer a restful XML api. Or maybe data are sent using a proprietary protocol.
 
 Of course, when an HTTP request comes in, one of the the first things you do is to de-serialize it's body to transform it to something more convenient than Bytes. For example an instance of a class. And once you've decided what to send back, you need to serialize that to the appropriate representation. So for each HTTP request, you'll parse, and eventually serialize data. But it's not that simple, the data coming in are not "safe". You must validate everything.
 
@@ -125,7 +125,7 @@ Just like the Json API, you can compose rules together:
 
 <script src="https://gist.github.com/jto/8578328.js"></script>
 
-Here you've noticed one of the key difference with the Json API. Since the API is not only dedicated to one representation, we need to tell the compiler what representation you want to work with using `From[...]`. Since we enclosed the validation in a `From[JsValue]`. We are now defining a `Rule`validating a Json AST.
+Here you've noticed one of the key difference with the Json API. Since the API is not only dedicated to one representation, we need to tell the compiler what representation you want to work with using `From[...]`. Since we enclosed the validation in a `From[JsValue]`. We are now defining a `Rule` validating a Json AST.
 
 Note that we are also importing `import play.api.data.mapping.json.Rules._`. That object contains all the built-in validation for the Json type.
 
@@ -137,12 +137,12 @@ We just had to change the From type, and the import.
 
 ## Differences with the Json API
 
-Even though the validation API is largely inspired from the JSON api, there are stil a few key differences:
+Even though the validation API is largely inspired from the JSON api, there are still a few key differences:
 
 ### Type signature
 
 The JSON API is always assuming your going from, or to json. Since the new API is generic, you always have to be explicit about the `I` and `O` types.
-This change has some impact on the API use and possibilities. The most obvious is that the new API is a tiny bit more verbose than the json API.
+This change has some impacts on the API use and possibilities. The most obvious is that the new API is a tiny bit more verbose than the json API.
 
 But the generalization also impacts positively the API, and some things are easier to implement.
 
@@ -152,7 +152,7 @@ Let's say you implemented 2 Rules (their implementations is let as exercise to t
 
 <script src="https://gist.github.com/jto/8578771.js"></script>
 
-You may want to create a new Rule, validating that a given JsValue is a positive Int. All you have to do is to compose those rules sequentially. First you test the value is an Int, that you test it's value. That's a very simple task with the API.
+You may want to create a new Rule, validating that a given JsValue is a positive Int. All you have to do is to compose those rules sequentially. First you test the value is an Int using `isInt`, then you test it's positive with `min`. That's a very simple task with the API.
 
 <script src="https://gist.github.com/jto/8578777.js"></script>
 
