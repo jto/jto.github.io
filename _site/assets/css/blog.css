@@ -543,7 +543,8 @@ body {
   font-size: 15px;
 }
 .content blockquote,
-.content .note {
+.content .note,
+.content .warning {
   display: block;
   border-left: solid 4px #8cd7d1;
   padding: 0 15px;
@@ -551,7 +552,8 @@ body {
   font-size: 14px;
 }
 .content blockquote .from,
-.content .note .from {
+.content .note .from,
+.content .warning .from {
   display: block;
   text-align: right;
   margin: 20px 0;
@@ -561,6 +563,12 @@ body {
 }
 .content .note {
   border-color: #e6753d;
+}
+.content .warning {
+  border-color: #e6753d;
+  background: #fffde3;
+  padding: 10px;
+  font-style: italic;
 }
 .content pre {
   margin: 10px;

@@ -186,7 +186,7 @@ html, body {
   h3 { font-size: 17px; }
   h4 { font-size: 15px; }
 
-  blockquote, .note {
+  blockquote, .note, .warning {
     display: block;
     border-left: solid 4px @green;
     padding: 0 15px;
@@ -205,6 +205,13 @@ html, body {
 
   .note {
     border-color: @orange;
+  }
+
+  .warning {
+    border-color: @orange;
+    background: @yellow;
+    padding: 10px;
+    font-style: italic;
   }
 
   pre {
