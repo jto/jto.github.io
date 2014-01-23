@@ -81,7 +81,7 @@ Now the Json API also has a class called `Format`.
 
 <script src="https://gist.github.com/jto/8577125.js"></script>
 
-Now let's compare the two API's side by side:
+Now let's compare the two APIs side by side:
 
 <script src="https://gist.github.com/jto/8577129.js"></script>
 
