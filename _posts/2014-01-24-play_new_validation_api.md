@@ -30,7 +30,7 @@ Of course, when an HTTP request comes in, one of the the first things you do is 
 
 ## Data validation in Playframework
 
-Play offers two different APIs for the Job. One dedicated to Form validation, and one to JSON marshalling and unmarchalling.
+Play offers two different APIs for the Job. One dedicated to Form validation, and one to JSON marshaling and unmarshaling.
 
 ### Form
 
@@ -70,7 +70,7 @@ to:
 
 <script src="https://gist.github.com/jto/8577110.js"></script>
 
-Yep, that's pretty much the same thing! But the Form api can also "serialize" classes instances to form values. Can we do that we Json? Of course. We just have to use a `Writes`!
+Yep, that's pretty much the same thing! But the Form api can also "serialize" classes instances to form values. Can we do that we json? Of course. We just have to use a `Writes`!
 And what's a `Writes` ?
 
 <script src="https://gist.github.com/jto/8577116.js"></script>
@@ -105,7 +105,7 @@ The objectives are
 
 ## Introducing the new validation API
 
-The new validation API is very similar to the Json API. Let's compare `Reads` to it's generic conterpart: `Rule`
+The new validation API is very similar to the Json API. Let's compare `Reads` to it's generic counterpart: `Rule`
 
 <script src="https://gist.github.com/jto/8578308.js"></script>
 
@@ -135,7 +135,7 @@ Since the API also supports forms data, we can define a form validation very eas
 
 We just had to change the From type, and the import.
 
-## Differences with the Json API
+## Differences with the json API
 
 Even though the validation API is largely inspired from the JSON api, there are still a few key differences:
 
@@ -160,7 +160,7 @@ With the Json API, a `Reads` always parses `JsValue`.  You just can't define a R
 
 ### lazyness
 
-We working on recursive types, you need to be extra careful with the Json API, and use lazyRead to avoid stack overflow.
+We working on recursive types, you need to be extra careful with the json API, and use lazyRead to avoid stack overflow.
 
 <script src="https://gist.github.com/jto/8578784.js"></script>
 
