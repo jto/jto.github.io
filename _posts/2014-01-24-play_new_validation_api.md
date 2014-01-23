@@ -160,7 +160,7 @@ With the Json API, a `Reads` always parses `JsValue`.  You just can't define a R
 
 ### lazyness
 
-We working on recursive types, you need to be extra careful with the json API, and use lazyRead to avoid stack overflow.
+When working on recursive types, you need to be extra careful with the json API, and use lazyRead to avoid stack overflow.
 
 <script src="https://gist.github.com/jto/8578784.js"></script>
 
