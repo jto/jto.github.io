@@ -141,7 +141,7 @@ Even though the validation API is largely inspired from the JSON api, there are 
 
 ### Type signature
 
-The JSON API is always assuming your going from, or to json. Since the new API is generic, you always have to be explicit about the `I` and `O` types.
+The JSON API is always assuming you're going from, or to json. Since the new API is generic, you always have to be explicit about the `I` and `O` types.
 This change has some impacts on the API use and possibilities. The most obvious is that the new API is a tiny bit more verbose than the json API.
 
 But the generalization also impacts positively the API, and some things are easier to implement.
