@@ -44,7 +44,7 @@ Here's an example from [play's documentation](http://www.playframework.com/docum
 
 <script src="https://gist.github.com/jto/8577090.js"></script>
 
-`nonEmptyText` is just a buit-in mapping, and `optional` is just a function lifting a `Mapping[A]` to a `Mapping[Option[A]]`:
+`nonEmptyText` is just a built-in mapping, and `optional` is just a function lifting a `Mapping[A]` to a `Mapping[Option[A]]`:
 
 <script src="https://gist.github.com/jto/8577100.js"></script>
 
