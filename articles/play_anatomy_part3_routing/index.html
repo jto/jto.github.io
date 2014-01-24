@@ -1,0 +1,175 @@
+<!doctype html>
+
+<html lang="en" prefix="og: http://ogp.me/ns#">
+  <head>
+    <meta charset="utf-8">
+    <meta name="author" content="Julien Tournay">
+    <meta name="keywords" content="playframework,scala,routing,sbt">
+
+    <link rel="shortcut icon" href="/media/images/favicon.ico">
+    <link rel="stylesheet" href="/assets/css/blog.css" type="text/css" media="screen" title="no title" charset="utf-8">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:creator" content="@skaalf">
+    <meta property="og:title" content="Play, Anatomy of a web framework: Routing and reverse routing.">
+    <meta property="og:description" content="Today, I&#39;ll show how playframework hot invoke application code.">
+    <meta property="og:image" content="http://www.playframework.com/assets/images/logos/normal.png">
+
+    <title>Julien Tournay</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="nav">
+        <span class="me">Julien Tournay</span>
+        <a class="cloud" href="/">
+          <span></span><span></span><span></span><span></span><span></span>
+        </a>
+        <ul class="social">
+          <li><a href="https://twitter.com/skaalf">&#xf099;</a></li>
+          <li><a href="https://github.com/jto">&#xf09b;</a></li>
+          <li><a href="http://www.linkedin.com/in/julientournay">&#xf0e1;</a></li>
+        </ul>
+      </div>
+      <div class="content">
+        <article>
+  <time>17 June 2013</time>
+  <h1>
+    <a href="https://twitter.com/share" data-text="Play, Anatomy of a web framework: Routing and reverse routing. /articles/play_anatomy_part3_routing" data-hashtags="playframework,scala,routing,sbt" data-via="skaalf" class="twitter-share-button" data-lang="en">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    Play, Anatomy of a web framework: Routing and reverse routing.
+  </h1>
+  <p><header>
+In this series of article, I'll explain the internals of <a href="http://www.playframework.com/" title="play">playframework</a>. I'll try to show how play works, from starting an application to rendering the HTTP response. Today, I will cover the routing of an HTTP request. How play compiles the route file, and invoke the application code, and let you use the reverse router.
+</header></p>
+
+<h2>Play and SBT (again)</h2>
+
+<p>In your play application, you surely wrote a route file. It looks something like this:</p>
+
+<pre>
+GET     /                           controllers.Application.index
+GET     /hello/:name                controllers.Application.sayHello(name: String)
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
+</pre>
+
+
+<p>In play, and contrary to most scala web frameworks, the route file is not written in an internal scala DSL. This approach has a bunch of drawbacks: obviously it's not nicely scriptable as a Scala file would be, and it adds a bit of complexity to the framework. But since play is both a Java <strong>and</strong> Scala framework, it makes sense to use an external DSL (Java developers don't want to write Scala code). One could argue that Play should support Scala or Java for route definition, like it does for the rest of the API. It's probably possible, I don't think Java is expressive enough for the job thought.</p>
+
+<p>In Play 1.x, actions were invoked dynamically. Each time a HTTP request hits the server, the application would figure out the correct action to call, and invoke it using reflection.</p>
+
+<p>Play 2.x, focuses much more on typesafety. If the action definition and the route file don't match, we want the compiler to tell us. We want to detect non existing actions, type error etc. Putting it simply, we want the security provided by the Scala compiler for our routes.</p>
+
+<h3>Source Generation</h3>
+
+<p>SBT has a special setting for source generation. It's called <a href="http://www.scala-sbt.org/0.12.3/docs/Howto/generatefiles.html">sourceGenerator</a>.
+And we can see play using it <a href="https://github.com/playframework/Play20/blob/master/framework/src/sbt-plugin/src/main/scala/PlaySettings.scala#L102">here</a>.</p>
+
+<p><code>RouteFiles</code> is defined in <a href="https://github.com/playframework/Play20/blob/master/framework/src/sbt-plugin/src/main/scala/PlaySourceGenerators.scala">PlaySourceGenerator.scala</a>, it calls <code>compile</code>, which is define in <a href="https://github.com/playframework/Play20/blob/master/framework/src/routes-compiler/src/main/scala/play/router/RoutesCompiler.scala"><code>play.router.RoutesCompiler</code></a>.</p>
+
+<p>This generator is composed of two parts:</p>
+
+<ul>
+<li><p>a parser called <a href="https://github.com/playframework/Play20/blob/master/framework/src/routes-compiler/src/main/scala/play/router/RoutesCompiler.scala#L59-L242">RouteFileParser</a>, extending <a href="http://www.scala-lang.org/api/current/index.html#scala.util.parsing.combinator.JavaTokenParsers">JavaTokenParsers</a>), defined using the Scala parser combinators API.</p></li>
+<li><p>generators functions (router, reverseRouter, javaWrapper, javascriptReverseRouter, refReverseRouting, reverseRouteur). each takes the output of the parser, and generate a Scala source.</p></li>
+</ul>
+
+
+<h4>Route file parser</h4>
+
+<p>If you're not familiar yet with parser combinator, <a href="http://www.codecommit.com/blog/scala/the-magic-behind-parser-combinators">this article</a>, by Daniel Spiewak is a really nice intro.</p>
+
+<p>The grammar of play route files is here, each element of syntax being represented by a <code>def</code>.
+For example:</p>
+
+<script src="https://gist.github.com/jto/5796869.js"></script>
+
+
+<p>The output of this parser is a <code>ParseResult[List[Rule]]</code>.
+If the route file is correctly defined, you get a <code>Success[List[Rule]]</code>, otherwise, a positionned Failure, with the error message. This way, Play can give you a nice error message if you made a mistake.</p>
+
+<p>Alright, so far we've parsed the application route file, which gives us a list of <code>Rule</code>.
+We now need to generate the corresponding Scala code.</p>
+
+<h4>Code generation</h4>
+
+<p>Code generation functions are basically just mapping each <code>Rule</code> to a String. It's nothing more than basic String manipulation. Let's have a look a the generated code for routing.</p>
+
+<p>Once you've compile your project, the generated sources will be under <code>target/scala-2.10/src_managed</code>.
+Play generated a router (<code>routes_routing.scala</code>) and a reverse router file (<code>routes_reverseRouting.scala</code>).</p>
+
+<h4>Router</h4>
+
+<script src="https://gist.github.com/jto/5797501.js"></script>
+
+
+<p>For each <code>Rule</code> defined in the route file, the <code>routes</code> function tries to pattern match the incoming <code>RequestHeader</code>. If a valid route is found (something matched), <code>invokeHandler</code> simply calls the correct Action. It may use a QueryStringBindable, or a PathBindable to parse the parameters to the required types.</p>
+
+<h4>Reverse router</h4>
+
+<script src="https://gist.github.com/jto/5797493.js"></script>
+
+
+<p>Each function in <code>ReverseApplication</code> simply matches the names of the <code>Actions</code> in <code>Application</code>.
+This way you can simply call them directly, and you'll get a String. Since the parameters of those functions are the same as your Actions, the compiler will type check everything nicely.</p>
+
+<h3>Using the Reverse routing</h3>
+
+<p>Alright, so far we have generated functions invoking the Application actions based on RequestHeader, and reverseRouters, generating a String given the Action parameters.</p>
+
+<p>Question is where is Play using that code?
+For the reverse routers, the answer is obvious. You're almost calling them directly. For example if you write <code>routes.Application.sayHello("Julien")</code> in a template, you're simply calling the <code>sayHello</code> method in a <code>ReverseApplication</code> instance.</p>
+
+<p>The reason you don't have to call ReverseApplication.sayHello, but Application.sayHello is because play generates a Java file mapping the reverse router classes names to the controller classes. This class is  located under <code>target/scala-2.10/src_managed/controller</code> and looks like this:</p>
+
+<script src="https://gist.github.com/jto/5797867.js"></script>
+
+
+<h3>Using the router</h3>
+
+<p>Now last question is, when is the router called ?
+We've seen in the <a href="/articles/play_anatomy_part2_sbt">previous article</a> that play delegates routing to the Global object. Let's have a look at the <a href="https://github.com/playframework/Play20/blob/master/framework/src/play/src/main/scala/play/api/GlobalSettings.scala">default global</a>, which you normally either use directly, or extend when you define you own Global.</p>
+
+<p>The <code>onRouteRequest</code> method, calls <code>router.handlerFor(request)</code>. router is an Option in the current <a href="https://github.com/playframework/Play20/blob/master/framework/src/play/src/main/scala/play/api/Application.scala">Application</a>. handlerFor simply <a href="https://github.com/playframework/Play20/blob/master/framework/src/play/src/main/scala/play/core/router/Router.scala#L345"><code>lift</code></a> the <code>PartialFunction[RequestHeader, Handler]</code> generated by play to a <code>Function[RequestHeader, Option[Handler]]</code>.</p>
+
+<h2>TL;DR</h2>
+
+<ul>
+<li>Play uses the application routes file to generate scala sources of router an reverse routers</li>
+<li>Those sources are in <code>target/scala-2.10/src_managed</code></li>
+<li>reverse routing is (almost) directly called by the user</li>
+<li>the router is called in <code>Global.onRouteRequest</code></li>
+</ul>
+
+
+<p><a class="previous" href="/articles/play_anatomy_part2_sbt">
+  <span>Play, Anatomy of a web framework: Hot redeploy.</span>
+</a></p>
+
+</article>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'julien-tournay'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+      </div>
+    </div>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-41216875-1', 'jto.github.io');
+      ga('send', 'pageview');
+    </script>
+  </body>
+</html>

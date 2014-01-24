@@ -34,7 +34,7 @@
         <article>
   <time>12 June 2013</time>
   <h1>
-    <a href="https://twitter.com/share" data-text="Play, Anatomy of a web framework: The Web Server. http://jto.github.io/articles/play_anatomy_part1_bootstrap" data-hashtags="playframework,scala" data-via="skaalf" class="twitter-share-button" data-lang="en">Tweet</a>
+    <a href="https://twitter.com/share" data-text="Play, Anatomy of a web framework: The Web Server. /articles/play_anatomy_part1_bootstrap" data-hashtags="playframework,scala" data-via="skaalf" class="twitter-share-button" data-lang="en">Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     Play, Anatomy of a web framework: The Web Server.
   </h1>
@@ -129,7 +129,7 @@ Those plugins will, for example, create a connection pools to a DB.</p>
 <script src="https://gist.github.com/jto/5638714.js"></script>
 
 
-<p>What it does here is handling exceptions un parameters parsing. If something fail,
+<p>What it does here is handling exceptions and parameters parsing. If something fail,
 <code>onBadRequest(rh, e.getMessage)</code> is called on the application <code>Global</code> object (if no global is provided, it's using the default Global) which should render an Error page with status 500. Otherwise, it calls <code>server.getHandlerFor(rh)</code> which return <code>Either[Result, (Handler, Application)]</code>.</p>
 
 <p><code>getHandlerFor</code> is there to resolve the <a href="http://www.playframework.com/documentation/api/2.1.1/scala/index.html#play.api.mvc.Handler"><code>Handler</code></a> to be called.
@@ -203,6 +203,10 @@ Then you just need to run the resulting <code>Iteratee</code> to get a <code>Fut
 <p>Next time, I'll write about DEV mode, hot reloading, and the relationship between Play and SBT.</p>
 
 <p>Stay tuned!</p>
+
+<p><a class="next" href="/articles/play_anatomy_part2_sbt">
+  <span>Play, Anatomy of a web framework: Hot redeploy.</span>
+</a></p>
 
 </article>
 <div id="disqus_thread"></div>
