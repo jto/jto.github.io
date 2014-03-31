@@ -520,7 +520,11 @@ table {
 
 }
 .gist .gist-file {
-  border: 0 !important;
+  border-radius: 2px;
+}
+.gist .line-numbers .line-number {
+  font-size: .7em;
+  line-height: 21px;
 }
 .gist .line-numbers,
 .gist .gist-meta {
@@ -532,7 +536,14 @@ table {
 .gist .line-numbers > *,
 .gist .gist-meta > * {
   color: #586e75 !important;
+  border: 0 !important;
   opacity: .6;
+}
+.gist .gist-data {
+  border: 0 !important;
+}
+.gist .gist-meta {
+  background: #ececec !important;
 }
 .gist .gist-meta * {
   font-size: .9em !important;
