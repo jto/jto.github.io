@@ -2,6 +2,10 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     
     <url>
+        <loc>http://foo.com/articles/alacarte_validation</loc>
+    </url>
+    
+    <url>
         <loc>http://foo.com/articles/play_new_validation_api</loc>
     </url>
     

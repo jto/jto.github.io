@@ -1,0 +1,139 @@
+<!doctype html>
+
+<html lang="en" prefix="og: http://ogp.me/ns#">
+  <head>
+    <meta charset="utf-8">
+    <meta name="author" content="Julien Tournay">
+    <meta name="keywords" content="playframework,scala,validation,form,json,shapeless">
+
+    <link rel="shortcut icon" href="/media/images/favicon.ico">
+    <link rel="stylesheet" href="/assets/css/blog.css" type="text/css" media="screen" title="no title" charset="utf-8">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:creator" content="@skaalf">
+    <meta property="og:title" content="&quot;A la carte&quot; data validation">
+    <meta property="og:description" content="Scrap your boilerplate.">
+    <meta property="og:image" content="">
+
+    <title>Julien Tournay</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="nav">
+        <a href="/" class="logo">
+          <em class="hi">hi!</em>
+          <span class="me">I'm Julien</span>
+        </a>
+        <ul class="social">
+          <li><a href="https://twitter.com/skaalf">&#xf099;</a></li>
+          <li><a href="https://github.com/jto">&#xf09b;</a></li>
+          <li><a href="http://www.linkedin.com/in/julientournay">&#xf0e1;</a></li>
+        </ul>
+      </div>
+      <div class="content">
+        <article>
+  <!-- <time>31 March 2014</time> -->
+  <h1>
+    <a href="https://twitter.com/share" data-text="&quot;A la carte&quot; data validation /articles/alacarte_validation" data-hashtags="playframework,scala,validation,form,json,shapeless" data-via="skaalf" class="twitter-share-button" data-lang="en">Tweet</a>
+    <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+    "A la carte" data validation
+  </h1>
+  <p><header>
+This article demonstrate a new application of shapeless Lenses. Using play's new validation API, we can validate Json and transform it into case classes instances. It's fully typesafe, does not rely on reflection and removes all the boilerplate code that was previously necessary.
+</header></p>
+
+<h2>Json to case class with the Validation API</h2>
+
+<p>Let's start with a very common example. My web application is receiving a Json representation of a Contact. Of course, before transforming that Json to an instance of a class, I need to validate it. It must have a firstname, a lastname, an age, which must be an Int, etc.</p>
+
+<script src="https://gist.github.com/jto/9835823.js?file=1_classes.scala"></script>
+
+
+<p>Obviously the validation API provides everything I need for the Job, plus a couple of handy methods. Using scala macro, we can generate the appropriate <code>Rules</code>. Typesafety is guaranteed. Age is automatically expected to be a number. Nice and easy.</p>
+
+<script src="https://gist.github.com/jto/9835823.js?file=2_macros.scala"></script>
+
+
+<p>There's nothing special about those macro-generated <code>Rules</code>. You use them just like any other <code>Rule</code>. In fact, it's exactly like if you had written the code yourself. Let's see that in action:</p>
+
+<script src="https://gist.github.com/jto/9835823.js?file=3_demo1.scala"></script>
+
+
+<h3>Customizing the validation rules</h3>
+
+<p>So far, we've been very happy with our generated <code>Rules</code>. But of course, a real application is not that simple. You're not only expect the Json to have a certain structure and to match your types, you also need to make sure the values make sense. A Contact <code>age</code> must be positive, the <code>email</code> field must be a valid email, etc. Our generated <code>Rule</code> won't validate all that.</p>
+
+<script src="https://gist.github.com/jto/9835823.js?file=4_invalid.scala"></script>
+
+
+<p>Our generated Rules are not enough anymore. But how do we get from those generated <code>Rules</code> to "smarter" specialized Rules ?
+As always, composition must be the answer! Theoretically, I <strong>should</strong> be able to reuse a generated <code>Rule</code>, and extend it with my custom validations. The <code>compose</code> method should help us there.</p>
+
+<script src="https://gist.github.com/jto/9835823.js?file=6_compose.scala"></script>
+
+
+<p>Did it work ? Kind of, but not really. We did find that the provided Json was invalid, but we can't tell exactly where the error happened. Of course we want to give valuable feedback to our users. An error without it's location is worthless.</p>
+
+<p>So what do we do then ? Turns out, we <strong>have to</strong> rewrite everything:</p>
+
+<script src="https://gist.github.com/jto/9835823.js?file=5_boilerplate.scala"></script>
+
+
+<p>Even with this ceremony-less API, it's still a bit cumbersome. But there's worse, there is more code, but also potentially more errors. I could be mistyping a field name <code>"firstname"</code> could become <code>"fisrtname"</code>. Would the compiler help me there ? No, I would not catch the error until runtime. Not really satisfying. This problem has haunted me for a while, and after a bit of investigation, I found a nice and simple solution.</p>
+
+<h2>Scrapping the boilerplate</h2>
+
+<p>It would be really nice if it was possible to, just like in Json, give a path representing a location inside a case class instance.
+For example, given an instance of <code>Contact</code> use a path like <code>(__ \ "information" \ "email")</code> to get the email value.</p>
+
+<h3>Shapeless to the rescue</h3>
+
+<p>Actually <a href="https://github.com/milessabin/shapeless">shapeless 2</a> has something a bit similar. It defines <code>Lens</code> for case class. Using a <code>Lens</code>, you can traverse a type hierarchy using fields indexes. As demonstrated in <a href="https://github.com/milessabin/shapeless/blob/master/examples/src/main/scala/shapeless/examples/lenses.scala#L34-L39">this example</a></p>
+
+<p>Ok, so it looks like the beginning of a solution. Now all I have to do is to implement the same thing, but this time supporting field names. A bit (actually a LOT) of head scratching latter, I finally came up with the solution, and proposed a <a href="https://github.com/milessabin/shapeless/pull/86">pull request</a>.</p>
+
+<script src="https://gist.github.com/jto/9835823.js?file=7_shapeless.scala"></script>
+
+
+<p>The beauty of this is that it's completely typesafe. The path I'm using is checked by the compiler, and the compiler would catch any error and tell me why it failed. We do not need to rely on reflection like most Java libraries do. We have the best of both world: Typesafety without the boilerplate.</p>
+
+<p>From there <a href="https://github.com/jto/validation/blob/shapeless/validation-core/src/main/scala/play/api/data/mapping/Formatter.scala#L188-L199">it's very easy</a> to improve the Validation API. All we have to do is to keep track of the path while using a <code>Lens</code> to traverse classes.</p>
+
+<script src="https://gist.github.com/jto/9835823.js?file=7_alacarte.scala"></script>
+
+
+
+
+<script src="https://gist.github.com/jto/9835823.js?file=8_alacarte_json.scala"></script>
+
+
+<p>Et voila :) Typesafe, boilerplate free Json to case class transformation.</p>
+
+</article>
+<div id="disqus_thread"></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'julien-tournay'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+      </div>
+    </div>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-41216875-1', 'jto.github.io');
+      ga('send', 'pageview');
+    </script>
+  </body>
+</html>
