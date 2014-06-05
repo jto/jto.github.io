@@ -2,23 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     
     <url>
-        <loc>http://foo.com/articles/alacarte_validation</loc>
+        <loc>http://jto.github.io/articles/alacarte_validation</loc>
     </url>
     
     <url>
-        <loc>http://foo.com/articles/play_new_validation_api</loc>
+        <loc>http://jto.github.io/articles/play_new_validation_api</loc>
     </url>
     
     <url>
-        <loc>http://foo.com/articles/play_anatomy_part3_routing</loc>
+        <loc>http://jto.github.io/articles/play_anatomy_part3_routing</loc>
     </url>
     
     <url>
-        <loc>http://foo.com/articles/play_anatomy_part2_sbt</loc>
+        <loc>http://jto.github.io/articles/play_anatomy_part2_sbt</loc>
     </url>
     
     <url>
-        <loc>http://foo.com/articles/play_anatomy_part1_bootstrap</loc>
+        <loc>http://jto.github.io/articles/play_anatomy_part1_bootstrap</loc>
     </url>
     
 
