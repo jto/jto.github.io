@@ -856,6 +856,7 @@ body {
   min-width: 500px;
   height: 100%;
   overflow: auto;
+  position: relative;
 }
 .content article {
   overflow: auto;
@@ -901,11 +902,12 @@ body {
 }
 .content .twitter-share-button {
   float: right;
-  margin-top: 8px;
+  margin-top: 22px;
 }
 .content h1 {
   font-size: 40px;
   color: #e6753d;
+  margin-top: 0;
 }
 .content h2 {
   font-size: 30px;

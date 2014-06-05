@@ -387,7 +387,8 @@ section.hi em {
   text-shadow: -1px 1px #ca5d28;
   position: relative;
 }
-section.hi h1 {
+section.hi h1,
+section.hi h1 span {
   height: 150px;
   line-height: 150px;
   color: #ffffff;
