@@ -31,13 +31,14 @@
         </ul>
       </div>
       <div class="content">
-        <article>
+        <article itemscope itemtype="http://schema.org/Article">
   <!-- <time>17 June 2013</time> -->
-  <h1>
+  <h1 itemprop="name">
     <a href="https://twitter.com/share" data-text="Play, Anatomy of a web framework: Routing and reverse routing." data-hashtags="playframework,scala,routing,sbt" data-via="skaalf" class="twitter-share-button" data-lang="en">Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     Play, Anatomy of a web framework: Routing and reverse routing.
   </h1>
+  <div itemprop="articleBody">
   <p><header>
 In this series of article, I'll explain the internals of <a href="http://www.playframework.com/" title="play">playframework</a>. I'll try to show how play works, from starting an application to rendering the HTTP response. Today, I will cover the routing of an HTTP request. How play compiles the route file, and invoke the application code, and let you use the reverse router.
 </header></p>
@@ -145,6 +146,7 @@ We've seen in the <a href="/articles/play_anatomy_part2_sbt">previous article</a
   <span>Play, Anatomy of a web framework: Hot redeploy.</span>
 </a></p>
 
+  </div>
 </article>
 <div id="disqus_thread"></div>
 <script type="text/javascript">

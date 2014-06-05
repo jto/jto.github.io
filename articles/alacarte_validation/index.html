@@ -31,13 +31,14 @@
         </ul>
       </div>
       <div class="content">
-        <article>
+        <article itemscope itemtype="http://schema.org/Article">
   <!-- <time>31 March 2014</time> -->
-  <h1>
+  <h1 itemprop="name">
     <a href="https://twitter.com/share" data-text="&quot;A la carte&quot; data validation" data-hashtags="playframework,scala,validation,form,json,shapeless" data-via="skaalf" class="twitter-share-button" data-lang="en">Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     "A la carte" data validation
   </h1>
+  <div itemprop="articleBody">
   <p><header>
 This article demonstrate a new application of shapeless Lenses. Using play's new validation API, we can validate Json and transform it into case classes instances. It's fully typesafe, does not rely on reflection and removes all the boilerplate code that was previously necessary.
 </header></p>
@@ -109,6 +110,7 @@ For example, given an instance of <code>Contact</code> use a path like <code>(__
 
 <p>Et voila :) Typesafe, boilerplate free Json to case class transformation.</p>
 
+  </div>
 </article>
 <div id="disqus_thread"></div>
 <script type="text/javascript">

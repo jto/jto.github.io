@@ -31,13 +31,14 @@
         </ul>
       </div>
       <div class="content">
-        <article>
+        <article itemscope itemtype="http://schema.org/Article">
   <!-- <time>24 January 2014</time> -->
-  <h1>
+  <h1 itemprop="name">
     <a href="https://twitter.com/share" data-text="Play 2.3 new validation API" data-hashtags="playframework,scala,validation,form,json" data-via="skaalf" class="twitter-share-button" data-lang="en">Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     Play 2.3 new validation API
   </h1>
+  <div itemprop="articleBody">
   <p><header>
 For the last weeks, I've been busy working on designing and implementing a new data validation API for Play.
 The API is an evolution of the JSON API created by <a href="https://twitter.com/mandubian">@mandubian</a>. It's based on the same concepts, but generalizes them.
@@ -246,6 +247,7 @@ This change has some impacts on the API use and possibilities. The most obvious 
 
 <p>Pull request is <a href="https://github.com/playframework/playframework/pull/1904">here</a>, feedbacks and contributions are welcome.</p>
 
+  </div>
 </article>
 <div id="disqus_thread"></div>
 <script type="text/javascript">

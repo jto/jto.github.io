@@ -31,13 +31,14 @@
         </ul>
       </div>
       <div class="content">
-        <article>
+        <article itemscope itemtype="http://schema.org/Article">
   <!-- <time>13 June 2013</time> -->
-  <h1>
+  <h1 itemprop="name">
     <a href="https://twitter.com/share" data-text="Play, Anatomy of a web framework: Hot redeploy." data-hashtags="playframework,scala,hotreload,sbt" data-via="skaalf" class="twitter-share-button" data-lang="en">Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     Play, Anatomy of a web framework: Hot redeploy.
   </h1>
+  <div itemprop="articleBody">
   <p><header>
 In this series of article, I'll explain the internals of <a href="http://www.playframework.com/" title="play">playframework</a>. I'll try to show how play works, from starting an application to rendering the HTTP response. Today, I'll show how playframework compiles and hot reloads code, and explain the relationship between play and sbt.
 </header></p>
@@ -207,6 +208,7 @@ If it's <strong>THAT</strong> simple why is not everybody using that technique !
   <span>Play, Anatomy of a web framework: Routing.</span>
 </a></p>
 
+  </div>
 </article>
 <div id="disqus_thread"></div>
 <script type="text/javascript">

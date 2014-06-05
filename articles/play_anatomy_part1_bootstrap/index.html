@@ -31,13 +31,14 @@
         </ul>
       </div>
       <div class="content">
-        <article>
+        <article itemscope itemtype="http://schema.org/Article">
   <!-- <time>12 June 2013</time> -->
-  <h1>
+  <h1 itemprop="name">
     <a href="https://twitter.com/share" data-text="Play, Anatomy of a web framework: The Web Server." data-hashtags="playframework,scala" data-via="skaalf" class="twitter-share-button" data-lang="en">Tweet</a>
     <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
     Play, Anatomy of a web framework: The Web Server.
   </h1>
+  <div itemprop="articleBody">
   <p><header>
 In this series of article, I'll explain the internals of <a href="http://www.playframework.com/" title="play">playframework</a>. I'll try to show how play works, from starting an application to rendering the HTTP response. Today, I will cover the startup of a play application in "prod" mode. We'll also see how play listens to HTTP requests, parse them and call your application code.
 </header></p>
@@ -208,6 +209,7 @@ Then you just need to run the resulting <code>Iteratee</code> to get a <code>Fut
   <span>Play, Anatomy of a web framework: Hot redeploy.</span>
 </a></p>
 
+  </div>
 </article>
 <div id="disqus_thread"></div>
 <script type="text/javascript">
