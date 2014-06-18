@@ -76,13 +76,13 @@ Scala is generally considered slower than Java, especially when it's used in a f
 <script src="https://gist.github.com/jto/5ec094ab4fd40f699b88.js?file=3_example.scala"></script>
 
 
-<p>When implementing the API, I didn't focus much on performances. My primary objectives were correctness, compositionality, and typesafety. Actually some design choices, like making every validator lazily evaluated, have a negative impact on performances. Let's how it performs.</p>
+<p>When implementing the API, I didn't focus much on performances. My primary objectives were correctness, compositionality, and typesafety. Actually some design choices, like making every validator lazily evaluated, have a negative impact on performances. Let's see how it performs.</p>
 
 <h2>Benchmark</h2>
 
 <h3>The test protocol</h3>
 
-<p>The benchmark consists of parsing and validating Json objects stored in a file. The data are extracted from <a href="http://labrosa.ee.columbia.edu/millionsong/lastfm">the Last.fm Dataset</a>. The JSON structure has been modified a bit for easier parsing (using the awesome <a href="http://stedolan.github.io/jq/">jq</a>). The code is hosted <a href="https://github.com/jto/validation-bench">here</a></p>
+<p>The benchmark consists of parsing and validating Json objects stored in a file. The data are extracted from <a href="http://labrosa.ee.columbia.edu/millionsong/lastfm">the Last.fm Dataset</a>. The JSON structure has been modified a bit for easier parsing (using the awesome <a href="http://stedolan.github.io/jq/">jq</a>). The code is hosted <a href="https://github.com/jto/validation-bench">here</a>.</p>
 
 <p>The performances are measured using a series of scalameter micro-benchmarks. Both APIs are using Jackson for parsing JSON.</p>
 
