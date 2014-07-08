@@ -1,0 +1,114 @@
+
+
+<html>
+    <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" >
+        <title>ScalaValidationWrite</title>
+        <link rel="stylesheet" media="screen" href="../resources/style/main.css"></link>
+        <script type="text/javascript" src='../resources/webjars/2.3.0-RC1/jquery/jquery.min.js'></script>
+        <script type="text/javascript" src="../resources/style/main.js"></script>
+    </head>
+    <body>
+
+        <section id="top">
+            <div class="wrapper">
+                <h1><a href="../index.html">Manual, tutorials & references</a></h1>
+                <nav>
+                    <span class="versions">
+                        <span>Browse APIs</span>
+                        <select onchange="document.location=this.value">
+                            <option selected disabled>Select language</option>
+                            <option value="/@documentation/api/scala/index.html">Scala</option>
+                            <option value="/@documentation/api/java/index.html">Java</option>
+                        </select>
+                    </span>
+                </nav>
+            </div>
+        </section>
+
+        <div id="content" class="wrapper doc">
+            <article id="main">
+                
+                    <h1>Serializing data</h1><h2>Introduction</h2><p>To serialize data, the validation API provides the <code>Write</code> type. A <code>Write[I, O]</code> defines a way to transform data, from type <code>I</code> to type <code>O</code>. It&rsquo;s basically a function <code>I =&gt; O</code>, where <code>I</code> is the type of the input to serialize, and <code>O</code> is the expected output type.</p><h2>A simple example</h2><p>Let&rsquo;s say you want to serialize a <code>Float</code> to <code>String</code>.<br/>All you need to do is to define a <code>Write</code> from <code>Float</code> to <code>String</code>:</p>
+<pre class="prettyprint"><code class="language-scala">import play.api.data.mapping._
+def floatToString: Write[Float, String] = ???</code></pre><p>For now we&rsquo;ll not implement <code>floatToString</code>, actually the validation API comes with a number of built-in Writes, including <code>Writes.anyval[T]</code>.</p><p>All you have to do is import the default Writes.</p>
+<pre class="prettyprint"><code class="language-scala">scala&gt; import play.api.data.mapping.Writes
+import play.api.data.mapping.Writes
+
+scala&gt; :t Writes.anyval[Float]
+play.api.data.mapping.Write[Float,String]
+</code></pre><p>Let&rsquo;s now test it against different <code>Float</code> values:</p>
+<pre class="prettyprint"><code class="language-scala">import play.api.data.mapping.Writes
+
+Writes.anyval.writes(12.8F) === &quot;12.8&quot;
+Writes.anyval.writes(12F) === &quot;12.0&quot;</code></pre><h2>Defining your own <code>Write</code></h2><p>Creating a new <code>Write</code> is almost as simple as creating a new function.<br/>This example creates a new <code>Write</code> serializing a Float with a custom format.</p>
+<pre class="prettyprint"><code class="language-scala">val currency = Write[Double, String]{ money =&gt;
+  import java.text.NumberFormat
+  import java.util.Locale
+  val f = NumberFormat.getCurrencyInstance(Locale.FRANCE)
+  f.format(money)
+}</code></pre><p>Testing it:</p>
+<pre class="prettyprint"><code class="language-scala">currency.writes(9.99) === &quot;9,99 €&quot;</code></pre><h2>Composing Writes</h2><p>Writes composition is very important in this API. <code>Write</code> composition means that given two writes <code>a: Write[I, J]</code> and <code>b: Write[J, O]</code>, we can create a new write <code>c: Write[I, O]</code>.</p><h3>Example</h3><p>Let&rsquo;s see we&rsquo;re working working on a e-commerce website. We have defined a <code>Product</code> class.<br/>Each product has a name and a price:</p>
+<pre class="prettyprint"><code class="language-scala">case class Product(name: String, price: Double)</code></pre><p>Now we&rsquo;d like to create a <code>Write[Product, String]</code> that serializes a product to a <code>String</code> of it price: <code>Product(&quot;demo&quot;, 123)</code> becomes <code>123,00 €</code></p><p>We have already defined <code>currency: Write[Double, String]</code>, so we&rsquo;d like to reuse that.<br/>First, we&rsquo;ll create a <code>Write[Product, Double]</code> extracting the price of the product:</p>
+<pre class="prettyprint"><code class="language-scala">val productPrice = Write[Product, Double]{ _.price }</code></pre><p>Now we just have to compose it with <code>currency</code>:</p>
+<pre class="prettyprint"><code class="language-scala">val productAsPrice: Write[Product,String] = productPrice compose currency</code></pre><p>Let&rsquo;s test our new <code>Write</code>:</p>
+<pre class="prettyprint"><code class="language-scala">productAsPrice.writes(Product(&quot;Awesome product&quot;, 9.99)) === &quot;9,99 €&quot;</code></pre>
+<blockquote><p><strong>Next:</strong> <a href=" ../ScalaValidationWriteCombinators/index.html"> Complex serialization with Writes combinators </a></p>
+</blockquote>
+                
+            </article>
+            <aside>
+                <h3>Play data validation API</h3>
+<ul>
+  <li><a href=" ../ScalaValidation/index.html">Introduction </a></li>
+  <li><a href=" ../ScalaValidationRule/index.html">Validation and transformation with Rule </a></li>
+  <li><a href=" ../ScalaValidationRuleCombinators/index.html">Complex validation: combining Rules </a></li>
+  <li><a href=" index.html">Serialization with Write </a></li>
+  <li><a href=" ../ScalaValidationWriteCombinators/index.html">Complex serialization: combining Writes </a></li>
+  <li><a href=" ../ScalaValidationForm/index.html">Forms template helpers </a></li>
+  <li><a href=" ../ScalaValidationMacros/index.html">Validation Inception </a></li>
+  <li><a href=" ../ScalaValidationExtensions/index.html">Supporting new types </a></li>
+  <li><a href=" ../ScalaValidationMigrationJson/index.html">Migration from 2.1.x Json API </a></li>
+  <li><a href=" ../ScalaValidationMigrationForm/index.html">Migration from 2.1.x Form API </a></li>
+  <li><a href=" ../ScalaValidationCookbook/index.html">Cookbook </a></li>
+</ul><h3>Main concepts</h3>
+<ul>
+  <li><a href=" ../ScalaActions/index.html">HTTP programming </a></li>
+  <li><a href=" ../ScalaAsync/index.html">Asynchronous HTTP programming </a></li>
+  <li><a href=" ../ScalaTemplates/index.html">The template engine </a></li>
+  <li><a href=" ../ScalaForms/index.html">HTTP form submission and validation </a></li>
+  <li><a href=" ../ScalaJson/index.html">Working with JSON </a></li>
+  <li><a href=" ../ScalaXmlRequests/index.html">Working with XML </a></li>
+  <li><a href=" ../ScalaFileUpload/index.html">Handling file upload </a></li>
+  <li><a href=" ../ScalaDatabase/index.html">Accessing an SQL database </a></li>
+  <li><a href=" ../ScalaCache/index.html">Using the Cache </a></li>
+  <li><a href=" ../ScalaWS/index.html">Calling WebServices </a></li>
+  <li><a href=" ../ScalaAkka/index.html">Integrating with Akka </a></li>
+  <li><a href=" ../ScalaI18N/index.html">Internationalization </a></li>
+  <li><a href=" ../ScalaGlobal/index.html">The application Global object </a></li>
+  <li><a href=" ../ScalaTest/index.html">Testing your application </a></li>
+</ul><h3>Advanced topics</h3>
+<ul>
+  <li><a href=" ../Iteratees/index.html">Handling data streams reactively </a></li>
+</ul><h3>Tutorials</h3>
+<ul>
+  <li><a href=" ../ScalaTodoList/index.html">Your first application </a></li>
+</ul>
+            </aside>
+        </div>
+
+        <style type="text/css">
+            @import '../resources/webjars/2.3.0-RC1/prettify/prettify.css';
+        </style>
+        <script type="text/javascript" charset="utf-8" src='../resources/webjars/2.3.0-RC1/prettify/prettify.js'></script>
+        <script type="text/javascript" charset="utf-8" src='../resources/webjars/2.3.0-RC1/prettify/lang-scala.js'></script>
+        <script type="text/javascript">
+            $(function() {
+                window.prettyPrint && prettyPrint();
+            });
+        </script>
+
+    </body>
+</html>
+
+<!-- Localized -->

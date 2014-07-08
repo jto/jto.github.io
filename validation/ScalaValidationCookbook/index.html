@@ -1,0 +1,285 @@
+
+
+<html>
+    <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" >
+        <title>ScalaValidationCookbook</title>
+        <link rel="stylesheet" media="screen" href="../resources/style/main.css"></link>
+        <script type="text/javascript" src='../resources/webjars/2.3.0-RC1/jquery/jquery.min.js'></script>
+        <script type="text/javascript" src="../resources/style/main.js"></script>
+    </head>
+    <body>
+
+        <section id="top">
+            <div class="wrapper">
+                <h1><a href="../index.html">Manual, tutorials & references</a></h1>
+                <nav>
+                    <span class="versions">
+                        <span>Browse APIs</span>
+                        <select onchange="document.location=this.value">
+                            <option selected disabled>Select language</option>
+                            <option value="/@documentation/api/scala/index.html">Scala</option>
+                            <option value="/@documentation/api/java/index.html">Java</option>
+                        </select>
+                    </span>
+                </nav>
+            </div>
+        </section>
+
+        <div id="content" class="wrapper doc">
+            <article id="main">
+                
+                    <h1>Cookbook</h1>
+<blockquote><p>All the examples below are validating Json objects. The API is not dedicated only to Json, it can be used on any type. Please refer to <a href=" ../ScalaValidationJson/index.html">Validating Json </a>, <a href="../ScalaValidationForm/index.html">Validating Forms</a>, and <a href="../ScalaValidationExtensions/index.html">Supporting new types</a> for more information.</p>
+</blockquote><h2><code>Rule</code></h2><h3>Typical case class validation</h3>
+<pre class="prettyprint"><code class="language-scala">import play.api.libs.json._
+import play.api.data.mapping._
+
+case class Creature(
+  name: String,
+  isDead: Boolean,
+  weight: Float)
+
+implicit val creatureRule = From[JsValue]{ __ =&gt;
+  import play.api.data.mapping.json.Rules._
+  (
+    (__ \ &quot;name&quot;).read[String] ~
+    (__ \ &quot;isDead&quot;).read[Boolean] ~
+    (__ \ &quot;weight&quot;).read[Float]
+  )(Creature.apply _)
+}
+
+val js = Json.obj( &quot;name&quot; -&gt; &quot;gremlins&quot;, &quot;isDead&quot; -&gt; false, &quot;weight&quot; -&gt; 1.0f)
+From[JsValue, Creature](js) == Success(Creature(&quot;gremlins&quot;, false, 1.0f))
+
+From[JsValue, Creature](Json.obj()) ===
+ Failure(Seq(
+  (Path \ &quot;name&quot;, Seq(ValidationError(&quot;error.required&quot;))),
+  (Path \ &quot;isDead&quot;, Seq(ValidationError(&quot;error.required&quot;))),
+  (Path \ &quot;weight&quot;, Seq(ValidationError(&quot;error.required&quot;)))))</code></pre><h3>Dependent values</h3><p>A common example of this use case is the validation of <code>password</code> and <code>password confirmation</code> fields in a signup form.</p>
+<ol>
+  <li>First, you need to validate that each field is valid independently</li>
+  <li>Then, given the two values, you need to validate that they are equals.</li>
+</ol>
+<pre class="prettyprint"><code class="language-scala">import play.api.libs.json._
+import play.api.libs.functional._
+import play.api.libs.functional.syntax._
+
+import play.api.data.mapping._
+
+val passRule = From[JsValue] { __ =&gt;
+  import play.api.data.mapping.json.Rules._
+  //#validate-dependent1
+  ((__ \ &quot;password&quot;).read(notEmpty) ~
+   (__ \ &quot;verify&quot;).read(notEmpty)).tupled
+  //#validate-dependent1
+  //#validate-dependent2
+    .compose(Rule.uncurry(Rules.equalTo[String])
+  //#validate-dependent2
+  //#validate-dependent3
+    .repath(_ =&gt; (Path \ &quot;verify&quot;)))
+  //#validate-dependent3
+}</code></pre><p>Splitting up the code:</p>
+<pre class="prettyprint"><code class="language-scala">((__ \ &quot;password&quot;).read(notEmpty) ~
+ (__ \ &quot;verify&quot;).read(notEmpty)).tupled</code></pre><p>This code creates a <code>Rule[JsValue, (String, String)]</code> each of of the String must be non-empty</p>
+<pre class="prettyprint"><code class="language-scala">.compose(Rule.uncurry(Rules.equalTo[String])</code></pre><p>We then create a <code>Rule[(String, String), String]</code> validating that given a <code>(String, String)</code>, both strings are equals. Those rules are then composed together.</p><p>In case of <code>Failure</code>, we want to control the field holding the errors. We change the <code>Path</code> of errors using <code>repath</code>:</p>
+<pre class="prettyprint"><code class="language-scala">.repath(_ =&gt; (Path \ &quot;verify&quot;)))</code></pre><p>Let&rsquo;s test it:</p>
+<pre class="prettyprint"><code class="language-scala">passRule.validate(Json.obj(&quot;password&quot; -&gt; &quot;foo&quot;, &quot;verify&quot; -&gt; &quot;foo&quot;)) === Success(&quot;foo&quot;)
+passRule.validate(Json.obj(&quot;password&quot; -&gt; &quot;&quot;, &quot;verify&quot; -&gt; &quot;foo&quot;)) === Failure(Seq((Path \ &quot;password&quot;, Seq(ValidationError(&quot;error.required&quot;)))))
+passRule.validate(Json.obj(&quot;password&quot; -&gt; &quot;foo&quot;, &quot;verify&quot; -&gt; &quot;&quot;)) === Failure(Seq((Path \ &quot;verify&quot;, Seq(ValidationError(&quot;error.required&quot;)))))
+passRule.validate(Json.obj(&quot;password&quot; -&gt; &quot;&quot;, &quot;verify&quot; -&gt; &quot;&quot;)) === Failure(Seq((Path \ &quot;password&quot;, Seq(ValidationError(&quot;error.required&quot;))), (Path \ &quot;verify&quot;, List(ValidationError(&quot;error.required&quot;)))))
+passRule.validate(Json.obj(&quot;password&quot; -&gt; &quot;foo&quot;, &quot;verify&quot; -&gt; &quot;bar&quot;)) === Failure(Seq((Path \ &quot;verify&quot;, Seq(ValidationError(&quot;error.equals&quot;, &quot;foo&quot;)))))</code></pre><h3>Recursive types</h3><p>When validating recursive types:</p>
+<ul>
+  <li>Use the <code>lazy</code> keyword to allow forward reference.</li>
+  <li>As with any recursive definition, the type of the <code>Rule</code> <strong>must</strong> be explicitly given.</li>
+</ul>
+<pre class="prettyprint"><code class="language-scala">case class User(
+  name: String,
+  age: Int,
+  email: Option[String],
+  isAlive: Boolean,
+  friend: Option[User])</code></pre>
+<pre class="prettyprint"><code class="language-scala">import play.api.libs.json._
+import play.api.data.mapping._
+
+// Note the lazy keyword, and the explicit typing
+implicit lazy val userRule: Rule[JsValue, User] = From[JsValue] { __ =&gt;
+  import play.api.data.mapping.json.Rules._
+
+  ((__ \ &quot;name&quot;).read[String] and
+   (__ \ &quot;age&quot;).read[Int] and
+   (__ \ &quot;email&quot;).read[Option[String]] and
+   (__ \ &quot;isAlive&quot;).read[Boolean] and
+   (__ \ &quot;friend&quot;).read[Option[User]])(User.apply _)
+}</code></pre><p>or using macros:</p>
+<pre class="prettyprint"><code class="language-scala">import play.api.libs.json._
+import play.api.data.mapping._
+import play.api.data.mapping.json.Rules._
+
+// Note the lazy keyword, and the explicit typing
+implicit lazy val userRule: Rule[JsValue, User] = Rule.gen[JsValue, User]</code></pre><h3>Read keys</h3>
+<pre class="prettyprint"><code class="language-scala">import play.api.libs.json._
+import play.api.data.mapping._
+
+val js = Json.parse(&quot;&quot;&quot;
+{
+  &quot;values&quot;: [
+    { &quot;foo&quot;: &quot;bar&quot; },
+    { &quot;bar&quot;: &quot;baz&quot; }
+  ]
+}
+&quot;&quot;&quot;)
+
+val r = From[JsValue] { __ =&gt;
+  import play.api.data.mapping.json.Rules._
+
+  val tupleR = Rule.fromMapping[JsValue, (String, String)]{
+    case JsObject(Seq((key, JsString(value)))) =&gt;  Success(key -&gt; value)
+    case _ =&gt; Failure(Seq(ValidationError(&quot;BAAAM&quot;)))
+  }
+
+  (__ \ &quot;values&quot;).read(seq(tupleR))
+}
+
+r.validate(js) === Success(Seq((&quot;foo&quot;, &quot;bar&quot;), (&quot;bar&quot;, &quot;baz&quot;)))</code></pre><h3>Validate subclasses (and parse the concrete class)</h3><p>Consider the following class definitions:</p>
+<pre class="prettyprint"><code class="language-scala"> trait A
+case class B(foo: Int) extends A
+case class C(bar: Int) extends A
+
+val b = Json.obj(&quot;name&quot; -&gt; &quot;B&quot;, &quot;foo&quot; -&gt; 4)
+val c = Json.obj(&quot;name&quot; -&gt; &quot;C&quot;, &quot;bar&quot; -&gt; 6)
+val e = Json.obj(&quot;name&quot; -&gt; &quot;E&quot;, &quot;eee&quot; -&gt; 6)</code></pre><h4>Trying all the possible rules implementations</h4>
+<pre class="prettyprint"><code class="language-scala">val rb: Rule[JsValue, A] = From[JsValue]{ __ =&gt;
+  import play.api.data.mapping.json.Rules._
+  (__ \ &quot;name&quot;).read(Rules.equalTo(&quot;B&quot;)) ~&gt; (__ \ &quot;foo&quot;).read[Int].fmap(B.apply _)
+}
+
+val rc: Rule[JsValue, A] = From[JsValue]{ __ =&gt;
+  import play.api.data.mapping.json.Rules._
+  (__ \ &quot;name&quot;).read(Rules.equalTo(&quot;C&quot;)) ~&gt; (__ \ &quot;bar&quot;).read[Int].fmap(C.apply _)
+}
+
+val typeFailure = Failure(Seq(Path -&gt; Seq(ValidationError(&quot;validation.unknownType&quot;))))
+val rule = rb orElse rc orElse Rule(_ =&gt; typeFailure)
+
+rule.validate(b) === Success(B(4))
+rule.validate(c) === Success(C(6))
+rule.validate(e) === Failure(Seq(Path -&gt; Seq(ValidationError(&quot;validation.unknownType&quot;))))</code></pre><h4>Using class discovery based on field discrimination</h4>
+<pre class="prettyprint"><code class="language-scala"> val typeFailure = Failure(Seq(Path -&gt; Seq(ValidationError(&quot;validation.unknownType&quot;))))
+
+ val rule = From[JsValue] { __ =&gt;
+  import play.api.data.mapping.json.Rules._
+  (__ \ &quot;name&quot;).read[String].flatMap[A] {
+    case &quot;B&quot; =&gt; (__ \ &quot;foo&quot;).read[Int].fmap(B.apply _)
+    case &quot;C&quot; =&gt; (__ \ &quot;bar&quot;).read[Int].fmap(C.apply _)
+    case _ =&gt; Rule(_ =&gt; typeFailure)
+  }
+}
+
+rule.validate(b) === Success(B(4))
+rule.validate(c) === Success(C(6))
+rule.validate(e) === Failure(Seq(Path -&gt; Seq(ValidationError(&quot;validation.unknownType&quot;))))</code></pre><h2><code>Write</code></h2><h3>typical case class <code>Write</code></h3>
+<pre class="prettyprint"><code class="language-scala">import play.api.libs.json._
+import play.api.data.mapping._
+import play.api.libs.functional.syntax.unlift
+
+case class Creature(
+  name: String,
+  isDead: Boolean,
+  weight: Float)
+
+implicit val creatureWrite = To[JsObject]{ __ =&gt;
+  import play.api.data.mapping.json.Writes._
+  (
+    (__ \ &quot;name&quot;).write[String] ~
+    (__ \ &quot;isDead&quot;).write[Boolean] ~
+    (__ \ &quot;weight&quot;).write[Float]
+  )(unlift(Creature.unapply _))
+}
+
+To[Creature, JsObject](Creature(&quot;gremlins&quot;, false, 1f)) === Json.parse(&quot;&quot;&quot;{&quot;name&quot;:&quot;gremlins&quot;,&quot;isDead&quot;:false,&quot;weight&quot;:1.0}&quot;&quot;&quot;)</code></pre><h3>Adding static values to a <code>Write</code></h3>
+<pre class="prettyprint"><code class="language-scala">import play.api.libs.json._
+import play.api.libs.functional._
+import play.api.libs.functional.syntax._
+
+import play.api.data.mapping._
+
+case class LatLong(lat: Float, long: Float)
+
+implicit val latLongWrite = {
+  import play.api.data.mapping.json.Writes._
+  To[JsObject] { __ =&gt;
+    ((__ \ &quot;lat&quot;).write[Float] ~
+     (__ \ &quot;long&quot;).write[Float])(unlift(LatLong.unapply _))
+  }
+}
+
+case class Point(coords: LatLong)
+
+implicit val pointWrite = {
+  import play.api.data.mapping.json.Writes._
+  To[JsObject] { __ =&gt;
+    ((__ \ &quot;coords&quot;).write[LatLong] ~
+     (__ \ &quot;type&quot;).write[String])((_: Point).coords -&gt; &quot;point&quot;)
+  }
+}
+
+val p = Point(LatLong(123.3F, 334.5F))
+pointWrite.writes(p) === Json.parse(&quot;&quot;&quot;{&quot;coords&quot;:{&quot;lat&quot;:123.3,&quot;long&quot;:334.5},&quot;type&quot;:&quot;point&quot;}&quot;&quot;&quot;)</code></pre>
+                
+            </article>
+            <aside>
+                <h3>Play data validation API</h3>
+<ul>
+  <li><a href=" ../ScalaValidation/index.html">Introduction </a></li>
+  <li><a href=" ../ScalaValidationRule/index.html">Validation and transformation with Rule </a></li>
+  <li><a href=" ../ScalaValidationRuleCombinators/index.html">Complex validation: combining Rules </a></li>
+  <li><a href=" ../ScalaValidationWrite/index.html">Serialization with Write </a></li>
+  <li><a href=" ../ScalaValidationWriteCombinators/index.html">Complex serialization: combining Writes </a></li>
+  <li><a href=" ../ScalaValidationForm/index.html">Forms template helpers </a></li>
+  <li><a href=" ../ScalaValidationMacros/index.html">Validation Inception </a></li>
+  <li><a href=" ../ScalaValidationExtensions/index.html">Supporting new types </a></li>
+  <li><a href=" ../ScalaValidationMigrationJson/index.html">Migration from 2.1.x Json API </a></li>
+  <li><a href=" ../ScalaValidationMigrationForm/index.html">Migration from 2.1.x Form API </a></li>
+  <li><a href=" index.html">Cookbook </a></li>
+</ul><h3>Main concepts</h3>
+<ul>
+  <li><a href=" ../ScalaActions/index.html">HTTP programming </a></li>
+  <li><a href=" ../ScalaAsync/index.html">Asynchronous HTTP programming </a></li>
+  <li><a href=" ../ScalaTemplates/index.html">The template engine </a></li>
+  <li><a href=" ../ScalaForms/index.html">HTTP form submission and validation </a></li>
+  <li><a href=" ../ScalaJson/index.html">Working with JSON </a></li>
+  <li><a href=" ../ScalaXmlRequests/index.html">Working with XML </a></li>
+  <li><a href=" ../ScalaFileUpload/index.html">Handling file upload </a></li>
+  <li><a href=" ../ScalaDatabase/index.html">Accessing an SQL database </a></li>
+  <li><a href=" ../ScalaCache/index.html">Using the Cache </a></li>
+  <li><a href=" ../ScalaWS/index.html">Calling WebServices </a></li>
+  <li><a href=" ../ScalaAkka/index.html">Integrating with Akka </a></li>
+  <li><a href=" ../ScalaI18N/index.html">Internationalization </a></li>
+  <li><a href=" ../ScalaGlobal/index.html">The application Global object </a></li>
+  <li><a href=" ../ScalaTest/index.html">Testing your application </a></li>
+</ul><h3>Advanced topics</h3>
+<ul>
+  <li><a href=" ../Iteratees/index.html">Handling data streams reactively </a></li>
+</ul><h3>Tutorials</h3>
+<ul>
+  <li><a href=" ../ScalaTodoList/index.html">Your first application </a></li>
+</ul>
+            </aside>
+        </div>
+
+        <style type="text/css">
+            @import '../resources/webjars/2.3.0-RC1/prettify/prettify.css';
+        </style>
+        <script type="text/javascript" charset="utf-8" src='../resources/webjars/2.3.0-RC1/prettify/prettify.js'></script>
+        <script type="text/javascript" charset="utf-8" src='../resources/webjars/2.3.0-RC1/prettify/lang-scala.js'></script>
+        <script type="text/javascript">
+            $(function() {
+                window.prettyPrint && prettyPrint();
+            });
+        </script>
+
+    </body>
+</html>
+
+<!-- Localized -->

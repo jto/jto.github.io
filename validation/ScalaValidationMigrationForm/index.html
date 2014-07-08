@@ -1,0 +1,216 @@
+
+
+<html>
+    <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" >
+        <title>ScalaValidationMigrationForm</title>
+        <link rel="stylesheet" media="screen" href="../resources/style/main.css"></link>
+        <script type="text/javascript" src='../resources/webjars/2.3.0-RC1/jquery/jquery.min.js'></script>
+        <script type="text/javascript" src="../resources/style/main.js"></script>
+    </head>
+    <body>
+
+        <section id="top">
+            <div class="wrapper">
+                <h1><a href="../index.html">Manual, tutorials & references</a></h1>
+                <nav>
+                    <span class="versions">
+                        <span>Browse APIs</span>
+                        <select onchange="document.location=this.value">
+                            <option selected disabled>Select language</option>
+                            <option value="/@documentation/api/scala/index.html">Scala</option>
+                            <option value="/@documentation/api/java/index.html">Java</option>
+                        </select>
+                    </span>
+                </nav>
+            </div>
+        </section>
+
+        <div id="content" class="wrapper doc">
+            <article id="main">
+                
+                    <h1>Form API migration</h1><p>Although the new Validation API differs significantly from the <code>Form</code> API, migrating to to new API is straightforward.<br/>This example is a case study of the migration of one of play sample application: &ldquo;computer database&rdquo;.</p><p>We&rsquo;ll consider <code>Application.scala</code>. This controller take care of Computer creation, and edition. The models are defined in <code>Models.scala</code></p>
+<pre class="prettyprint"><code class="language-scala">case class Company(id: Pk[Long] = NotAssigned, name: String)
+case class Computer(id: Pk[Long] = NotAssigned, name: String, introduced: Option[Date], discontinued: Option[Date], companyId: Option[Long])
+</code></pre><p>Here&rsquo;s the <code>Application</code> controller, <strong>before migration</strong>:</p>
+<pre class="prettyprint"><code class="language-scala">package controllers
+
+import play.api._
+import play.api.mvc._
+import play.api.data._
+import play.api.data.Forms._
+
+import anorm._
+
+import views._
+import models._
+
+object Application extends Controller {
+
+
+  /**
+   * Describe the computer form (used in both edit and create screens).
+   */
+  val computerForm = Form(
+    mapping(
+      &quot;id&quot; -&gt; ignored(NotAssigned:Pk[Long]),
+      &quot;name&quot; -&gt; nonEmptyText,
+      &quot;introduced&quot; -&gt; optional(date(&quot;yyyy-MM-dd&quot;)),
+      &quot;discontinued&quot; -&gt; optional(date(&quot;yyyy-MM-dd&quot;)),
+      &quot;company&quot; -&gt; optional(longNumber)
+    )(Computer.apply)(Computer.unapply)
+  )
+
+  def index = // ...
+
+  def list(page: Int, orderBy: Int, filter: String) = // ...
+
+  def edit(id: Long) = Action {
+    Computer.findById(id).map { computer =&gt;
+      Ok(html.editForm(id, computerForm.fill(computer), Company.options))
+    }.getOrElse(NotFound)
+  }
+
+  def update(id: Long) = Action { implicit request =&gt;
+    computerForm.bindFromRequest.fold(
+      formWithErrors =&gt; BadRequest(html.editForm(id, formWithErrors, Company.options)),
+      computer =&gt; {
+        Computer.update(id, computer)
+        Home.flashing(&quot;success&quot; -&gt; &quot;Computer %s has been updated&quot;.format(computer.name))
+      }
+    )
+  }
+
+  def create = Action {
+    Ok(html.createForm(computerForm, Company.options))
+  }
+
+  def save = Action { implicit request =&gt;
+    computerForm.bindFromRequest.fold(
+      formWithErrors =&gt; BadRequest(html.createForm(formWithErrors, Company.options)),
+      computer =&gt; {
+        Computer.insert(computer)
+        Home.flashing(&quot;success&quot; -&gt; &quot;Computer %s has been created&quot;.format(computer.name))
+      }
+    )
+  }
+
+  def delete(id: Long) = // ...
+
+}
+
+</code></pre><h3>Validation rules migration</h3><p>The first thing we must change is the definition of the <code>Computer</code> validations.<br/>Instead of using <code>play.api.data.Form</code>, we must define a <code>Rule[UrlFormEncoded, Computer]</code>.</p><p><code>UrlFormEncoded</code> is simply an alias for <code>Map[String, Seq[String]]</code>, which is the type used by play for form encoded request bodies.</p><p>Even though the syntax looks different, the logic is basically the same.</p>
+<pre class="prettyprint"><code class="language-scala">import play.api.data.mapping._
+
+// ...
+
+implicit val computerValidation = From[UrlFormEncoded] { __ =&gt;
+  import play.api.data.mapping.Rules._
+  ((__ \ &quot;id&quot;).read(ignored[UrlFormEncoded, Pk[Long]](NotAssigned)) ~
+   (__ \ &quot;name&quot;).read(notEmpty) ~
+   (__ \ &quot;introduced&quot;).read(option(date(&quot;yyyy-MM-dd&quot;))) ~
+   (__ \ &quot;discontinued&quot;).read(option(date(&quot;yyyy-MM-dd&quot;))) ~
+   (__ \ &quot;company&quot;).read[Option[Long]]) (Computer.apply _)
+}
+</code></pre><p>You start by defining a simple validation for each field.</p><p>For example <code>&quot;name&quot; -&gt; nonEmptyText</code> now becomes <code>(__ \ &quot;name&quot;).read(notEmpty)</code><br/>The next step is to compose these validations together, to get a new validation.</p><p>The <em>old</em> api does that using a function called <code>mapping</code>, the validation api uses a method called <code>~</code> or <code>and</code> (<code>and</code> is a alias).</p>
+<pre class="prettyprint"><code class="language-scala">mapping(
+  &quot;name&quot; -&gt; nonEmptyText,
+  &quot;introduced&quot; -&gt; optional(date(&quot;yyyy-MM-dd&quot;))
+</code></pre><p>now becomes</p>
+<pre class="prettyprint"><code class="language-scala">(__ \ &quot;name&quot;).read(notEmpty) ~
+(__ \ &quot;introduced&quot;).read(option(date(&quot;yyyy-MM-dd&quot;)))
+</code></pre><p>A few built-in validations have a slightly different name than in the Form api, like <code>optional</code> that became <code>option</code>. You can find all the built-in rules in the scaladoc.</p>
+<blockquote><p><strong>Be careful with your imports</strong>. Some rules have the same names than form mapping, which could make the implicit parameters resolution fail silently.</p>
+</blockquote><h3>Filling a <code>Form</code> with an object</h3><p>The new validation API comes with a <code>Form</code> class. This class is fully compatible with the existing form input helpers.<br/>You can use the <code>Form.fill</code> method to create a <code>Form</code> from a class.</p><p><code>Form.fill</code> needs an instance of <code>Write[T, UrlFormEncoded]</code>, where <code>T</code> is your class type.</p>
+<pre class="prettyprint"><code class="language-scala">implicit def pkW[I, O](implicit w: Path =&gt; Write[Option[I], O]) =
+  (p: Path) =&gt; w(p).contramap((_: Pk[I]).toOption)
+
+implicit val computerW = To[UrlFormEncoded] { __ =&gt;
+  import play.api.data.mapping.Writes._
+  ((__ \ &quot;id&quot;).write[Pk[Long]] ~
+   (__ \ &quot;name&quot;).write[String] ~
+   (__ \ &quot;introduced&quot;).write(option(date(&quot;yyyy-MM-dd&quot;))) ~
+   (__ \ &quot;discontinued&quot;).write(option(date(&quot;yyyy-MM-dd&quot;))) ~
+   (__ \ &quot;company&quot;).write[Option[Long]]) (unlift(Computer.unapply _))
+}
+</code></pre>
+<blockquote><p>Note that this <code>Write</code> takes care of formatting.</p>
+</blockquote><p>We can then create a <code>Form</code> for a computer instance using <code>Form.fill</code>, and pass it to the view:</p>
+<pre class="prettyprint"><code class="language-scala">def edit(id: Long) = Action {
+  Computer.findById(id).map { computer =&gt;
+    Ok(html.editForm(id, Form.fill(computer), Company.options))
+  }.getOrElse(NotFound)
+}
+</code></pre>
+<blockquote><p>The type of <code>Form</code> in the view parameters is now: <code>@(..., computerForm: play.api.data.mapping.Form[Computer], ...)</code></p>
+</blockquote><h3>Validating the submitted form</h3><p>Handling validation errors is vastly similar, the main difference is that <code>bindFromRequest</code> does not exist anymore.</p>
+<pre class="prettyprint"><code class="language-scala">def save = Action(parse.urlFormEncoded) { implicit request =&gt;
+  val r = computerValidation.validate(request.body)
+  r.fold(
+    err =&gt; BadRequest(html.createForm(Form(request.body, r), Company.options)),
+    computer =&gt; {
+      Computer.insert(computer)
+      Home.flashing(&quot;success&quot; -&gt; &quot;Computer %s has been updated&quot;.format(computer.name))
+    }
+  )
+}
+</code></pre>
+<blockquote><p><strong>Next:</strong> - <a href=" ../ScalaValidationCookbook/index.html">Cookbook </a></p>
+</blockquote>
+                
+            </article>
+            <aside>
+                <h3>Play data validation API</h3>
+<ul>
+  <li><a href=" ../ScalaValidation/index.html">Introduction </a></li>
+  <li><a href=" ../ScalaValidationRule/index.html">Validation and transformation with Rule </a></li>
+  <li><a href=" ../ScalaValidationRuleCombinators/index.html">Complex validation: combining Rules </a></li>
+  <li><a href=" ../ScalaValidationWrite/index.html">Serialization with Write </a></li>
+  <li><a href=" ../ScalaValidationWriteCombinators/index.html">Complex serialization: combining Writes </a></li>
+  <li><a href=" ../ScalaValidationForm/index.html">Forms template helpers </a></li>
+  <li><a href=" ../ScalaValidationMacros/index.html">Validation Inception </a></li>
+  <li><a href=" ../ScalaValidationExtensions/index.html">Supporting new types </a></li>
+  <li><a href=" ../ScalaValidationMigrationJson/index.html">Migration from 2.1.x Json API </a></li>
+  <li><a href=" index.html">Migration from 2.1.x Form API </a></li>
+  <li><a href=" ../ScalaValidationCookbook/index.html">Cookbook </a></li>
+</ul><h3>Main concepts</h3>
+<ul>
+  <li><a href=" ../ScalaActions/index.html">HTTP programming </a></li>
+  <li><a href=" ../ScalaAsync/index.html">Asynchronous HTTP programming </a></li>
+  <li><a href=" ../ScalaTemplates/index.html">The template engine </a></li>
+  <li><a href=" ../ScalaForms/index.html">HTTP form submission and validation </a></li>
+  <li><a href=" ../ScalaJson/index.html">Working with JSON </a></li>
+  <li><a href=" ../ScalaXmlRequests/index.html">Working with XML </a></li>
+  <li><a href=" ../ScalaFileUpload/index.html">Handling file upload </a></li>
+  <li><a href=" ../ScalaDatabase/index.html">Accessing an SQL database </a></li>
+  <li><a href=" ../ScalaCache/index.html">Using the Cache </a></li>
+  <li><a href=" ../ScalaWS/index.html">Calling WebServices </a></li>
+  <li><a href=" ../ScalaAkka/index.html">Integrating with Akka </a></li>
+  <li><a href=" ../ScalaI18N/index.html">Internationalization </a></li>
+  <li><a href=" ../ScalaGlobal/index.html">The application Global object </a></li>
+  <li><a href=" ../ScalaTest/index.html">Testing your application </a></li>
+</ul><h3>Advanced topics</h3>
+<ul>
+  <li><a href=" ../Iteratees/index.html">Handling data streams reactively </a></li>
+</ul><h3>Tutorials</h3>
+<ul>
+  <li><a href=" ../ScalaTodoList/index.html">Your first application </a></li>
+</ul>
+            </aside>
+        </div>
+
+        <style type="text/css">
+            @import '../resources/webjars/2.3.0-RC1/prettify/prettify.css';
+        </style>
+        <script type="text/javascript" charset="utf-8" src='../resources/webjars/2.3.0-RC1/prettify/prettify.js'></script>
+        <script type="text/javascript" charset="utf-8" src='../resources/webjars/2.3.0-RC1/prettify/lang-scala.js'></script>
+        <script type="text/javascript">
+            $(function() {
+                window.prettyPrint && prettyPrint();
+            });
+        </script>
+
+    </body>
+</html>
+
+<!-- Localized -->

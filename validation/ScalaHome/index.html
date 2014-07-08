@@ -1,0 +1,192 @@
+
+
+<html>
+    <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" >
+        <title>ScalaHome</title>
+        <link rel="stylesheet" media="screen" href="../resources/style/main.css"></link>
+        <script type="text/javascript" src='../resources/webjars/2.3.0-RC1/jquery/jquery.min.js'></script>
+        <script type="text/javascript" src="../resources/style/main.js"></script>
+    </head>
+    <body>
+
+        <section id="top">
+            <div class="wrapper">
+                <h1><a href="../index.html">Manual, tutorials & references</a></h1>
+                <nav>
+                    <span class="versions">
+                        <span>Browse APIs</span>
+                        <select onchange="document.location=this.value">
+                            <option selected disabled>Select language</option>
+                            <option value="/@documentation/api/scala/index.html">Scala</option>
+                            <option value="/@documentation/api/java/index.html">Java</option>
+                        </select>
+                    </span>
+                </nav>
+            </div>
+        </section>
+
+        <div id="content" class="wrapper doc">
+            <article id="main">
+                
+                    <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> --><h1>Play for Scala developers</h1><p>The Scala API for Play application developers is available in the <code>play.api</code> package. </p>
+<blockquote><p>The API available directly inside the <code>play</code> package (such as <code>play.mvc</code>) is reserved for Java developers. As a Scala developer, look at <code>play.api.mvc</code>.</p>
+</blockquote><h2>Main concepts</h2>
+<ol>
+  <li><a href=" ../ScalaActions/index.html">HTTP programming </a>
+  <ol>
+    <li><a href=" ../ScalaActions/index.html">Actions, Controllers and Results </a></li>
+    <li><a href=" ../ScalaRouting/index.html">HTTP routing </a></li>
+    <li><a href=" ../ScalaResults/index.html">Manipulating results </a></li>
+    <li><a href=" ../ScalaSessionFlash/index.html">Session and Flash scopes </a></li>
+    <li><a href=" ../ScalaBodyParsers/index.html">Body parsers </a></li>
+    <li><a href=" ../ScalaActionsComposition/index.html">Actions composition </a></li>
+    <li><a href=" ../ScalaContentNegotiation/index.html">Content negotiation </a></li>
+  </ol></li>
+  <li><a href=" ../ScalaAsync/index.html">Asynchronous HTTP programming </a>
+  <ol>
+    <li><a href=" ../ScalaAsync/index.html">Handling asynchronous results </a></li>
+    <li><a href=" ../ScalaStream/index.html">Streaming HTTP responses </a></li>
+    <li><a href=" ../ScalaComet/index.html">Comet sockets </a></li>
+    <li><a href=" ../ScalaWebSockets/index.html">WebSockets </a></li>
+  </ol></li>
+  <li><a href=" ../ScalaTemplates/index.html">The template engine </a>
+  <ol>
+    <li><a href=" ../ScalaTemplates/index.html">Templates syntax </a></li>
+    <li><a href=" ../ScalaTemplateUseCases/index.html">Common use cases </a></li>
+  </ol></li>
+  <li><a href=" ../ScalaForms/index.html">Form submission and validation </a>
+  <ol>
+    <li><a href=" ../ScalaForms/index.html">Handling form submission </a></li>
+    <li><a href="../ScalaCsrf/index.html">Protecting against CSRF</a></li>
+    <li><a href="../ScalaCustomValidations/index.html">Custom Validations</a></li>
+    <li><a href="../ScalaCustomFieldConstructors/index.html">Custom Field Constructors</a></li>
+  </ol></li>
+  <li><a href=" ../ScalaJson/index.html">Working with Json </a>
+  <ol>
+    <li><a href=" ../ScalaJson/index.html">Play Json Basics </a></li>
+    <li><a href=" ../ScalaJsonCombinators/index.html">Json Reads/Writes/Format Combinators </a></li>
+    <li><a href=" ../ScalaJsonTransformers/index.html">Json Transformers </a></li>
+    <li><a href=" ../ScalaJsonInception/index.html">Json Macro Inception </a></li>
+    <li><a href=" ../ScalaJsonRequests/index.html">Handling and serving Json requests </a></li>
+  </ol></li>
+  <li><a href=" ../ScalaXmlRequests/index.html">Working with XML </a>
+  <ol>
+    <li><a href=" ../ScalaXmlRequests/index.html">Handling and serving XML requests </a></li>
+  </ol></li>
+  <li><a href=" ../ScalaFileUpload/index.html">Handling file upload </a>
+  <ol>
+    <li><a href=" ../ScalaFileUpload/index.html">Direct upload and multipart/form-data </a></li>
+  </ol></li>
+  <li><a href=" ../ScalaDatabase/index.html">Accessing an SQL database </a>
+  <ol>
+    <li><a href=" ../ScalaDatabase/index.html">Configuring and using JDBC </a></li>
+    <li><a href=" ../ScalaAnorm/index.html">Using Anorm to access your database </a></li>
+    <li><a href=" ../ScalaDatabaseOthers/index.html">Integrating with other database access libraries </a></li>
+  </ol></li>
+  <li><a href=" ../ScalaCache/index.html">Using the Cache </a>
+  <ol>
+    <li><a href=" ../ScalaCache/index.html">The Play cache API </a></li>
+  </ol></li>
+  <li><a href=" ../ScalaWS/index.html">Calling WebServices </a>
+  <ol>
+    <li><a href=" ../ScalaWS/index.html">The Play WS API  </a></li>
+    <li><a href=" ../ScalaOpenID/index.html">Connecting to OpenID services </a></li>
+    <li><a href=" ../ScalaOAuth/index.html">Accessing resources protected by OAuth </a></li>
+  </ol></li>
+  <li><a href=" ../ScalaAkka/index.html">Integrating with Akka </a>
+  <ol>
+    <li><a href=" ../ScalaAkka/index.html">Setting up Actors and scheduling asynchronous tasks </a></li>
+  </ol></li>
+  <li><a href=" ../ScalaI18N/index.html">Internationalization </a>
+  <ol>
+    <li><a href=" ../ScalaI18N/index.html">Messages externalisation and i18n </a></li>
+  </ol></li>
+  <li><a href=" ../ScalaGlobal/index.html">The application Global object </a>
+  <ol>
+    <li><a href=" ../ScalaGlobal/index.html">Application global settings </a></li>
+    <li><a href=" ../ScalaInterceptors/index.html">Intercepting requests </a></li>
+  </ol></li>
+  <li><a href=" ../ScalaTest/index.html">Testing your application </a>
+  <ol>
+    <li><a href=" ../ScalaTest/index.html">Writing tests </a></li>
+    <li><a href=" ../ScalaFunctionalTest/index.html">Writing functional tests </a></li>
+  </ol></li>
+</ol><h2>Advanced topics</h2>
+<ol>
+  <li><a href=" ../Iteratees/index.html">Handling data streams reactively </a>
+  <ol>
+    <li><a href=" ../Iteratees/index.html">Iteratees </a></li>
+    <li><a href=" ../Enumerators/index.html">Enumerators </a></li>
+    <li><a href=" ../Enumeratees/index.html">Enumeratees </a></li>
+  </ol></li>
+  <li><a href=" ../HttpApi/index.html">HTTP Architecture </a>
+  <ol>
+    <li><a href=" ../HttpApi/index.html">HTTP API </a></li>
+    <li><a href=" ../ScalaHttpFilters/index.html">HTTP Filters </a></li>
+  </ol></li>
+  <li><a href=" ../ScalaDependencyInjection/index.html">Dependency Injection </a>
+  <ol>
+    <li><a href=" ../ScalaDependencyInjection/index.html">Controller Injection </a></li>
+    <li><a href=" ../ScalaDependencyInjection/index.html">Example Projects </a></li>
+  </ol></li>
+  <li><a href=" ../ScalaJavascriptRouting/index.html">Reverse routing </a>
+  <ol>
+    <li><a href=" ../ScalaJavascriptRouting/index.html">Javascript Routing </a></li>
+  </ol></li>
+  <li><a href="../ScalaPlugins/index.html">Extending Play</a>
+  <ol>
+    <li><a href="../ScalaPlugins/index.html">Writing Plugins</a></li>
+  </ol></li>
+</ol><h2>Tutorials</h2>
+<ol>
+  <li><a href=" ../ScalaTodoList/index.html">Your first application </a></li>
+</ol>
+                
+            </article>
+            <aside>
+                <!--- Copyright (C) 2009-2013 Typesafe Inc. <http://www.typesafe.com> --><h3>Main concepts</h3>
+<ul>
+  <li><a href=" ../ScalaActions/index.html">HTTP programming </a></li>
+  <li><a href=" ../ScalaAsync/index.html">Asynchronous HTTP programming </a></li>
+  <li><a href=" ../ScalaTemplates/index.html">The template engine </a></li>
+  <li><a href=" ../ScalaForms/index.html">HTTP form submission and validation </a></li>
+  <li><a href=" ../ScalaJson/index.html">Working with JSON </a></li>
+  <li><a href=" ../ScalaXmlRequests/index.html">Working with XML </a></li>
+  <li><a href=" ../ScalaFileUpload/index.html">Handling file upload </a></li>
+  <li><a href=" ../ScalaDatabase/index.html">Accessing an SQL database </a></li>
+  <li><a href=" ../ScalaCache/index.html">Using the Cache </a></li>
+  <li><a href=" ../ScalaWS/index.html">Calling WebServices </a></li>
+  <li><a href=" ../ScalaAkka/index.html">Integrating with Akka </a></li>
+  <li><a href=" ../ScalaI18N/index.html">Internationalization </a></li>
+  <li><a href=" ../ScalaGlobal/index.html">The application Global object </a></li>
+  <li><a href=" ../ScalaTest/index.html">Testing your application </a></li>
+</ul><h3>Advanced topics</h3>
+<ul>
+  <li><a href=" ../Iteratees/index.html">Handling data streams reactively </a></li>
+  <li><a href=" ../HttpApi/index.html">HTTP API </a></li>
+  <li><a href=" ../ScalaHttpFilters/index.html">HTTP Filters </a></li>
+  <li><a href=" ../ScalaDependencyInjection/index.html">Dependency Injection </a></li>
+  <li><a href="../ScalaPlugins/index.html">Extending Play</a></li>
+</ul><h3>Tutorials</h3>
+<ul>
+  <li><a href=" ../ScalaTodoList/index.html">Your first application </a></li>
+</ul>
+            </aside>
+        </div>
+
+        <style type="text/css">
+            @import '../resources/webjars/2.3.0-RC1/prettify/prettify.css';
+        </style>
+        <script type="text/javascript" charset="utf-8" src='../resources/webjars/2.3.0-RC1/prettify/prettify.js'></script>
+        <script type="text/javascript" charset="utf-8" src='../resources/webjars/2.3.0-RC1/prettify/lang-scala.js'></script>
+        <script type="text/javascript">
+            $(function() {
+                window.prettyPrint && prettyPrint();
+            });
+        </script>
+
+    </body>
+</html>
+
+<!-- Localized -->

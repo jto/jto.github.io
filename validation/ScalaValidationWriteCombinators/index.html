@@ -1,0 +1,153 @@
+
+
+<html>
+    <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" >
+        <title>ScalaValidationWriteCombinators</title>
+        <link rel="stylesheet" media="screen" href="../resources/style/main.css"></link>
+        <script type="text/javascript" src='../resources/webjars/2.3.0-RC1/jquery/jquery.min.js'></script>
+        <script type="text/javascript" src="../resources/style/main.js"></script>
+    </head>
+    <body>
+
+        <section id="top">
+            <div class="wrapper">
+                <h1><a href="../index.html">Manual, tutorials & references</a></h1>
+                <nav>
+                    <span class="versions">
+                        <span>Browse APIs</span>
+                        <select onchange="document.location=this.value">
+                            <option selected disabled>Select language</option>
+                            <option value="/@documentation/api/scala/index.html">Scala</option>
+                            <option value="/@documentation/api/java/index.html">Java</option>
+                        </select>
+                    </span>
+                </nav>
+            </div>
+        </section>
+
+        <div id="content" class="wrapper doc">
+            <article id="main">
+                
+                    <h1>Combining Writes</h1><h2>Introduction</h2><p>We&rsquo;ve already explained what a <code>Write</code> is in <a href=" ../ScalaValidationWrite/index.html">the previous chapter </a>. Those examples were only covering simple writes. Most of the time, writes are used to transform complex hierarchical objects.</p><p>In the validation API, we create complex object writes by combining simple writes. This chapter details the creation of those complex writes.</p>
+<blockquote><p>All the examples below are transforming classes to Json objects. The API is not dedicated only to Json, it can be used on any type. Please refer to <a href=" ../ScalaValidationJson/index.html">Serializing Json </a>, <a href="../ScalaValidationForm/index.html">Serializing Forms</a>, and <a href="../ScalaValidationExtensions/index.html">Supporting new types</a> for more information.</p>
+</blockquote><h2>Path</h2><h3>Serializing data using <code>Path</code></h3><h4>The <code>write</code> method</h4><p>We start by creating a Path representing the location at which we&rsquo;d like to serialize our data:</p>
+<pre class="prettyprint"><code class="language-scala">import play.api.data.mapping._
+val location: Path = Path \ &quot;user&quot; \ &quot;friend&quot;</code></pre><p><code>Path</code> has a <code>write[I, O]</code> method, where <code>I</code> represents the input we’re trying to serialize, and <code>O</code> is the output type. For example, <code>(Path \ &quot;foo&quot;).write[Int, JsObject]</code>, means we want to try to serialize a value of type <code>Int</code> into a <code>JsObject</code> at <code>/foo</code>.</p><p>But let&rsquo;s try something much easier for now:</p>
+<pre class="prettyprint"><code class="language-scala">import play.api.libs.json._
+import play.api.data.mapping._
+
+val location: Path = Path \ &quot;user&quot; \ &quot;friend&quot;
+val serializeFriend: Write[JsValue, JsObject] = location.write[JsValue, JsObject]</code></pre><p><code>location.write[JsValue, JsObject]</code> means the we&rsquo;re trying to serialize a <code>JsValue</code> to <code>location</code> in a <code>JsObject</code>. Effectively, we&rsquo;re just defining a <code>Write</code> that is putting a <code>JsValue</code> into a <code>JsObject</code> at the given location.</p><p>If you try to run that code, the compiler gives you the following error:</p>
+<pre class="prettyprint"><code class="language-scala">&lt;console&gt;:11: error: No implicit view available from play.api.data.mapping.Path =&gt; play.api.data.mapping.Write[play.api.libs.json.JsValue,play.api.libs.json.JsObject].
+       val serializeFriend: Write[JsValue, JsObject] = location.write[JsValue, JsObject]
+                                                                    ^
+</code></pre><p>The Scala compiler is complaining about not finding an implicit function of type <code>Path =&gt; Write[JsValue, JsObject]</code>. Indeed, unlike the Json API, you have to provide a method to <strong>transform</strong> the input type into the output type.</p><p>Fortunately, such method already exists. All you have to do is import it:</p>
+<pre class="prettyprint"><code class="language-scala">import play.api.data.mapping.json.Writes._</code></pre>
+<blockquote><p>By convention, all useful serialization methods for a given type are to be found in an object called <code>Writes</code>. That object contains a bunch of implicits defining how to serialize primitives Scala types into the expected output types.</p>
+</blockquote><p>With those implicits in scope, we can finally create our <code>Write</code>:</p>
+<pre class="prettyprint"><code class="language-scala">import play.api.libs.json._
+import play.api.data.mapping._
+
+val location: Path = Path \ &quot;user&quot; \ &quot;friend&quot;
+val serializeFriend: Write[JsValue, JsObject] = location.write[JsValue, JsObject]</code></pre><p>Alright, so far we&rsquo;ve defined a <code>Write</code> looking for some data of type <code>JsValue</code>, located at <code>/user/friend</code> in a <code>JsObject</code>.</p><p>Now we need to apply this <code>Write</code> on our data:</p>
+<pre class="prettyprint"><code class="language-scala">serializeFriend.writes(JsString(&quot;Julien&quot;)) === Json.parse(&quot;&quot;&quot;{&quot;user&quot;:{&quot;friend&quot;:&quot;Julien&quot;}}&quot;&quot;&quot;)</code></pre><h3>Type coercion</h3><p>We now are capable of serializing data to a given <code>Path</code>. Let&rsquo;s do it again on a different sub-tree:</p>
+<pre class="prettyprint"><code class="language-scala">import play.api.libs.json._
+import play.api.data.mapping._
+import play.api.data.mapping.json.Writes._
+
+val agejs = (Path \ &quot;user&quot; \ &quot;age&quot;).write[JsValue, JsObject]</code></pre><p>And if we apply this new <code>Write</code>:</p>
+<pre class="prettyprint"><code class="language-scala">agejs.writes(JsNumber(28)) === Json.parse(&quot;&quot;&quot;{&quot;user&quot;:{&quot;age&quot;:28}}&quot;&quot;&quot;)</code></pre><p>That example is nice, but chances are <code>age</code> in not a <code>JsNumber</code>, but an <code>Int</code>.<br/>All we have to do is to change the input type in our <code>Write</code> definition:</p>
+<pre class="prettyprint"><code class="language-scala">val age = (Path \ &quot;user&quot; \ &quot;age&quot;).write[Int, JsObject]</code></pre><p>And apply it:</p>
+<pre class="prettyprint"><code class="language-scala">age.writes(28) === Json.parse(&quot;&quot;&quot;{&quot;user&quot;:{&quot;age&quot;:28}}&quot;&quot;&quot;)</code></pre><p>So scala <em>automagically</em> figures out how to transform a <code>Int</code> into an <code>JsObject</code>. How does this happens ?</p><p>It&rsquo;s fairly simple. The definition of <code>write</code> looks like this:</p>
+<pre class="prettyprint"><code class="language-scala">def write[I, I](implicit w: Path =&gt; Write[I, O]): Write[I, O]
+</code></pre><p>So when you use <code>(Path \ &quot;user&quot; \ &quot;age&quot;).write[Int, JsObject]</code>, the compiler looks for an <code>implicit Path =&gt; Write[Int, JsObject]</code>, which happens to exist in <code>play.api.data.mapping.json.Writes</code>.</p><h3>Full example</h3>
+<pre class="prettyprint"><code class="language-scala">import play.api.libs.json._
+import play.api.data.mapping._
+import play.api.data.mapping.json.Writes._
+
+val age = (Path \ &quot;user&quot; \ &quot;age&quot;).write[Int, JsObject]
+age.writes(28) === Json.parse(&quot;&quot;&quot;{&quot;user&quot;:{&quot;age&quot;:28}}&quot;&quot;&quot;)</code></pre><h2>Combining Writes</h2><p>So far we&rsquo;ve serialized only primitives types.<br/>Now we&rsquo;d like to serialize an entire <code>User</code> object defined below, and transform it into a <code>JsObject</code>:</p>
+<pre class="prettyprint"><code class="language-scala">case class User(
+  name: String,
+  age: Int,
+  email: Option[String],
+  isAlive: Boolean)</code></pre><p>We need to create a <code>Write[User, JsValue]</code>. Creating this <code>Write</code> is simply a matter of combining together the writes serializing each field of the class.</p>
+<pre class="prettyprint"><code class="language-scala">import play.api.libs.json._
+import play.api.data.mapping._
+import play.api.data.mapping.json.Writes._
+import play.api.libs.functional.syntax.unlift
+
+val userWrite = To[JsObject] { __ =&gt;
+  import play.api.data.mapping.json.Writes._
+  ((__ \ &quot;name&quot;).write[String] and
+   (__ \ &quot;age&quot;).write[Int] and
+   (__ \ &quot;email&quot;).write[Option[String]] and
+   (__ \ &quot;isAlive&quot;).write[Boolean])(unlift(User.unapply _))
+}</code></pre>
+<blockquote><p><strong>Important:</strong> Note that we&rsquo;re importing <code>Writes._</code> <strong>inside</strong> the <code>To[I]{...}</code> block.<br/>It is recommended to always follow this pattern, as it nicely scopes the implicits, avoiding conflicts and accidental shadowing.</p>
+</blockquote><p><code>To[JsObject]</code> defines the <code>O</code> type of the writes we&rsquo;re combining. We could have written:</p>
+<pre class="prettyprint"><code class="language-scala"> (Path \ &quot;name&quot;).write[String, JsObject] and
+ (Path \ &quot;age&quot;).write[Int, JsObject] and
+ //...
+</code></pre><p>but repeating <code>JsObject</code> all over the place is just not very DRY.</p><p>Let&rsquo;s test it now:</p>
+<pre class="prettyprint"><code class="language-scala">userWrite.writes(User(&quot;Julien&quot;, 28, None, true)) === Json.parse(&quot;&quot;&quot;{&quot;name&quot;:&quot;Julien&quot;,&quot;age&quot;:28,&quot;isAlive&quot;:true}&quot;&quot;&quot;)</code></pre>
+<blockquote><p><strong>Next:</strong> - <a href=" ../ScalaValidationMacros/index.html">Macro Inception </a><br/><strong>For more examples and snippets:</strong> - <a href=" ../ScalaValidationCookbook/index.html">Cookbook </a></p>
+</blockquote>
+                
+            </article>
+            <aside>
+                <h3>Play data validation API</h3>
+<ul>
+  <li><a href=" ../ScalaValidation/index.html">Introduction </a></li>
+  <li><a href=" ../ScalaValidationRule/index.html">Validation and transformation with Rule </a></li>
+  <li><a href=" ../ScalaValidationRuleCombinators/index.html">Complex validation: combining Rules </a></li>
+  <li><a href=" ../ScalaValidationWrite/index.html">Serialization with Write </a></li>
+  <li><a href=" index.html">Complex serialization: combining Writes </a></li>
+  <li><a href=" ../ScalaValidationForm/index.html">Forms template helpers </a></li>
+  <li><a href=" ../ScalaValidationMacros/index.html">Validation Inception </a></li>
+  <li><a href=" ../ScalaValidationExtensions/index.html">Supporting new types </a></li>
+  <li><a href=" ../ScalaValidationMigrationJson/index.html">Migration from 2.1.x Json API </a></li>
+  <li><a href=" ../ScalaValidationMigrationForm/index.html">Migration from 2.1.x Form API </a></li>
+  <li><a href=" ../ScalaValidationCookbook/index.html">Cookbook </a></li>
+</ul><h3>Main concepts</h3>
+<ul>
+  <li><a href=" ../ScalaActions/index.html">HTTP programming </a></li>
+  <li><a href=" ../ScalaAsync/index.html">Asynchronous HTTP programming </a></li>
+  <li><a href=" ../ScalaTemplates/index.html">The template engine </a></li>
+  <li><a href=" ../ScalaForms/index.html">HTTP form submission and validation </a></li>
+  <li><a href=" ../ScalaJson/index.html">Working with JSON </a></li>
+  <li><a href=" ../ScalaXmlRequests/index.html">Working with XML </a></li>
+  <li><a href=" ../ScalaFileUpload/index.html">Handling file upload </a></li>
+  <li><a href=" ../ScalaDatabase/index.html">Accessing an SQL database </a></li>
+  <li><a href=" ../ScalaCache/index.html">Using the Cache </a></li>
+  <li><a href=" ../ScalaWS/index.html">Calling WebServices </a></li>
+  <li><a href=" ../ScalaAkka/index.html">Integrating with Akka </a></li>
+  <li><a href=" ../ScalaI18N/index.html">Internationalization </a></li>
+  <li><a href=" ../ScalaGlobal/index.html">The application Global object </a></li>
+  <li><a href=" ../ScalaTest/index.html">Testing your application </a></li>
+</ul><h3>Advanced topics</h3>
+<ul>
+  <li><a href=" ../Iteratees/index.html">Handling data streams reactively </a></li>
+</ul><h3>Tutorials</h3>
+<ul>
+  <li><a href=" ../ScalaTodoList/index.html">Your first application </a></li>
+</ul>
+            </aside>
+        </div>
+
+        <style type="text/css">
+            @import '../resources/webjars/2.3.0-RC1/prettify/prettify.css';
+        </style>
+        <script type="text/javascript" charset="utf-8" src='../resources/webjars/2.3.0-RC1/prettify/prettify.js'></script>
+        <script type="text/javascript" charset="utf-8" src='../resources/webjars/2.3.0-RC1/prettify/lang-scala.js'></script>
+        <script type="text/javascript">
+            $(function() {
+                window.prettyPrint && prettyPrint();
+            });
+        </script>
+
+    </body>
+</html>
+
+<!-- Localized -->
