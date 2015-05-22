@@ -114,12 +114,12 @@ I may remove some code for the sake of clarity if it's not relevant to us.</p>
 
 
 <p>You might feel a tiny bit overwhelmed by the awesomeness.
-Take a few deep breath, we'll walk that step by step:</p>
+Take a few deep breathes, we'll walk that step by step:</p>
 
 <script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=5_qs.scala"></script>
 
 
-<p><code>Sum</code> take two natural number <code>A</code> and <code>B</code>, and returns another natural number <code>Out</code>. It's using <a href="https://www.wikiwand.com/en/Dependent_type">dependent types</a> to create a type level function. The type <code>Out</code> depends of <code>A</code> and <code>B</code>. In other word, we'll give Scalac an <code>A</code> and a <code>B</code>, and it will magically figure what <code>Out</code> is.</p>
+<p><code>Sum</code> takes two natural numbers <code>A</code> and <code>B</code>, and returns another natural number <code>Out</code>. It's using <a href="https://www.wikiwand.com/en/Dependent_type">dependent types</a> to create a type level function. The type <code>Out</code> depends of <code>A</code> and <code>B</code>. In other words, we'll give Scalac an <code>A</code> and a <code>B</code>, and it will magically figure out what <code>Out</code> is.</p>
 
 <p>We now have a way to represent additions. <code>A + B = Out</code>!</p>
 
