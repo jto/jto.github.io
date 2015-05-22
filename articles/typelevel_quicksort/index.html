@@ -246,7 +246,7 @@ Once again, <code>HList</code> are already defined in shapeless:</p>
 
 
 <p>Just like a classical list, a <code>HList</code> is either empty, or a <code>head</code> and a <code>tail</code>.
-Note how similar the two definitions are! Traditionally, <code>HList</code> also store values. Since we're only working in the type system, and for the sake of clarity, I removed the useless code.</p>
+Note how similar the two definitions are! Traditionally, <code>HList</code> also stores values. Since we're only working in the type system, and for the sake of clarity, I removed the useless code.</p>
 
 <p>Let's create a type level list of natural numbers:</p>
 
@@ -339,7 +339,7 @@ By now you have enough understanding to figure this out by yourself:</p>
 <p>WOW. Quite a lot of types this time. Luckily, it's nothing really hard.</p>
 
 <ol>
-<li>First, we want extract the pivot. Since I like simplicity, we'll just extract the head of the list <code>H</code>, and the tail <code>T</code>: <code>new Sorted[H :: T] { ... }</code></li>
+<li>First, we want to extract the pivot. Since I like simplicity, we'll just extract the head of the list <code>H</code>, and the tail <code>T</code>: <code>new Sorted[H :: T] { ... }</code></li>
 <li>Then, we want to split the tail <code>T</code> in two sublists. All we have to do is ask the compiler to figure this out (using implicit parameters):
 
 <ul>
