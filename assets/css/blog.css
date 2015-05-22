@@ -889,7 +889,7 @@ body {
 .content h4,
 .content h5 {
   font-weight: 80;
-  margin: 100px 0 15px 0;
+  margin: 60px 0 15px 0;
   position: relative;
   font-family: "jaf-bernino-sans", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Geneva, Verdana, sans-serif;
 }
@@ -899,6 +899,14 @@ body {
 .content h4:first-child,
 .content h5:first-child {
   margin-top: 0;
+}
+.content code {
+  background-color: rgba(0, 0, 0, 0.04);
+  border-radius: 3px;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  padding: 0.2em;
+  margin: 0;
+  font-size: 85%;
 }
 .content .twitter-share-button {
   float: right;
@@ -928,6 +936,11 @@ body {
   margin: 15px 0;
   font-size: 18px;
 }
+.content blockquote > p,
+.content .note > p,
+.content .warning > p {
+  margin: 0 !important;
+}
 .content blockquote .from,
 .content .note .from,
 .content .warning .from {
@@ -949,7 +962,7 @@ body {
   margin: 10px;
 }
 .content p {
-  margin: 50px 0;
+  margin: 30px 0;
 }
 .content p:first-child {
   margin-top: 100px;

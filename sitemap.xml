@@ -2,6 +2,10 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     
     <url>
+        <loc>http://jto.github.io/articles/typelevel_quicksort</loc>
+    </url>
+    
+    <url>
         <loc>http://jto.github.io/articles/scala_is_faster_than_java</loc>
     </url>
     

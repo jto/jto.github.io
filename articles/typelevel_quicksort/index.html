@@ -1,0 +1,413 @@
+<!doctype html>
+
+<html lang="en" prefix="og: http://ogp.me/ns#">
+  <head>
+    <meta charset="utf-8">
+    <meta name="author" content="Julien Tournay">
+    <meta name="keywords" content="scala,logic,shapeless,typedependent">
+
+    <link rel="shortcut icon" href="/media/images/favicon.ico">
+    <link rel="stylesheet" href="/assets/css/blog.css" type="text/css" media="screen" title="no title" charset="utf-8">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:creator" content="@skaalf">
+    <meta property="og:title" content="Typelevel quicksort in Scala">
+    <meta property="og:description" content="Implementing quicksort in Scala&#39;s typesystem">
+    <meta property="og:image" content="">
+
+    <title>Typelevel quicksort in Scala</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="nav">
+        <a href="/" class="logo">
+          <em class="hi">hi!</em>
+          <span class="me">I'm Julien</span>
+        </a>
+        <ul class="social">
+          <li><a href="https://twitter.com/skaalf">&#xf099;</a></li>
+          <li><a href="https://github.com/jto">&#xf09b;</a></li>
+          <li><a href="http://www.linkedin.com/in/julientournay">&#xf0e1;</a></li>
+        </ul>
+      </div>
+      <div class="content">
+        <article itemscope itemtype="http://schema.org/Article">
+  <!-- <time>19 May 2015</time> -->
+  <a href="https://twitter.com/share" data-text="Typelevel quicksort in Scala" data-hashtags="scala,logic,shapeless,typedependent" data-via="skaalf" class="twitter-share-button" data-lang="en">Tweet</a>
+  <h1 itemprop="name">
+    Typelevel quicksort in Scala
+  </h1>
+  <div itemprop="articleBody">
+  <p><header>
+Most people know that Scala has a pretty advanced type system. In this post, I going to show how we can implement the <a href="http://www.wikiwand.com/en/Quicksort">quicksort</a> algorithm using only Scala's type system. The full code of this little demo can be found <a href="https://gist.github.com/jto/2dc882c455b79378289f">here</a>.
+</header></p>
+
+<h2>Natural Numbers</h2>
+
+<p>First thing first, if we're going to implement a sort algorithm, we need something to sort. We'll be using natural numbers.
+Of course, there's no natural numbers available out of the box in Scala's type system. We need to create a type for each and every natural number!</p>
+
+<p>Creating an infinity of types might end up being a little time consuming, so we'll do something a little smarter. We'll use MATH!</p>
+
+<h3>Peano's axioms</h3>
+
+<p>Peano's axioms are a simple way to formally define what natural numbers are.</p>
+
+<ul>
+<li>There's one special object called <code>0</code>. <code>0</code> is a natural number.</li>
+<li>For every natural number <code>n</code>, there's exactly one other natural number called it's successor <code>S(n)</code>.</li>
+<li><code>0</code> is not the successor of any natural number. All other natural numbers are the successor of a natural number</li>
+<li>No two natural numbers have the same successor</li>
+<li>Natural numbers can be compared for equality. Equality is reflexive, symmetric and transitive.</li>
+<li>For some statement <code>P</code>, <code>P</code> is true for all natural number if:
+
+<ul>
+<li><code>P</code> is true about <code>0</code></li>
+<li>If <code>P</code> is true for a number <code>n</code>, (<code>P(n)</code> is true), <code>P</code> is true for <code>n</code>'s successor (<code>P(S(n)</code> is true).</li>
+</ul>
+</li>
+</ul>
+
+
+<p>You can read more about Peano's arithmetic on <a href="http://www.wikiwand.com/en/Peano_axioms">Wikipedia</a>.</p>
+
+<p>With those axioms in mind, it's easy to represent natural numbers in Scala's type system.</p>
+
+<p>Let's start by creating a Nat trait.</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=0_qs.scala"></script>
+
+
+<blockquote><p>There's one special object called <code>0</code>. <code>0</code> is a natural number (Since <code>0</code> is an invalid type name, we'll call it <code>_0</code>).</p></blockquote>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=1_qs.scala"></script>
+
+
+<blockquote><p>For every natural number <code>n</code>, there's exactly one other natural number called it's successor <code>S(n)</code>.</p></blockquote>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=2_qs.scala"></script>
+
+
+<p>Having defined those classes, we can represent any natural number. Let's defined the natural numbers from 1 to 5.</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=3_qs.scala"></script>
+
+
+<p>easy-peasy :)</p>
+
+<h3>Basic arithmetic</h3>
+
+<p>Just to prove that's that those numbers are actually usable, we're going to implement addition.
+Again Peano tells us how to do that (image taken from wikipedia):</p>
+
+<p><img src="http://upload.wikimedia.org/math/9/5/d/95dd1dc28b7774e45c5be05328e4612c.png" title="Image from wikipedia" alt="Peano's sum" /></p>
+
+<p>It might not be obvious yet why this is enough. Luckily it translate almost directly to types.</p>
+
+<p>And here's a translation in Scala that I've shamelessly stolen from <a href="https://github.com/milessabin/shapeless" title="Shapeless">Shapeless</a>.
+From now on, each time we'll need something that exist in <a href="https://github.com/milessabin/shapeless" title="Shapeless">Shapeless</a>, we'll just take it from there, because, you know, "Great Artists Steal" (plus, I'm lazy). Of course I'll mention it every time.
+I may remove some code for the sake of clarity if it's not relevant to us.</p>
+
+<p>Meet Shapeless' <code>Sum</code>:</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=4_qs.scala"></script>
+
+
+<p>You might feel a tiny bit overwhelmed by the awesomeness.
+Take a few deep breath, we'll walk that step by step:</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=5_qs.scala"></script>
+
+
+<p><code>Sum</code> take two natural number <code>A</code> and <code>B</code>, and returns another natural number <code>Out</code>. It's using <a href="https://www.wikiwand.com/en/Dependent_type">dependent types</a> to create a type level function. The type <code>Out</code> depends of <code>A</code> and <code>B</code>. In other word, we'll give Scalac an <code>A</code> and a <code>B</code>, and it will magically figure what <code>Out</code> is.</p>
+
+<p>We now have a way to represent additions. <code>A + B = Out</code>!</p>
+
+<p>Since we can represent, the next step is to actually compute the result of adding two natural numbers.</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=6_qs.scala"></script>
+
+
+<p>This this the base case of our definition of addition.
+For any natural number <code>b</code>, <code>0 + b = b</code>.</p>
+
+<p>We can immediately test this case using the apply method:</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=7_qs.scala"></script>
+
+
+<p>The other cases are defined by induction:</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=8_qs.scala"></script>
+
+
+<p>What this says is given 2 Nat <code>A</code> and <code>B</code>,
+<code>S(A) + B = A + S(B)</code></p>
+
+<p>That's not exactly the axiom defined in Wikipedia, but it's equivalent because:</p>
+
+<ul>
+<li><code>A + S(B) = S(A + B)</code></li>
+<li>similarly, <code>Succ(A) + B = S(A + B)</code></li>
+<li>therefore <code>A + S(B) = S(A + B) = S(A) + B</code></li>
+</ul>
+
+
+<p>So if we try to evaluate the addition <code>3 + 1</code>, by mean of implicit resolution, the Scala compiler will go through the following steps:</p>
+
+<ol>
+<li><code>S(S(S(0))) + S(0) = S(S(0)) + S(S(0))</code></li>
+<li><code>S(S(0)) + S(S(0)) = S(0) + S(S(S(0)))</code></li>
+<li><code>S(0) + S(S(S(0))) = 0 + S(S(S(S(0))))</code></li>
+<li>And back on our base case <code>0 + S(S(S(S(0)))) = S(S(S(S(0))))</code></li>
+<li>therefore, <code>S(S(S(0))) + S(0) = S(S(S(S(0))))</code>.</li>
+</ol>
+
+
+<p>We can test it in a Scala REPL:</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=9_qs.scala"></script>
+
+
+<p>We can do basic arithmetic in the type system :)</p>
+
+<h3>Inequalities</h3>
+
+<p>To implement quicksort, we need to be able to compare natural numbers. Again, <a href="https://github.com/milessabin/shapeless" title="Shapeless">Shapeless</a> got us covered:</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=10_qs.scala"></script>
+
+
+<p>As always, we just have to cover a base case <code>0</code>, and use induction to cover all other cases.
+Zero is the smallest natural number so <code>∀x∈N. 0 &lt; S(x)</code></p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=11_qs.scala"></script>
+
+
+<p>We can immediately test that:</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=12_qs.scala"></script>
+
+
+<p>As you already know, type are propositions, and programs are proofs. Since a value of type <code>LT[_0, _1]</code> exists, the compiler just proved that <code>0 &lt; 1</code>. (see <a href="http://www.wikiwand.com/en/Curry%E2%80%93Howard_correspondence">Curry–Howard correspondence</a>)</p>
+
+<p>For every other cases, we just compare the numbers predecessors:
+<code>∀ x,y ∈ N. S(x) &lt; S(y) ⇔ x &lt; y</code>.</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=13_qs.scala"></script>
+
+
+<p>Again the compiler will walk its way to the base case:</p>
+
+<ol>
+<li><code>S(S(0)) &lt; S(S(S(0))) ⇔ S(0) &lt; S(S(0))</code></li>
+<li><code>S(0) &lt; S(S(0)) ⇔ 0 &lt; S(0)</code></li>
+<li>We're back on our base case</li>
+</ol>
+
+
+<p>Let's test it:</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=14_qs.scala"></script>
+
+
+<ul>
+<li>An instance of <code>LT[_1, _2]</code> exists, which mean we can prove that <code>1 &lt; 2</code>.</li>
+<li>No instance of <code>LT[_2, _1]</code> exists, which mean we can't prove that <code>2 &lt; 1</code>.</li>
+</ul>
+
+
+<p>To implement quicksort, we'll also use <code>≥</code>. Shapeless does not provide it, but it does provide <code>≤</code>, We'll just use that instead.
+I think you'll be able to figure out how the following code works by yourself.</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=15_qs.scala"></script>
+
+
+<h2>Type level list, aka HList</h2>
+
+<p>Alright, we know have a way to work with natural numbers, but if we're going to sort them, we also need to have a list.
+But how do lists work ? Here's is a simplified version of <a href="https://github.com/scala/scala/blob/v2.11.5/src/library/scala/collection/immutable/List.scala#">Scala's list</a>.</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=16_qs.scala"></script>
+
+
+<p>So a list is recursively defined, and can be 2 things:</p>
+
+<ul>
+<li>An empty list</li>
+<li>A first element (<code>head</code>), and another list (<code>tail</code>) of the same type.</li>
+</ul>
+
+
+<p>To represent a list of types, we'll use <code>HList</code>. A <code>HList</code> is defined in exactly the same way, except the recursion happens in the type system.
+Once again, <code>HList</code> are already defined in shapeless:</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=17_qs.scala"></script>
+
+
+<p>Just like a classical list, a <code>HList</code> is either empty, or a <code>head</code> and a <code>tail</code>.
+Note how similar the two definitions are! Traditionally, <code>HList</code> also store values. Since we're only working in the type system, and for the sake of clarity, I removed the useless code.</p>
+
+<p>Let's create a type level list of natural numbers:</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=18_qs.scala"></script>
+
+
+<h3>Partitioning</h3>
+
+<p>We have almost everything we need. We now need the ability to partition our <code>HList</code> into 3 elements:</p>
+
+<ul>
+<li>the pivot</li>
+<li>a <code>HList</code> of types smaller or equal to the pivot</li>
+<li>a <code>HList</code> of types larger than the pivot</li>
+</ul>
+
+
+<p>This time, Shapeless does not provide anything built-in. For once, we are on our own :)</p>
+
+<p>Let's start by finding the smaller elements. Given a list <code>H</code>, and a natural number <code>A</code>, we want to get a new <code>Hlist</code>:</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=19_qs.scala"></script>
+
+
+<p>We can now start to implement the resolution, starting by the usual base case; the empty list:</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=20_qs.scala"></script>
+
+
+<p>Now we must ask ourself, "what are the other cases" ?
+When defining a function working with list, we usually pattern match on the first element (the <code>head</code>), and recursively call ourself on the <code>tail</code>.</p>
+
+<p>We'll do just that. Two cases are then possible. Either the first element is smaller or equal to the pivot, in that case we keep it:</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=21_qs.scala"></script>
+
+
+<p>Or it's not, and we ignore it:</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=22_qs.scala"></script>
+
+
+<p>Testing the code:</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=23_qs.scala"></script>
+
+
+<p>The sublist of types greater than the pivot can be obtained in a similar manner:</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=24_qs.scala"></script>
+
+
+<p>And again, testing it:</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=25_qs.scala"></script>
+
+
+<h3>HList concatenation</h3>
+
+<p>Almost there! The quicksort algorithm requires some list concatenation. We need to implement a way to prepend an <code>Hlist</code> to another <code>Hlist</code>.
+By now you have enough understanding to figure this out by yourself:</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=26_qs.scala"></script>
+
+
+<p>Testing it:</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=27_qs.scala"></script>
+
+
+<h3>Sorting</h3>
+
+<p>Finally! We have everything we need to implement our quicksort. All we have to do now is to put the pieces together.</p>
+
+<p>A sort algorithm takes an list, and returns a list:</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=28_qs.scala"></script>
+
+
+<p> As usual, we'll first deal with a base case. Sorting an empty list results in an empty list:</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=29_qs.scala"></script>
+
+
+<p>Now the inductive case:</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=30_qs.scala"></script>
+
+
+<p>WOW. Quite a lot of types this time. Luckily, it's nothing really hard.</p>
+
+<ol>
+<li>First, we want extract the pivot. Since I like simplicity, we'll just extract the head of the list <code>H</code>, and the tail <code>T</code>: <code>new Sorted[H :: T] { ... }</code></li>
+<li>Then, we want to split the tail <code>T</code> in two sublists. All we have to do is ask the compiler to figure this out (using implicit parameters):
+
+<ul>
+<li><code>LTEqs.Aux[T, H, lsOut]</code> -> give me all the types in <code>T</code> smaller or equal to <code>H</code>, and call that sublist <code>lsOut</code>.</li>
+<li><code>GTs.Aux[T, H, gsOut],</code> -> give me all the types in <code>T</code> greater than <code>H</code>, and call that sublist <code>gsOut</code>.</li>
+</ul>
+</li>
+<li>Sort the sublists:
+
+<ul>
+<li><code>Sorted.Aux[lsOut, smOut]</code> -> Sort <code>lsOut</code>, the resulting <code>HList</code> is called <code>smOut</code></li>
+<li><code>Sorted.Aux[gsOut, slOut]</code> -> Sort <code>gsOut</code>, the resulting <code>HList</code> is called <code>slOut</code></li>
+</ul>
+</li>
+<li>Concatenate the sorted list of smaller types, the pivot, and the sorted list of larger types:
+
+<ul>
+<li><code>Prepend[smOut, H :: slOut]</code></li>
+</ul>
+</li>
+</ol>
+
+
+<p>And we're done. The result is <code>preps.Out</code>.</p>
+
+<p>Let's run the final test:</p>
+
+<script src="https://gist.github.com/jto/a9b288d5f613a1031789.js?file=31_qs.scala"></script>
+
+
+<h2>Conclusion</h2>
+
+<ol>
+<li>It's really impressive that implementing this beauty in a mainstream, production ready language is possible. Even if a bit of boilerplate is required.</li>
+<li>We managed to implement a quicksort so slow a human could easily outperform it.</li>
+</ol>
+
+
+<p><img src="http://media1.giphy.com/media/uY0lFjVSvHPeU/giphy.gif" alt="Deal with it" /></p>
+
+  </div>
+</article>
+<div id="disqus_thread"></div>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'julien-tournay'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+      </div>
+    </div>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-41216875-1', 'jto.github.io');
+      ga('send', 'pageview');
+    </script>
+  </body>
+</html>
