@@ -97,7 +97,7 @@ Of course, there's no natural numbers available out of the box in Scala's type s
 
 <h3>Basic arithmetic</h3>
 
-<p>Just to prove that's that those numbers are actually usable, we're going to implement addition.
+<p>Just to prove that those numbers are actually usable, we're going to implement addition.
 Again Peano tells us how to do that (image taken from wikipedia):</p>
 
 <p><img src="http://upload.wikimedia.org/math/9/5/d/95dd1dc28b7774e45c5be05328e4612c.png" title="Image from wikipedia" alt="Peano's sum" /></p>
@@ -148,7 +148,7 @@ For any natural number <code>b</code>, <code>0 + b = b</code>.</p>
 
 <ul>
 <li><code>A + S(B) = S(A + B)</code></li>
-<li>similarly, <code>Succ(A) + B = S(A + B)</code></li>
+<li>similarly, <code>S(A) + B = S(A + B)</code></li>
 <li>therefore <code>A + S(B) = S(A + B) = S(A) + B</code></li>
 </ul>
 
