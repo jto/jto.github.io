@@ -99,7 +99,7 @@ Say you've defined the following case class</p>
 
 <p>When you work with <code>Future</code> in a real application you probably define multiple <code>ExecutionContext</code>. For example you may have an <code>ExecutionContext</code> for DB calls, and a default <code>ExecutionContext</code> for everything non blocking. Sadly, <code>ExecutionContext</code> are tricky to manage. You could easily use the default execution context for some DB calls accidentally.</p>
 
-<p>Just to make things worse, screwing up with <code>ExecutionContext</code> can cause really bad bugs. It's horribly easy to randomly observe thread starvation in production, just by passing a wrong <code>ExecutionContext</code> <em>once</em>. You're application suddenly stops doing anything for a few seconds, users are not happy. When the bug happens, is hard to find its cause and therefore, it is really hard to fix...</p>
+<p>Just to make things worse, screwing up with <code>ExecutionContext</code> can cause really bad bugs. It's horribly easy to randomly observe thread starvation in production, just by passing a wrong <code>ExecutionContext</code> <em>once</em>. Your application suddenly stops doing anything for a few seconds, users are not happy. When the bug happens, is hard to find its cause and therefore, it is really hard to fix...</p>
 
 <p>Luckily, the solution to this problem is extremely simple. Just give its own a type to each <code>ExecutionContext</code>. Here's a simplified example from an Play app I'm working on:</p>
 
