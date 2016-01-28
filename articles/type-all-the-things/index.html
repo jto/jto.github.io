@@ -1,0 +1,235 @@
+<!doctype html>
+
+<html lang="en" prefix="og: http://ogp.me/ns#">
+  <head>
+    <meta charset="utf-8">
+    <meta name="author" content="Julien Tournay">
+    <meta name="keywords" content="scala,shapeless">
+
+    <link rel="shortcut icon" href="/media/images/favicon.ico">
+    <link rel="stylesheet" href="/assets/css/blog.css" type="text/css" media="screen" title="no title" charset="utf-8">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:creator" content="@skaalf">
+    <meta property="og:title" content="Type all the things!">
+    <meta property="og:description" content="Exploring the benefits of typing everything">
+    <meta property="og:image" content="">
+
+    <title>Type all the things!</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="nav">
+        <a href="/" class="logo">
+          <em class="hi">hi!</em>
+          <span class="me">I'm Julien</span>
+        </a>
+        <ul class="social">
+          <li><a href="https://twitter.com/skaalf">&#xf099;</a></li>
+          <li><a href="https://github.com/jto">&#xf09b;</a></li>
+          <li><a href="http://www.linkedin.com/in/julientournay">&#xf0e1;</a></li>
+        </ul>
+      </div>
+      <div class="content">
+        <article itemscope itemtype="http://schema.org/Article">
+  <!-- <time>27 January 2016</time> -->
+  <a href="https://twitter.com/skaalf" class="twitter-follow-button" data-show-count="false">Follow @skaalf</a>
+  <a href="https://twitter.com/share" data-text="Type all the things!" data-hashtags="scala,shapeless" data-via="skaalf" class="twitter-share-button" data-lang="en">Tweet</a>
+  <h1 itemprop="name">
+    Type all the things!
+  </h1>
+  <div itemprop="articleBody">
+  <p><header>
+In this post, I'll demonstrate how I type absolutely everything in my Scala programs. I'll demonstrate the benefits, and give techniques to scrap some boilerplate.
+</header></p>
+
+<h2>Giving explicit types to every elements of the classes</h2>
+
+<p>First thing first what do I mean "type absolutely everything" ? Let's take a simple example.
+Say you've defined the following case class</p>
+
+<script src="https://gist.github.com/jto/e0b8233ad1eded3a26e9.js?file=UntypedUser.scala"></script>
+
+
+<p>This looks perfectly reasonable, and pretty similar to the code every Scala developer is writing everyday.</p>
+
+<p>Here's how I would write it:</p>
+
+<script src="https://gist.github.com/jto/e0b8233ad1eded3a26e9.js?file=User.scala"></script>
+
+
+<p>Okay so I just go through a little extra step and give an type to every fields of my case class. But why would I bother ? Not only am I adding boilerplate on the definition site, but you'd expect it to also make it harder to create new instances of <code>User</code>. Let me explain.</p>
+
+<h3>Obvious benefits</h3>
+
+<p>To be fair, you probably see a couple of obvious benefits by yourself. You may be thinking they are not worth it. That this is going to require a lot more work from you. I intend to convince you otherwise. The benefits are huge, and the amount of extra work can be tiny. You can even make the compiler work for you, and reduce your work.</p>
+
+<h3>Extra safety</h3>
+
+<p>Obviously the first benefit is the extra type safety.</p>
+
+<p>For example it's impossible to pass something else than an <code>User.Id</code> to the following function:</p>
+
+<script src="https://gist.github.com/jto/e0b8233ad1eded3a26e9.js?file=getUser.scala"></script>
+
+
+<p>It may not feel like much, but it is huge. Here I can only ask you to believe me. Just having a proper type for everything makes my job easier everyday, especially when refactoring. For example, you won't fear to change function parameters anymore. Nothing will break, the compiler guarantees it. This simple thing makes your program <em>significantly</em> more robust, especially as your codebase grows larger.</p>
+
+<h3>Documentation</h3>
+
+<p>Let's say you stumble upon the following method:</p>
+
+<script src="https://gist.github.com/jto/e0b8233ad1eded3a26e9.js?file=UserAll.scala"></script>
+
+
+<p>what is that <code>Long</code> ? Well, you don't know.</p>
+
+<p>What if I change it to this ?</p>
+
+<script src="https://gist.github.com/jto/e0b8233ad1eded3a26e9.js?file=UserAllTyped.scala"></script>
+
+
+<p>It's suddenly becomes obvious. The best thing is this doc is always up to date! Moreover, types propagate inside your code, which mean everything necessarily have at least a basic doc.</p>
+
+<h2>Make the compiler work for you</h2>
+
+<h3>Manage resources automatically</h3>
+
+<p>This one is a pretty simple trick we came to with <a href="http://mandubian.com/">@mandubian</a>.</p>
+
+<p>When you work with <code>Future</code> in a real application you probably define multiple <code>ExecutionContext</code>. For example you may have an <code>ExecutionContext</code> for DB calls, and a default <code>ExecutionContext</code> for everything non blocking. Sadly, <code>ExecutionContext</code> are tricky to manage. You could easily use the default execution context for some DB calls accidentally.</p>
+
+<p>Just to make things worse, screwing up with <code>ExecutionContext</code> can cause really bad bugs. It's horribly easy to randomly observe thread starvation in production, just by passing a wrong <code>ExecutionContext</code> <em>once</em>. You're application suddenly stops doing anything for a few seconds, users are not happy. When the bug happens, is hard to find its cause and therefore, it is really hard to fix...</p>
+
+<p>Luckily, the solution to this problem is extremely simple. Just give its own a type to each <code>ExecutionContext</code>. Here's a simplified example from an Play app I'm working on:</p>
+
+<script src="https://gist.github.com/jto/e0b8233ad1eded3a26e9.js?file=Contexts.scala"></script>
+
+
+<p>So let's say you define a method that asynchronously calls your database:</p>
+
+<script src="https://gist.github.com/jto/e0b8233ad1eded3a26e9.js?file=dbCall.scala"></script>
+
+
+<p>On call site, all you have to to is import all of your <code>ExecutionContext</code>, the compiler will automatically pick up the proper one.</p>
+
+<script src="https://gist.github.com/jto/e0b8233ad1eded3a26e9.js?file=testCall.scala"></script>
+
+
+<h3>Everything is an HList !</h3>
+
+<p>This one is probably my favorite trick. As you may know, <a href="https://github.com/milessabin/shapeless">shapeless</a> provides automatic conversions from case classes to <code>HList</code> using <code>Generic</code>. If you're familiar with <code>HList</code>, you probably realized that you can do pretty amazing things when all the types of your <code>HList</code> are unique. In that case, you can more of less treat a <code>Hlist</code> as a sorted <code>Map</code> of values indexed by types. If you give proper types to every fields of you case class, you can very much reduce the amount of code you write.</p>
+
+<p>I'll show a couple of example using <a href="https://www.playframework.com/documentation/2.4.x/ScalaAnorm">Anorm</a>. I like the simplicity of this library, but if you use it naively, you'll end up writing quite a lot of boilerplate.</p>
+
+<p>Let's say you define a simple parser our <code>UntypedUser</code> class</p>
+
+<script src="https://gist.github.com/jto/e0b8233ad1eded3a26e9.js?file=DBParser.scala"></script>
+
+
+<p>As you can see, you have to write an explicit pattern match to extract all the fields of the user class.
+Obviously it quickly becomes very tedious as the number of classes and fields in classes grows. Moreover, it's very easy to mix the order of fields.</p>
+
+<p>Just for the sake of proving my point, I just did it here. Although the example is trivial, I'm confident you didn't catch the bug.</p>
+
+<p>What you can do is to turn <code>Anorm</code>'s' <code>~</code> object into an <code>HList</code> using the following functions:</p>
+
+<script src="https://gist.github.com/jto/e0b8233ad1eded3a26e9.js?file=ToHlist.scala"></script>
+
+
+<p>Here's how you use it, in conjunction with <code>Generic</code>:</p>
+
+<script src="https://gist.github.com/jto/e0b8233ad1eded3a26e9.js?file=ToHListDemo.scala"></script>
+
+
+<p>So we've got rid of some boilerplate, but there's still a risk of mixing fields between firstname and lastname.</p>
+
+<p>Now, what if we use our typed <code>User</code>:</p>
+
+<script src="https://gist.github.com/jto/e0b8233ad1eded3a26e9.js?file=TypedUserToHList.scala"></script>
+
+
+<p>The problem of mixed fields is now fixed, since every field has a type. We can be fairly confident we're not mixing fields anymore.
+Sadly, we have introduced quite a lot of boilerplate since we have to declare a new <code>anorm.RowParser</code> for each type.</p>
+
+<p>Luckily, <code>shapeless</code> saves us again.</p>
+
+<h2>Scrapping boilerplate</h2>
+
+<h3>Basic Anorm</h3>
+
+<p>There's a simple solution, just use shapeless to automatically derive instances of <code>Column</code> for any class extending <code>AnyVal</code>. Here's the relevant code:</p>
+
+<script src="https://gist.github.com/jto/e0b8233ad1eded3a26e9.js?file=ColumnDerivations.scala"></script>
+
+
+<p>And it's usage:</p>
+
+<script src="https://gist.github.com/jto/e0b8233ad1eded3a26e9.js?file=ColumnDerivationsUse.scala"></script>
+
+
+<p>And that's it :). Any breaking change in the <code>User</code> class would cause a compilation error in this parser.</p>
+
+<blockquote><p>Note that it should be possible to derive this entire parser using <code>LabelledGeneric</code>. The implementation is left as an exercise to the reader.</p></blockquote>
+
+<h3>Anorm join</h3>
+
+<p>When it comes to <code>JOIN</code> clauses, anorm is particularly tedious. You have to parse the entire row, match it, manually group data together, etc.</p>
+
+<p>Let's say we've defined a new class:</p>
+
+<script src="https://gist.github.com/jto/e0b8233ad1eded3a26e9.js?file=UserWithSongs.scala"></script>
+
+
+<p>Here's what getting rows from a DB would typically look like:</p>
+
+<script src="https://gist.github.com/jto/e0b8233ad1eded3a26e9.js?file=join0.scala"></script>
+
+
+<p>I think we agree that this is horrible. If you don't type everything, it's also very much error prone.</p>
+
+<p>But again, strong typing and <code>HList</code> can greatly simplify things:</p>
+
+<script src="https://gist.github.com/jto/e0b8233ad1eded3a26e9.js?file=join.scala"></script>
+
+
+<p>Which is better in every way. Mostly, it's easier because we can select fields by type, using the <code>HList</code> as a type indexed map. This only works because each field has it's own type.
+Making a mistake while grouping is very unlikely. This code is shorter, simpler and safer.</p>
+
+<p>Another benefit is that you can have customized parsers for some types. For example you may have special logic for extracting <code>Age</code>, that is different than every other <code>Int</code> based <code>AnyVal</code>. In this case, you could simply explicitly define a <code>Column[Age]</code>, and derive the other classes.</p>
+
+<h2>Conclusion</h2>
+
+<p>Hopefully I have convinced you that typing everything is the way to go. If you're not convinced yet, I can only encourage you to try it on a real application. I've applied this philosophy for the last 2 years in every projects, I'll never go back. The benefits are just there, the cost minimal. It's a no brainer.</p>
+
+  </div>
+</article>
+<div id="disqus_thread"></div>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'julien-tournay'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+      </div>
+    </div>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-41216875-1', 'jto.github.io');
+      ga('send', 'pageview');
+    </script>
+  </body>
+</html>

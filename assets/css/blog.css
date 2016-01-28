@@ -908,9 +908,11 @@ body {
   margin: 0;
   font-size: 85%;
 }
-.content .twitter-share-button {
+.content .twitter-share-button,
+.content .twitter-follow-button {
   float: right;
   margin-top: 22px;
+  margin-right: 10px;
 }
 .content h1 {
   font-size: 40px;
