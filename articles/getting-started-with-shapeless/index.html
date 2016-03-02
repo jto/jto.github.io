@@ -49,7 +49,7 @@ I've been playing with Scala for 7 years and with Shapeless for two or three of 
 
 <blockquote><p>Shapeless is a type class and dependent type based generic programming library for Scala.</p></blockquote>
 
-<p>To me, Shapeless is a toolkit to leverage Scala's type system at your own profit. You may use it to have more "precise" types, like statically sized list (lists which size is know at compile time), you may also use <code>HList</code> as a better tuple.</p>
+<p>To me, Shapeless is a toolkit to leverage Scala's type system at your own profit. You may use it to have more "precise" types, like statically sized list (lists which size is known at compile time), you may also use <code>HList</code> as a better tuple.</p>
 
 <p>More generally, Shapeless can be used to make the compiler work for you, scrape some boilerplate, and gain a little extra typesafety.</p>
 
@@ -85,14 +85,14 @@ I've been playing with Scala for 7 years and with Shapeless for two or three of 
 
 <p>What happens if you want to <code>map</code> over it ?</p>
 
-<p>The first element is an <code>Int</code>, the second element is an <code>String</code>, and the third is a <code>User</code>.
+<p>The first element is an <code>Int</code>, the second element is a <code>String</code>, and the third is a <code>User</code>.
 Your <code>map</code> function would probably look like this:</p>
 
 <script src="https://gist.github.com/jto/4d7a4392a84da8446f69.js?file=2_map.scala"></script>
 
 
-<p>But having to pass as much function as there's elements in this <code>HList</code> is unpractical.
-Also, defining <code>map</code> this way means you need several definition of <code>map</code>. One for each <code>HList</code> size.</p>
+<p>But having to pass as much functions as there are elements in this <code>HList</code> is unpractical.
+Also, defining <code>map</code> this way means you need several definitions of <code>map</code>. One for each <code>HList</code> size.</p>
 
 <p>What you want is to pass to <code>map</code> a function that works on <code>Int</code> and <code>String</code>, and <code>User</code>, and let the compiler apply it on each elements of the <code>HList</code>. Something like this:</p>
 
