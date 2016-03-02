@@ -1,0 +1,225 @@
+<!doctype html>
+
+<html lang="en" prefix="og: http://ogp.me/ns#">
+  <head>
+    <meta charset="utf-8">
+    <meta name="author" content="Julien Tournay">
+    <meta name="keywords" content="scala,shapeless,typelevel">
+
+    <link rel="shortcut icon" href="/media/images/favicon.ico">
+    <link rel="stylesheet" href="/assets/css/blog.css" type="text/css" media="screen" title="no title" charset="utf-8">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:creator" content="@skaalf">
+    <meta property="og:title" content="Getting started with Shapeless">
+    <meta property="og:description" content="Getting started with shapeless">
+    <meta property="og:image" content="">
+
+    <title>Getting started with Shapeless</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="nav">
+        <a href="/" class="logo">
+          <em class="hi">hi!</em>
+          <span class="me">I'm Julien</span>
+        </a>
+        <ul class="social">
+          <li><a href="https://twitter.com/skaalf">&#xf099;</a></li>
+          <li><a href="https://github.com/jto">&#xf09b;</a></li>
+          <li><a href="http://www.linkedin.com/in/julientournay">&#xf0e1;</a></li>
+        </ul>
+      </div>
+      <div class="content">
+        <article itemscope itemtype="http://schema.org/Article">
+  <!-- <time>29 January 2016</time> -->
+  <a href="https://twitter.com/skaalf" class="twitter-follow-button" data-show-count="false">Follow @skaalf</a>
+  <a href="https://twitter.com/share" data-text="Getting started with Shapeless" data-hashtags="scala,shapeless,typelevel" data-via="skaalf" class="twitter-share-button" data-lang="en">Tweet</a>
+  <h1 itemprop="name">
+    Getting started with Shapeless
+  </h1>
+  <div itemprop="articleBody">
+  <p><header>
+I've been playing with Scala for 7 years and with Shapeless for two or three of years now. This library and its community is one of things that keeps Scala attractive to me. <a href="https://twitter.com/brikis98?lang=fr">@brikis98</a> pointed out that at little more doc wouldn't hurt. I can only agree with him. There's very little resources available to people discovering Shapeless and type level programming in Scala. Hopefully this post will help newcomers.
+</header></p>
+
+<h2>What's shapeless, and why should I care ?</h2>
+
+<p>Taken from shapeless' README:</p>
+
+<blockquote><p>Shapeless is a type class and dependent type based generic programming library for Scala.</p></blockquote>
+
+<p>To me, Shapeless is a toolkit to leverage Scala's type system at your own profit. You may use it to have more "precise" types, like statically sized list (lists which size is know at compile time), you may also use <code>HList</code> as a better tuple.</p>
+
+<p>More generally, Shapeless can be used to make the compiler work for you, scrape some boilerplate, and gain a little extra typesafety.</p>
+
+<h2>Where's the doc ?</h2>
+
+<p>There's not much so far. The <a href="https://github.com/milessabin/shapeless/wiki">wiki</a> is a good place to start, specifically <a href="https://github.com/milessabin/shapeless/wiki#finding-out-more-about-the-project">here</a>. The community tries to be as inclusive as possible, so you're likely to find help on the <a href="https://gitter.im/milessabin/shapeless">gitter</a> channel. <a href="http://stackoverflow.com/questions/tagged/shapeless">Stackoverflow</a> works very well too.</p>
+
+<p>A lot of examples can be found in <a href="https://github.com/milessabin/shapeless/tree/master/examples/src/main/scala/shapeless/examples">shapeless' source code itself</a>. Those examples are specifically here for educational purpose, and pretty much everything in Shapeless is demonstrated.</p>
+
+<h2>An incomplete guide to Shapeless features:</h2>
+
+<p>Here's list of shapeless' features I use the most, along with a short description and down to earth examples. There's obviously a lot more to discover, but those are basically the features I now consider essential in any non-trivial project.</p>
+
+<h3>HList</h3>
+
+<p><code>HList</code> are certainly the most popular feature. <code>HList</code> are <code>List</code> where the type of every element is statically known at compile time. You may see them as "tuples on steroid". The beauty of <code>HList</code> compared to tuples is that you'll find all the essential <code>List</code> methods like <code>take</code>, <code>head</code>, <code>tail</code>, <code>map</code>, <code>flatMap</code>, <code>zip</code>, etc. plus a bunch of methods specific to <code>HList</code>.</p>
+
+<p>Here's a little demo:</p>
+
+<script src="https://gist.github.com/jto/4d7a4392a84da8446f69.js?file=0_hlist.scala"></script>
+
+
+<p><code>HList</code> are <strong>very</strong> useful. You may not realize it yet, but believe me, soon you'll see <code>HList</code> everywhere. I already wrote about <a href="/articles/type-all-the-things/">practical</a> and "<a href="/articles/typelevel_quicksort/">less practical</a>" use cases. Shapeless also provides a way to turn any case class into an <code>HList</code> (more on that later).</p>
+
+<h3>Polymorphic functions</h3>
+
+<p>To explain polymorphic functions, let's start by a simple example.</p>
+
+<p>Take our previously defined <code>HList</code>:</p>
+
+<script src="https://gist.github.com/jto/4d7a4392a84da8446f69.js?file=1_demo.scala"></script>
+
+
+<p>What happens if you want to <code>map</code> over it ?</p>
+
+<p>The first element is an <code>Int</code>, the second element is an <code>String</code>, and the third is a <code>User</code>.
+Your <code>map</code> function would probably look like this:</p>
+
+<script src="https://gist.github.com/jto/4d7a4392a84da8446f69.js?file=2_map.scala"></script>
+
+
+<p>But having to pass as much function as there's elements in this <code>HList</code> is unpractical.
+Also, defining <code>map</code> this way means you need several definition of <code>map</code>. One for each <code>HList</code> size.</p>
+
+<p>What you want is to pass to <code>map</code> a function that works on <code>Int</code> and <code>String</code>, and <code>User</code>, and let the compiler apply it on each elements of the <code>HList</code>. Something like this:</p>
+
+<script src="https://gist.github.com/jto/4d7a4392a84da8446f69.js?file=3_map2.scala"></script>
+
+
+<p>Clearly, <code>f</code> is a polymorphic function. Interestingly, if you can define such a function, you could define a more generic <code>map</code> that works for any <code>h</code> of type <code>H</code> where <code>H &lt;: HList</code>.</p>
+
+<p>Sadly, <code>&amp;</code> does not exist in Scala, I made it up. The language only provides monomorphic functions. You can create a function whose domain (the type of its parameters) is <code>Int</code>, but you can't create a function whose domain is <code>Int</code> and <code>String</code> and <code>User</code>. More generally, you can't create a function whose domain type is <code>A</code> for some <code>A</code>. As a trivial exercise, try to define the <code>identity</code> function (of type <code>A =&gt; A</code>). It's impossible.</p>
+
+<p>Back to our <code>map</code> function now. Of course <code>f</code> could be a function that handle the least upper bound of all the elements in this <code>Hlist</code>. In our example the type of <code>f</code> would be <code>Any =&gt; Any</code>. Generally, a function of that type is not very useful.</p>
+
+<p>I already mentioned that <code>map</code> is defined for <code>HList</code>, which means Shapeless provides polymorphic functions. Here's a simple example:</p>
+
+<script src="https://gist.github.com/jto/4d7a4392a84da8446f69.js?file=4_poly.scala"></script>
+
+
+<p>I think the code is rather easy to understand. Notice that polymorphic functions are perfectly typesafe. Be careful not to forget the <code>implicit</code> keyword. It's a silly mistake, but I make it from times to times. Sometimes it takes a while to realize why Scalac refuses to map over a <code>HList</code> 😓</p>
+
+<p>Note that polymorphic function can use implicit parameters:</p>
+
+<script src="https://gist.github.com/jto/4d7a4392a84da8446f69.js?file=5_poly2.scala"></script>
+
+
+<h3>Generic</h3>
+
+<p><code>Generic</code> are a simple way to convert case class and product types (like tuples) to <code>HList</code>, and vice-versa:</p>
+
+<script src="https://gist.github.com/jto/4d7a4392a84da8446f69.js?file=6_gen.scala"></script>
+
+
+<p>Again, the code is fairly simple. <code>Generic</code> are often used to automatically derive typeclasses instances for case classes. See my other post <a href="/articles/type-all-the-things/">Type all the things</a>, for real world examples. <code>Generic</code> is a great way to avoid writing macros. And that's great! I don't want to maintain my poorly written macros.</p>
+
+<h3>Tuples</h3>
+
+<p>Shapeless provide syntax for tuples, so that you can use <code>HList</code>'s methods on tuples.</p>
+
+<script src="https://gist.github.com/jto/4d7a4392a84da8446f69.js?file=7_tuple.scala"></script>
+
+
+<p>The code is rather obvious. Most of the <code>HList</code> methods become available on tuples by simply importing <code>import shapeless.syntax.std.tuple._</code>. Very nifty!</p>
+
+<h3>Lenses</h3>
+
+<p>Shapeless provide a simple lenses implementation. Here's a basic example, directly taken from shapeless' examples:</p>
+
+<script src="https://gist.github.com/jto/4d7a4392a84da8446f69.js?file=8_lenses.scala"></script>
+
+
+<p>If you just need a lens from time to time and already have Shapeless in your project, it can be useful. For more advanced usage, consider a dedicated library like <a href="https://github.com/julien-truffaut/Monocle">monocle</a>.</p>
+
+<h3>Abstracting over arity:</h3>
+
+<p>Not a specific feature per say, but based on <code>Hlist</code> and <code>Generic</code>, Shapeless provides a way to create functions of arbitrary arity.</p>
+
+<p>Let's say you created a class that contains a <code>HList</code>.</p>
+
+<script src="https://gist.github.com/jto/4d7a4392a84da8446f69.js?file=9_myclass.scala"></script>
+
+
+<p>You may not want to force <code>HList</code> on your users. So how do you create instances of <code>MyClass</code> wihtout using <code>HList</code> directly ? Well, you can provide a bunch of <code>apply</code> methods:</p>
+
+<script src="https://gist.github.com/jto/4d7a4392a84da8446f69.js?file=10_applys.scala"></script>
+
+
+<p>But that's rather annoying to write. So instead you can do this:</p>
+
+<script src="https://gist.github.com/jto/4d7a4392a84da8446f69.js?file=11_unapplyProduct.scala"></script>
+
+
+<p>Note that you're actually passing a tuple to the <code>apply</code> method. Under stricter compiler options, you'll need an extra pair of parenthesis: <code>MyClass((1, "Hello", 12.6))</code>.</p>
+
+<h2>May the source be with you, always.</h2>
+
+<p>If you made it this far into this blog post, you may want to learn more about shapeless.
+So given the little doc currently available, you'll have to resort to reading the source code to learn more. Luckily, it's very easy to navigate in shapeless source once you've found how it's organized.</p>
+
+<h3>Navigating the source</h3>
+
+<p>Shapeless sources are divided in 3:</p>
+
+<ul>
+<li><a href="https://github.com/milessabin/shapeless/tree/master/core/src/main/scala/shapeless">/core/src/main/scala/shapeless</a> contains all the base data structure definitions, each having it's own file. For example <a href="https://github.com/milessabin/shapeless/blob/master/core/src/main/scala/shapeless/hlists.scala">hlist.scala</a> is the definition of <code>Hlist</code>.</li>
+<li><a href="https://github.com/milessabin/shapeless/tree/master/core/src/main/scala/shapeless/ops">/core/src/main/scala/shapeless/ops</a> contains all the typeclasses used by those structures. Again, each data structure having it's own file. <a href="https://github.com/milessabin/shapeless/blob/master/core/src/main/scala/shapeless/ops/hlists.scala">hlist.scala</a> contains all the typeclasses for <code>HList</code>.</li>
+<li><a href="https://github.com/milessabin/shapeless/tree/master/core/src/main/scala/shapeless/syntax">/core/src/main/scala/shapeless/syntax</a> contains all the methods usable on each data structure. Once again each data structure having it's own file. <a href="https://github.com/milessabin/shapeless/blob/master/core/src/main/scala/shapeless/syntax/hlists.scala">hlist.scala</a> contains all the methods defined on <code>HList</code>. If you want to look at the definition of <code>map</code> on <code>HList</code>, <a href="https://github.com/milessabin/shapeless/blob/master/core/src/main/scala/shapeless/syntax/hlists.scala#L397">here</a> it is.</li>
+</ul>
+
+
+<p>This should be enough to find pretty much everything you need to know by yourself.</p>
+
+<h3>Understating the source</h3>
+
+<p>Luckily, everything in shapeless (apart from macros), pretty much work on the same model.
+If you wish to understand how <code>HList</code> works, I've already written about it in my article <a href="/articles/typelevel_quicksort/">Typelevel quicksort in Scala</a>. Once you understand <code>HList</code>, everything follows. I'd really suggest to take the time to understand how <code>HList</code> are built, and how you <code>map</code> over a <code>HList</code>, even if you do not plan to use Shapeless.</p>
+
+<h2>Conclusion</h2>
+
+<p>This article is meant to give you an overview of the basic use cases. I hope it gives newcomers the basic infos required to start discovering type level programming in Scala using Shapeless. If anything is unclear, or just not covered in this article, let me know in the comments or ping me on <a href="https://twitter.com/skaalf">twitter</a>. I'll try to improve it over time. If you know more resources on Shapeless or type level programming, I'd be happy to link them here.</p>
+
+  </div>
+</article>
+<div id="disqus_thread"></div>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'julien-tournay'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+      </div>
+    </div>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-41216875-1', 'jto.github.io');
+      ga('send', 'pageview');
+    </script>
+  </body>
+</html>

@@ -2,6 +2,10 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     
     <url>
+        <loc>http://jto.github.io/articles/getting-started-with-shapeless</loc>
+    </url>
+    
+    <url>
         <loc>http://jto.github.io/articles/type-all-the-things</loc>
     </url>
     
