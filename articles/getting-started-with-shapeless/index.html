@@ -65,7 +65,7 @@ I've been playing with Scala for 7 years and with Shapeless for a couple of year
 
 <h3>HList</h3>
 
-<p><code>HList</code> are certainly the most popular feature. <code>HList</code> are <code>List</code> where the type of every element is statically known at compile time. You may see them as "tuples on steroid". The beauty of <code>HList</code> compared to tuples is that you'll find all the essential <code>List</code> methods like <code>take</code>, <code>head</code>, <code>tail</code>, <code>map</code>, <code>flatMap</code>, <code>zip</code>, etc. plus a bunch of methods specific to <code>HList</code>.</p>
+<p><code>HList</code> is certainly the most popular feature. A <code>HList</code> is a <code>List</code> where the type of every element is statically known at compile time. You may see them as "tuples on steroid". The beauty of <code>HList</code> compared to tuples is that you'll find all the essential <code>List</code> methods like <code>take</code>, <code>head</code>, <code>tail</code>, <code>map</code>, <code>flatMap</code>, <code>zip</code>, etc. plus a bunch of methods specific to <code>HList</code>.</p>
 
 <p>Here's a little demo:</p>
 
@@ -94,7 +94,7 @@ Your <code>map</code> function would probably look like this:</p>
 <p>But having to pass as much functions as there are elements in this <code>HList</code> is unpractical.
 Also, defining <code>map</code> this way means you need several definitions of <code>map</code>. One for each <code>HList</code> size.</p>
 
-<p>What you want is to pass to <code>map</code> a function that works on <code>Int</code> and <code>String</code>, and <code>User</code>, and let the compiler apply it on each elements of the <code>HList</code>. Something like this:</p>
+<p>What you want is to pass to <code>map</code> a function that works on <code>Int</code> and <code>String</code>, and <code>User</code>, and let the compiler apply it on each element of the <code>HList</code>. Something like this:</p>
 
 <script src="https://gist.github.com/jto/4d7a4392a84da8446f69.js?file=3_map2.scala"></script>
 
@@ -119,12 +119,12 @@ Also, defining <code>map</code> this way means you need several definitions of <
 
 <h3>Generic</h3>
 
-<p><code>Generic</code> are a simple way to convert case class and product types (like tuples) to <code>HList</code>, and vice-versa:</p>
+<p><code>Generic</code> is a simple way to convert case class and product types (like tuples) to <code>HList</code>, and vice-versa:</p>
 
 <script src="https://gist.github.com/jto/4d7a4392a84da8446f69.js?file=6_gen.scala"></script>
 
 
-<p>Again, the code is fairly simple. <code>Generic</code> are often used to automatically derive typeclasses instances for case classes. See my other post <a href="/articles/type-all-the-things/">Type all the things</a>, for real world examples. <code>Generic</code> is a great way to avoid writing macros. And that's great! I don't want to maintain my poorly written macros.</p>
+<p>Again, the code is fairly simple. <code>Generic</code> is often used to automatically derive typeclasses instances for case classes. See my other post <a href="/articles/type-all-the-things/">Type all the things</a>, for real world examples. <code>Generic</code> is a great way to avoid writing macros. And that's great! I don't want to maintain my poorly written macros.</p>
 
 <h3>Tuples</h3>
 
@@ -137,12 +137,12 @@ Also, defining <code>map</code> this way means you need several definitions of <
 
 <h3>Lenses</h3>
 
-<p>Shapeless provide a simple lenses implementation. Here's a basic example, directly taken from shapeless' examples:</p>
+<p>Shapeless provides a simple lenses implementation. Here's a basic example, directly taken from shapeless' examples:</p>
 
 <script src="https://gist.github.com/jto/4d7a4392a84da8446f69.js?file=8_lenses.scala"></script>
 
 
-<p>If you just need a lens from time to time and already have Shapeless in your project, it can be useful. For more advanced usage, consider a dedicated library like <a href="https://github.com/julien-truffaut/Monocle">monocle</a>.</p>
+<p>If you just need a lens from time to time and already have Shapeless in your project, it can be useful. For more advanced usages, consider a dedicated library like <a href="https://github.com/julien-truffaut/Monocle">monocle</a>.</p>
 
 <h3>Abstracting over arity:</h3>
 
@@ -153,7 +153,7 @@ Also, defining <code>map</code> this way means you need several definitions of <
 <script src="https://gist.github.com/jto/4d7a4392a84da8446f69.js?file=9_myclass.scala"></script>
 
 
-<p>You may not want to force <code>HList</code> on your users. So how do you create instances of <code>MyClass</code> wihtout using <code>HList</code> directly ? Well, you can provide a bunch of <code>apply</code> methods:</p>
+<p>You may not want to force <code>HList</code> on your users. So how do you create instances of <code>MyClass</code> without using <code>HList</code> directly ? Well, you can provide a bunch of <code>apply</code> methods:</p>
 
 <script src="https://gist.github.com/jto/4d7a4392a84da8446f69.js?file=10_applys.scala"></script>
 
@@ -168,7 +168,7 @@ Also, defining <code>map</code> this way means you need several definitions of <
 <h2>May the source be with you, always.</h2>
 
 <p>If you made it this far into this blog post, you may want to learn more about shapeless.
-So given the little doc currently available, you'll have to resort to reading the source code to learn more. Luckily, it's very easy to navigate in shapeless source once you've found how it's organized.</p>
+So given the little doc currently available, you'll have to resort to reading the source code to learn more. Luckily, it's very easy to navigate in Shapeless' sources once you've found how it's organized.</p>
 
 <h3>Navigating the source</h3>
 
@@ -185,8 +185,8 @@ So given the little doc currently available, you'll have to resort to reading th
 
 <h3>Understating the source</h3>
 
-<p>Luckily, everything in shapeless (apart from macros), pretty much work on the same model.
-If you wish to understand how <code>HList</code> works, I've already written about it in my article <a href="/articles/typelevel_quicksort/">Typelevel quicksort in Scala</a>. Once you understand <code>HList</code>, everything follows. I'd really suggest to take the time to understand how <code>HList</code> are built, and how you <code>map</code> over a <code>HList</code>, even if you do not plan to use Shapeless.</p>
+<p>Everything in shapeless (apart from macros), pretty much work on the same model.
+If you wish to understand how <code>HList</code> works, I've already written about it in my article <a href="/articles/typelevel_quicksort/">Typelevel quicksort in Scala</a>. Once you understand <code>HList</code>, everything should follow. I'd really suggest to take the time to understand how <code>HList</code> are built, and how you <code>map</code> over a <code>HList</code>, even if you do not plan to use Shapeless.</p>
 
 <h2>Conclusion</h2>
 
