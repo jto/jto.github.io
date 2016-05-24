@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>jto.github.io - Articles</title>
+    <description>Writing about scalable distributed web applications with modern tools.</description>
+    <link>
+    http://jto.github.io</link>
+    
+    
+    <item>
+      <title>Getting started with Shapeless</title>
+      
+      <description>&lt;p&gt;&lt;header&gt;
+I&#39;ve been playing with Scala for 7 years and with Shapeless for a couple of years now. This library and its community is one among the reasons that keep Scala attractive to me. &lt;a href=&quot;https://twitter.com/brikis98?lang=fr&quot;&gt;@brikis98&lt;/a&gt; pointed out that at little more doc wouldn&#39;t hurt. I can only agree with him. There&#39;s very little resources available to people discovering Shapeless and type level programming in Scala. Hopefully this post will help newcomers understand the library basics.
+&lt;/header&gt;&lt;/p&gt;
+</description>
+      
+      <pubDate>Fri, 29 Jan 2016 00:00:00 +0100</pubDate>
+      <link>
+      http://jto.github.io/articles/getting-started-with-shapeless</link>
+      <guid isPermaLink="true">http://jto.github.io/articles/getting-started-with-shapeless</guid>
+    </item>
+    
+    
+    
+    <item>
+      <title>Type all the things!</title>
+      
+      <description>&lt;p&gt;&lt;header&gt;
+In this post, I&#39;ll demonstrate how I type absolutely everything in my Scala programs. I&#39;ll demonstrate the benefits, and give techniques to scrap some boilerplate.
+&lt;/header&gt;&lt;/p&gt;
+</description>
+      
+      <pubDate>Wed, 27 Jan 2016 00:00:00 +0100</pubDate>
+      <link>
+      http://jto.github.io/articles/type-all-the-things</link>
+      <guid isPermaLink="true">http://jto.github.io/articles/type-all-the-things</guid>
+    </item>
+    
+    
+    
+    <item>
+      <title>Typelevel quicksort in Scala</title>
+      
+      <description>&lt;p&gt;&lt;header&gt;
+Most people know that Scala has a pretty advanced type system. In this post, I&#39;m going to show how we can implement the &lt;a href=&quot;http://www.wikiwand.com/en/Quicksort&quot;&gt;quicksort&lt;/a&gt; algorithm using only Scala&#39;s type system. The full code of this little demo can be found &lt;a href=&quot;https://gist.github.com/jto/2dc882c455b79378289f&quot;&gt;here&lt;/a&gt;.
+&lt;/header&gt;&lt;/p&gt;
+</description>
+      
+      <pubDate>Tue, 19 May 2015 00:00:00 +0200</pubDate>
+      <link>
+      http://jto.github.io/articles/typelevel_quicksort</link>
+      <guid isPermaLink="true">http://jto.github.io/articles/typelevel_quicksort</guid>
+    </item>
+    
+    
+    
+    <item>
+      <title>Scala is faster than Java</title>
+      
+      <description>&lt;p&gt;&lt;header&gt;
+Scala is generally considered slower than Java, especially when it&#39;s used in a functional style. This article explains why this generally accepted assumption is just wrong.
+&lt;/header&gt;&lt;/p&gt;
+</description>
+      
+      <pubDate>Sun, 27 Apr 2014 00:00:00 +0200</pubDate>
+      <link>
+      http://jto.github.io/articles/scala_is_faster_than_java</link>
+      <guid isPermaLink="true">http://jto.github.io/articles/scala_is_faster_than_java</guid>
+    </item>
+    
+    
+    
+    <item>
+      <title>&quot;A la carte&quot; data validation</title>
+      
+      <description>&lt;p&gt;&lt;header&gt;
+This article demonstrate a new application of shapeless Lenses. Using play&#39;s new validation API, we can validate Json and transform it into case classes instances. It&#39;s fully typesafe, does not rely on reflection and removes all the boilerplate code that was previously necessary.
+&lt;/header&gt;&lt;/p&gt;
+</description>
+      
+      <pubDate>Mon, 31 Mar 2014 00:00:00 +0200</pubDate>
+      <link>
+      http://jto.github.io/articles/alacarte_validation</link>
+      <guid isPermaLink="true">http://jto.github.io/articles/alacarte_validation</guid>
+    </item>
+    
+    
+    
+    <item>
+      <title>Play 2.3 new validation API</title>
+      
+      <description>&lt;p&gt;&lt;header&gt;
+For the last weeks, I&#39;ve been busy working on designing and implementing a new data validation API for Play.
+The API is an evolution of the JSON API created by &lt;a href=&quot;https://twitter.com/mandubian&quot;&gt;@mandubian&lt;/a&gt;. It&#39;s based on the same concepts, but generalizes them.
+&lt;/header&gt;&lt;/p&gt;
+</description>
+      
+      <pubDate>Fri, 24 Jan 2014 00:00:00 +0100</pubDate>
+      <link>
+      http://jto.github.io/articles/play_new_validation_api</link>
+      <guid isPermaLink="true">http://jto.github.io/articles/play_new_validation_api</guid>
+    </item>
+    
+    
+    
+    <item>
+      <title>Play, Anatomy of a web framework: Routing and reverse routing.</title>
+      
+      <description>&lt;p&gt;&lt;header&gt;
+In this series of article, I&#39;ll explain the internals of &lt;a href=&quot;http://www.playframework.com/&quot; title=&quot;play&quot;&gt;playframework&lt;/a&gt;. I&#39;ll try to show how play works, from starting an application to rendering the HTTP response. Today, I will cover the routing of an HTTP request. How play compiles the route file, and invoke the application code, and let you use the reverse router.
+&lt;/header&gt;&lt;/p&gt;
+</description>
+      
+      <pubDate>Mon, 17 Jun 2013 00:00:00 +0200</pubDate>
+      <link>
+      http://jto.github.io/articles/play_anatomy_part3_routing</link>
+      <guid isPermaLink="true">http://jto.github.io/articles/play_anatomy_part3_routing</guid>
+    </item>
+    
+    
+    
+    <item>
+      <title>Play, Anatomy of a web framework: Hot redeploy.</title>
+      
+      <description>&lt;p&gt;&lt;header&gt;
+In this series of article, I&#39;ll explain the internals of &lt;a href=&quot;http://www.playframework.com/&quot; title=&quot;play&quot;&gt;playframework&lt;/a&gt;. I&#39;ll try to show how play works, from starting an application to rendering the HTTP response. Today, I&#39;ll show how playframework compiles and hot reloads code, and explain the relationship between play and sbt.
+&lt;/header&gt;&lt;/p&gt;
+</description>
+      
+      <pubDate>Thu, 13 Jun 2013 00:00:00 +0200</pubDate>
+      <link>
+      http://jto.github.io/articles/play_anatomy_part2_sbt</link>
+      <guid isPermaLink="true">http://jto.github.io/articles/play_anatomy_part2_sbt</guid>
+    </item>
+    
+    
+    
+    <item>
+      <title>Play, Anatomy of a web framework: The Web Server.</title>
+      
+      <description>&lt;p&gt;&lt;header&gt;
+In this series of article, I&#39;ll explain the internals of &lt;a href=&quot;http://www.playframework.com/&quot; title=&quot;play&quot;&gt;playframework&lt;/a&gt;. I&#39;ll try to show how play works, from starting an application to rendering the HTTP response. Today, I will cover the startup of a play application in &quot;prod&quot; mode. We&#39;ll also see how play listens to HTTP requests, parse them and call your application code.
+&lt;/header&gt;&lt;/p&gt;
+</description>
+      
+      <pubDate>Wed, 12 Jun 2013 00:00:00 +0200</pubDate>
+      <link>
+      http://jto.github.io/articles/play_anatomy_part1_bootstrap</link>
+      <guid isPermaLink="true">http://jto.github.io/articles/play_anatomy_part1_bootstrap</guid>
+    </item>
+    
+    
+  </channel>
+</rss>
