@@ -8,6 +8,22 @@
     
     
     <item>
+      <title>Announcing jto/validation 2.0</title>
+      
+      <description>&lt;p&gt;&lt;header&gt;
+The new version of my &lt;a href=&quot;https://github.com/jto/validation&quot;&gt;validation library&lt;/a&gt; is out After a few years in production, it was time for it to undergo a massive update.
+&lt;/header&gt;&lt;/p&gt;
+</description>
+      
+      <pubDate>Mon, 28 Mar 2016 00:00:00 +0200</pubDate>
+      <link>
+      http://jto.github.io/articles/announcing-validation-20</link>
+      <guid isPermaLink="true">http://jto.github.io/articles/announcing-validation-20</guid>
+    </item>
+    
+    
+    
+    <item>
       <title>Getting started with Shapeless</title>
       
       <description>&lt;p&gt;&lt;header&gt;
