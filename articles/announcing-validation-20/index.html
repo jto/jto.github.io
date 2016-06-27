@@ -46,20 +46,19 @@ The new version of my <a href="https://github.com/jto/validation">validation lib
 
 <h2>What's jto/validation again ?</h2>
 
-<p>jto/validation is a library originally born to replace play-json validation features. It aimed to generalize the library to be able to use it on other data formats. jto/validation never made it to Play because it was thought to be a leap to big (at least for Play 2.x).</p>
+<p>jto/validation is a library originally born to replace play-json validation features. It aimed to generalize the library to support other data formats. jto/validation never made it to Play because it was thought to be to big a leap (at least for Play 2.x).</p>
 
-<p>Today, the library supports JSON (both play-json, json4s, and "native"), play forms, XML, CSV. It is also easily extensible to any data format.</p>
+<p>Today, the library supports JSON (both play-json, json4s, and "native"), play forms, XML and CSV. It is also easily extensible to any data format.</p>
 
 <h2>Why 2.0 ?</h2>
 
 <p>After using v1.x for years, we had a pretty clear idea on how to improve it. Here's are the most important evolutions:</p>
 
 <ul>
-<li>We got rid of play-functional, and replaced it with <a href="https://github.com/typelevel/cats">cats</a>. Cats is well written, well maintained, well documented, complete and sound, and is a great fit for us.</li>
-<li>Thanks to cats, jto/validation now supports Scala.js. You can now write Rules and Writes, and share them between the server and the browser.</li>
+<li>We got rid of <a href="https://github.com/playframework/playframework/tree/master/framework/src/play-functional/src/main/scala/play/api/libs/functional">play-functional</a>, and replaced it with <a href="https://github.com/typelevel/cats">cats</a>. Cats is well written, well maintained, well documented, complete and sound, and is a great fit for us.</li>
+<li>Since jto/validation is decoupled from Play, it now supports Scala.js. You can now write Rules and Writes, and share them between the server and the browser.</li>
 <li>The library now has a proper package name, and does not steal Play's anymore.</li>
 <li>jto/validation 2.0 supports Play 2.5.x (playjson only)</li>
-<li>All the dependencies have been upgraded.</li>
 </ul>
 
 
@@ -81,7 +80,7 @@ The new version of my <a href="https://github.com/jto/validation">validation lib
 
 <h2>Is it backward compatible with 1.x ?</h2>
 
-<p>Almost ;) You'll have to do a (tiny) bit of work to migrate from 1.x to 2.0. Fear not, the migration has been tested, and the required steps documented <a href="http://jto.github.io/validation/docs/book/V2MigrationGuide.html">here</a>. Migrating should take a few minutes at most. The compiler will find all the problems for you, and will even give you hints on how to migrate in case of deprecations.</p>
+<p>Almost ;) You'll have to do a (tiny) bit of work to migrate from 1.x to 2.0. Fear not, the migration has been tested, and the required steps documented <a href="http://jto.github.io/validation/docs/book/V2MigrationGuide.html">here</a>. Migrating should take a few minutes at most. The compiler will also guide you through the migration with deprecation warnings giving indications on how to migrate</p>
 
 <h2>Contributing</h2>
 
@@ -89,7 +88,8 @@ The new version of my <a href="https://github.com/jto/validation">validation lib
 
 <h2>Credits</h2>
 
-<p>All credits for this new version should go to <a href="https://github.com/OlivierBlanvillain">Olivier Blanvillain</a>, who did most of the work. He, amongst other things, added Scala.js support, created the git book and replaced play-functional by <a href="https://github.com/typelevel/cats">cats</a>. Olivier is the first official contributor with commit permissions.</p>
+<p>The library now has a second maintainer: <a href="https://github.com/OlivierBlanvillain">Olivier Blanvillain</a>.
+Credits for this new version should go to him. He, amongst other things, added Scala.js support, created the git book and replaced play-functional by <a href="https://github.com/typelevel/cats">cats</a>.</p>
 
   </div>
 </article>
