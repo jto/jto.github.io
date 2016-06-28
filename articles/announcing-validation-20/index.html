@@ -41,7 +41,7 @@
   </h1>
   <div itemprop="articleBody">
   <p><header>
-The new version of my <a href="https://github.com/jto/validation">validation library</a> is out After a few years in production, it was time for it to undergo a massive update.
+The new version of my <a href="https://github.com/jto/validation">validation library</a> is out. After a few years in production, it was time for it to undergo a massive update.
 </header></p>
 
 <h2>What's jto/validation again ?</h2>
@@ -58,7 +58,7 @@ The new version of my <a href="https://github.com/jto/validation">validation lib
 <li>We got rid of <a href="https://github.com/playframework/playframework/tree/master/framework/src/play-functional/src/main/scala/play/api/libs/functional">play-functional</a>, and replaced it with <a href="https://github.com/typelevel/cats">cats</a>. Cats is well written, well maintained, well documented, complete and sound, and is a great fit for us.</li>
 <li>Since jto/validation is decoupled from Play, it now supports Scala.js. You can now write Rules and Writes, and share them between the server and the browser.</li>
 <li>The library now has a proper package name, and does not steal Play's anymore.</li>
-<li>jto/validation 2.0 supports Play 2.5.x (playjson only)</li>
+<li>jto/validation 2.0 supports Play 2.5.x (via the dedicated playjson module)</li>
 </ul>
 
 
@@ -80,7 +80,7 @@ The new version of my <a href="https://github.com/jto/validation">validation lib
 
 <h2>Is it backward compatible with 1.x ?</h2>
 
-<p>Almost ;) You'll have to do a (tiny) bit of work to migrate from 1.x to 2.0. Fear not, the migration has been tested, and the required steps documented <a href="http://jto.github.io/validation/docs/book/V2MigrationGuide.html">here</a>. Migrating should take a few minutes at most. The compiler will also guide you through the migration with deprecation warnings giving indications on how to migrate</p>
+<p>Almost ;) You'll have to do a (tiny) bit of work to migrate from 1.x to 2.0. Fear not, the migration has been tested, and the required steps documented <a href="http://jto.github.io/validation/docs/book/V2MigrationGuide.html">here</a>. Migrating should take a few minutes at most. The compiler will also guide you through the migration with deprecation warnings giving clear indications on how to migrate</p>
 
 <h2>Contributing</h2>
 
